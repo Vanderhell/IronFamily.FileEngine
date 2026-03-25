@@ -225,6 +225,10 @@ target_link_libraries(test_ironcfg_determinism
         ironfamily_c
 )
 
+if(UNIX)
+    target_link_libraries(test_ironcfg_determinism PRIVATE m)
+endif()
+
 target_include_directories(test_ironcfg_determinism
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/../ironfamily_c/include
