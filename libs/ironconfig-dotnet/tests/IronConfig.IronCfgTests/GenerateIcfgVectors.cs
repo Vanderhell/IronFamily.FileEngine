@@ -11,14 +11,28 @@ namespace IronConfig.IronCfgTests;
 /// </summary>
 public class GenerateIcfgVectors
 {
+    private static string FindRepositoryRoot()
+    {
+        var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+        while (dir != null)
+        {
+            var sln = Path.Combine(dir.FullName, "libs", "ironconfig-dotnet", "IronConfig.sln");
+            if (File.Exists(sln))
+            {
+                return dir.FullName;
+            }
+
+            dir = dir.Parent;
+        }
+
+        throw new DirectoryNotFoundException(
+            "Repository root not found (expected libs/ironconfig-dotnet/IronConfig.sln).");
+    }
+
     [Fact]
     public void GenerateAllVectors()
     {
-        string baseDir = Directory.GetCurrentDirectory();
-        while (!Directory.Exists(Path.Combine(baseDir, "artifacts")) && baseDir != Path.GetPathRoot(baseDir))
-        {
-            baseDir = Path.GetDirectoryName(baseDir);
-        }
+        string baseDir = FindRepositoryRoot();
         string outputDir = Path.Combine(baseDir, "artifacts", "vectors", "v1", "icfg");
         Directory.CreateDirectory(outputDir);
 
