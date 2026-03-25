@@ -8,6 +8,7 @@ using Xunit;
 using IronConfig.IronCfg;
 using Newtonsoft.Json;
 using MessagePack;
+using MessagePack.Resolvers;
 
 namespace IronConfig.Tests;
 
@@ -16,22 +17,36 @@ public class IronCfgBenchmarkTests
     private static bool IsFailedFormat(BenchmarkResult result) =>
         result.Format.Contains("(FAILED)", StringComparison.OrdinalIgnoreCase);
 
-    private class ConfigEntry
+    [MessagePackObject]
+    public class ConfigEntry
     {
+        [Key(0)]
         public int Id { get; set; }
+        [Key(1)]
         public string Name { get; set; } = "";
+        [Key(2)]
         public string Description { get; set; } = "";
+        [Key(3)]
         public double Value { get; set; }
+        [Key(4)]
         public bool Active { get; set; }
+        [Key(5)]
         public long Timestamp { get; set; }
+        [Key(6)]
         public string[] Tags { get; set; } = Array.Empty<string>();
     }
 
-    private class Config
+    [MessagePackObject]
+    public class Config
     {
-        public Dictionary<string, object?> Metadata { get; set; } = new();
+        [Key(0)]
+        public Dictionary<string, string> Metadata { get; set; } = new();
+        [Key(1)]
         public List<ConfigEntry> Entries { get; set; } = new();
     }
+
+    private static readonly MessagePackSerializerOptions MsgPackOptions =
+        MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance);
 
     /// <summary>
     /// Generate realistic configuration data
@@ -40,7 +55,7 @@ public class IronCfgBenchmarkTests
     {
         var config = new Config
         {
-            Metadata = new Dictionary<string, object?>
+            Metadata = new Dictionary<string, string>
             {
                 { "version", "1.0.0" },
                 { "timestamp", DateTime.UtcNow.ToString("O") },
@@ -274,7 +289,7 @@ public class IronCfgBenchmarkTests
         {
             // Encode
             var encodeStopwatch = Stopwatch.StartNew();
-            byte[] encoded = MessagePackSerializer.Serialize(config);
+            byte[] encoded = MessagePackSerializer.Serialize(config, MsgPackOptions);
             encodeStopwatch.Stop();
 
             if (encoded == null || encoded.Length == 0)
@@ -284,7 +299,7 @@ public class IronCfgBenchmarkTests
 
             // Decode
             var decodeStopwatch = Stopwatch.StartNew();
-            var decoded = MessagePackSerializer.Deserialize<Config>(encoded);
+            var decoded = MessagePackSerializer.Deserialize<Config>(encoded, MsgPackOptions);
             decodeStopwatch.Stop();
 
             if (decoded == null)
