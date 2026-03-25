@@ -171,8 +171,25 @@ target_include_directories(test_icfg_debug
 add_test(NAME test_ironcfg COMMAND $<TARGET_FILE:test_ironcfg>)
 add_test(NAME test_ironcfg_determinism COMMAND $<TARGET_FILE:test_ironcfg_determinism>)
 add_test(NAME test_icfg_golden_vectors COMMAND $<TARGET_FILE:test_icfg_golden_vectors>)
+add_test(
+    NAME prepare_vectors
+    COMMAND dotnet run -c Release --project tools/IronFamily.Vectors -- --out artifacts/vectors/v1 --force
+)
+add_test(
+    NAME prepare_icfg_vectors
+    COMMAND dotnet test -c Release libs/ironconfig-dotnet/tests/IronConfig.IronCfgTests/IronConfig.IronCfgTests.csproj --filter FullyQualifiedName~GenerateAllVectors -v minimal
+)
+
+set_tests_properties(prepare_icfg_vectors PROPERTIES DEPENDS prepare_vectors)
+set_tests_properties(test_iupd_vectors PROPERTIES DEPENDS prepare_vectors)
+set_tests_properties(test_diff_vectors PROPERTIES DEPENDS prepare_vectors)
+set_tests_properties(test_ota_bundle PROPERTIES DEPENDS prepare_vectors)
+set_tests_properties(test_delta2_vectors PROPERTIES DEPENDS prepare_vectors)
+set_tests_properties(test_icfg_golden_vectors PROPERTIES DEPENDS prepare_icfg_vectors)
 
 set_tests_properties(
+    prepare_vectors
+    prepare_icfg_vectors
     ironfamily_c_tests
     test_iupd_vectors
     test_diff_vectors
