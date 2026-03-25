@@ -1,0 +1,75 @@
+================================================================================
+ICF2 PHASE 1: CURRENT STATE SNAPSHOT
+================================================================================
+Date: $(date)
+
+GIT STATUS:
+-----------
+Branch: master (up to date with origin/master)
+
+Modified files:
+  - .gitignore
+  - README.md
+  - libs/bjv-dotnet/src/IronConfig/Crc32Ieee.cs
+  - tools/ironconfigtool/Program.cs
+
+GIT DIFF STAT:
+--------------
+ 4 files changed, 435 insertions(+), 17 deletions(-)
+
+TEST RESULTS (dotnet test -c Release):
+================================================================================
+Total Tests:     77
+Passed:          49
+Failed:          28
+Skipped:         0
+Duration:        630 ms
+
+FAILING TESTS BY COMPONENT:
+============================
+
+ICF2 TESTS (14 failures):
+-------------------------
+1. Icf2_Golden_ValidateCrcOn
+   Error: System.IndexOutOfRangeException: Row 0 out of range
+   Location: Icf2View.GetInt64(UInt32 row, UInt32 keyId) - line 61
+
+2. Icf2_LargeSchema_ValidateMultipleFields
+   Error: System.IndexOutOfRangeException: Row 0 out of range
+   Location: Icf2View.GetInt64(UInt32 row, UInt32 keyId) - line 61
+
+3. Icf2_Golden_ValidateNoCrc
+   Error: System.IndexOutOfRangeException: Row 0 out of range
+   Location: Icf2View.GetInt64(UInt32 row, UInt32 keyId) - line 61
+
+4. Icf2_ToJson_RoundTrip_Normalized
+   Error: System.IndexOutOfRangeException: Row 0 out of range
+   Location: Icf2View.GetInt64(UInt32 row, UInt32 keyId) - line 61
+
+5. Icf2_Bounds_InvalidOffset_FailsValidation
+   Error: Assert.Contains() Failure - expected "flags" in error message
+
+6. Icf2_Corruption_Truncate_FailsValidation
+   Error: Expected Exception type but got InvalidOperationException
+
+ICXS TESTS (Multiple failures due to missing test vectors):
+-----------------------------------------------------------
+Tests looking for: vectors/small/icxs/item.schema.json
+  - Validate_CorruptedFile_Fails
+  - Schema_ComputeHash_IsDeterministic
+  - RecordView_String_GetO1
+  [+ 10 more tests with same issue]
+
+CRITICAL ISSUE:
+================================================================================
+The main blocker is the IndexOutOfRangeException in Icf2View.GetInt64() at line 61.
+This suggests column offset calculations or row count handling is incorrect.
+
+Common causes to investigate:
+  A) Off-by-one in var column offsets (rowCount+1 offsets)
+  B) Delta decoding not reset per column / per open
+  C) String column blob bounds (suffixLen/offsetLen)
+  D) Missing value handling (null/missing key semantics inconsistent)
+  E) Schema ordering mismatch (keyId vs field order)
+
+NEXT STEP: Examine Icf2View.cs:61 and trace back the root cause.

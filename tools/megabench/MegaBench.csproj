@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>IronFamily.MegaBench</RootNamespace>
+    <AssemblyName>megabench</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
+    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig.ILog/IronConfig.ILog.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- BenchmarkDotNet for metrics -->
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+
+    <!-- Competitor codecs -->
+    <PackageReference Include="MessagePack" Version="2.5.187" />
+    <PackageReference Include="Google.Protobuf" Version="3.26.1" />
+    <PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
+    <PackageReference Include="PeterO.Cbor" Version="4.5.3" />
+    <PackageReference Include="ZstdSharp.Port" Version="0.8.0" />
+    <PackageReference Include="SharpCompress" Version="0.37.2" />
+  </ItemGroup>
+
+</Project>

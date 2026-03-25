@@ -1,0 +1,282 @@
+[
+  {
+    "file": "A_01_tiny.json",
+    "group": "A_tiny",
+    "variant": 1,
+    "seed": 43,
+    "size_bytes": 338
+  },
+  {
+    "file": "B_01_medium.json",
+    "group": "B_medium",
+    "variant": 1,
+    "seed": 43,
+    "size_bytes": 13613
+  },
+  {
+    "file": "C_01_large.json",
+    "group": "C_large",
+    "variant": 1,
+    "seed": 43,
+    "size_bytes": 1088462
+  },
+  {
+    "file": "D_01_stress.json",
+    "group": "D_stress",
+    "variant": 1,
+    "seed": 43,
+    "size_bytes": 75751
+  },
+  {
+    "file": "A_02_tiny.json",
+    "group": "A_tiny",
+    "variant": 2,
+    "seed": 44,
+    "size_bytes": 333
+  },
+  {
+    "file": "B_02_medium.json",
+    "group": "B_medium",
+    "variant": 2,
+    "seed": 44,
+    "size_bytes": 13606
+  },
+  {
+    "file": "C_02_large.json",
+    "group": "C_large",
+    "variant": 2,
+    "seed": 44,
+    "size_bytes": 1088714
+  },
+  {
+    "file": "D_02_stress.json",
+    "group": "D_stress",
+    "variant": 2,
+    "seed": 44,
+    "size_bytes": 75742
+  },
+  {
+    "file": "A_03_tiny.json",
+    "group": "A_tiny",
+    "variant": 3,
+    "seed": 45,
+    "size_bytes": 336
+  },
+  {
+    "file": "B_03_medium.json",
+    "group": "B_medium",
+    "variant": 3,
+    "seed": 45,
+    "size_bytes": 13614
+  },
+  {
+    "file": "C_03_large.json",
+    "group": "C_large",
+    "variant": 3,
+    "seed": 45,
+    "size_bytes": 1088684
+  },
+  {
+    "file": "D_03_stress.json",
+    "group": "D_stress",
+    "variant": 3,
+    "seed": 45,
+    "size_bytes": 75747
+  },
+  {
+    "file": "A_04_tiny.json",
+    "group": "A_tiny",
+    "variant": 4,
+    "seed": 46,
+    "size_bytes": 335
+  },
+  {
+    "file": "B_04_medium.json",
+    "group": "B_medium",
+    "variant": 4,
+    "seed": 46,
+    "size_bytes": 13618
+  },
+  {
+    "file": "C_04_large.json",
+    "group": "C_large",
+    "variant": 4,
+    "seed": 46,
+    "size_bytes": 1088400
+  },
+  {
+    "file": "D_04_stress.json",
+    "group": "D_stress",
+    "variant": 4,
+    "seed": 46,
+    "size_bytes": 75749
+  },
+  {
+    "file": "A_05_tiny.json",
+    "group": "A_tiny",
+    "variant": 5,
+    "seed": 47,
+    "size_bytes": 337
+  },
+  {
+    "file": "B_05_medium.json",
+    "group": "B_medium",
+    "variant": 5,
+    "seed": 47,
+    "size_bytes": 13612
+  },
+  {
+    "file": "C_05_large.json",
+    "group": "C_large",
+    "variant": 5,
+    "seed": 47,
+    "size_bytes": 1088695
+  },
+  {
+    "file": "D_05_stress.json",
+    "group": "D_stress",
+    "variant": 5,
+    "seed": 47,
+    "size_bytes": 75711
+  },
+  {
+    "file": "A_06_tiny.json",
+    "group": "A_tiny",
+    "variant": 6,
+    "seed": 48,
+    "size_bytes": 333
+  },
+  {
+    "file": "B_06_medium.json",
+    "group": "B_medium",
+    "variant": 6,
+    "seed": 48,
+    "size_bytes": 13613
+  },
+  {
+    "file": "C_06_large.json",
+    "group": "C_large",
+    "variant": 6,
+    "seed": 48,
+    "size_bytes": 1088626
+  },
+  {
+    "file": "D_06_stress.json",
+    "group": "D_stress",
+    "variant": 6,
+    "seed": 48,
+    "size_bytes": 75764
+  },
+  {
+    "file": "A_07_tiny.json",
+    "group": "A_tiny",
+    "variant": 7,
+    "seed": 49,
+    "size_bytes": 339
+  },
+  {
+    "file": "B_07_medium.json",
+    "group": "B_medium",
+    "variant": 7,
+    "seed": 49,
+    "size_bytes": 13615
+  },
+  {
+    "file": "C_07_large.json",
+    "group": "C_large",
+    "variant": 7,
+    "seed": 49,
+    "size_bytes": 1088417
+  },
+  {
+    "file": "D_07_stress.json",
+    "group": "D_stress",
+    "variant": 7,
+    "seed": 49,
+    "size_bytes": 75731
+  },
+  {
+    "file": "A_08_tiny.json",
+    "group": "A_tiny",
+    "variant": 8,
+    "seed": 50,
+    "size_bytes": 335
+  },
+  {
+    "file": "B_08_medium.json",
+    "group": "B_medium",
+    "variant": 8,
+    "seed": 50,
+    "size_bytes": 13611
+  },
+  {
+    "file": "C_08_large.json",
+    "group": "C_large",
+    "variant": 8,
+    "seed": 50,
+    "size_bytes": 1088425
+  },
+  {
+    "file": "D_08_stress.json",
+    "group": "D_stress",
+    "variant": 8,
+    "seed": 50,
+    "size_bytes": 75704
+  },
+  {
+    "file": "A_09_tiny.json",
+    "group": "A_tiny",
+    "variant": 9,
+    "seed": 51,
+    "size_bytes": 338
+  },
+  {
+    "file": "B_09_medium.json",
+    "group": "B_medium",
+    "variant": 9,
+    "seed": 51,
+    "size_bytes": 13614
+  },
+  {
+    "file": "C_09_large.json",
+    "group": "C_large",
+    "variant": 9,
+    "seed": 51,
+    "size_bytes": 1088742
+  },
+  {
+    "file": "D_09_stress.json",
+    "group": "D_stress",
+    "variant": 9,
+    "seed": 51,
+    "size_bytes": 75748
+  },
+  {
+    "file": "A_10_tiny.json",
+    "group": "A_tiny",
+    "variant": 10,
+    "seed": 52,
+    "size_bytes": 335
+  },
+  {
+    "file": "B_10_medium.json",
+    "group": "B_medium",
+    "variant": 10,
+    "seed": 52,
+    "size_bytes": 13615
+  },
+  {
+    "file": "C_10_large.json",
+    "group": "C_large",
+    "variant": 10,
+    "seed": 52,
+    "size_bytes": 1088353
+  },
+  {
+    "file": "D_10_stress.json",
+    "group": "D_stress",
+    "variant": 10,
+    "seed": 52,
+    "size_bytes": 75775
+  }
+]

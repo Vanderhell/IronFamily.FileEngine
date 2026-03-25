@@ -1,0 +1,13 @@
+# Code of Conduct
+
+This is an internal engineering repository.
+
+Expected collaboration standards:
+
+- Be technical, direct, and respectful.
+- Focus feedback on code, behavior, and outcomes.
+- Keep discussions evidence-based.
+- Do not hide regressions; report risks early.
+
+Escalate unresolved conflicts to maintainers.
+

@@ -1,0 +1,186 @@
+name: Cross-Machine Determinism CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  determinism-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Restore dependencies
+        run: |
+          cd libs/ironconfig-dotnet
+          dotnet restore
+
+      - name: Build BenchStabilized
+        run: |
+          cd tools/bench_profiles/BenchStabilized
+          dotnet build -c Release
+
+      - name: Run benchmarks
+        run: |
+          $repoRoot = Get-Location
+          & "$repoRoot\tools\bench_profiles\BenchStabilized\bin\Release\net8.0\BenchStabilized.exe"
+
+      - name: Run determinism CI (Windows)
+        run: |
+          $repoRoot = Get-Location
+          & "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -File "tools/gauntlet/run_determinism_ci.ps1"
+
+      - name: Upload Windows artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: determinism-windows
+          path: artifacts/bench/DETERMINISM_CI_REPORT.md
+          retention-days: 30
+
+      - name: Upload Windows profiles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: profiles-windows
+          path: artifacts/bench/profiles_bench.json
+          retention-days: 30
+
+  determinism-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Restore dependencies
+        run: |
+          cd libs/ironconfig-dotnet
+          dotnet restore
+
+      - name: Build BenchStabilized
+        run: |
+          cd tools/bench_profiles/BenchStabilized
+          dotnet build -c Release
+
+      - name: Run benchmarks
+        run: |
+          ./tools/bench_profiles/BenchStabilized/bin/Release/net8.0/BenchStabilized
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Run determinism CI (Linux)
+        run: |
+          chmod +x tools/gauntlet/run_determinism_ci.sh
+          bash tools/gauntlet/run_determinism_ci.sh
+
+      - name: Upload Linux artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: determinism-linux
+          path: artifacts/bench/DETERMINISM_CI_REPORT.md
+          retention-days: 30
+
+      - name: Upload Linux profiles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: profiles-linux
+          path: artifacts/bench/profiles_bench.json
+          retention-days: 30
+
+  compare-determinism:
+    needs: [determinism-windows, determinism-linux]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: profiles-windows
+          path: windows-bench
+
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: profiles-linux
+          path: linux-bench
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Compare determinism across platforms
+        run: |
+          set +e
+
+          WINDOWS_DATA="windows-bench/profiles_bench.json"
+          LINUX_DATA="linux-bench/profiles_bench.json"
+
+          if [ ! -f "$WINDOWS_DATA" ] || [ ! -f "$LINUX_DATA" ]; then
+            echo "Error: Missing benchmark data from one or both platforms"
+            exit 1
+          fi
+
+          echo "# Cross-Platform Determinism Comparison" > comparison_report.md
+          echo "" >> comparison_report.md
+          echo "**Windows vs Linux**: Comparing benchmark metrics" >> comparison_report.md
+          echo "" >> comparison_report.md
+
+          # Count matching entries
+          matching=0
+          total=0
+
+          windows_entries=$(jq -r '.[] | "\(.engine):\(.profile):\(.dataset)"' "$WINDOWS_DATA" | sort -u)
+
+          for entry in $windows_entries; do
+            engine=$(echo "$entry" | cut -d: -f1)
+            profile=$(echo "$entry" | cut -d: -f2)
+            dataset=$(echo "$entry" | cut -d: -f3)
+
+            win_size=$(jq -r ".[] | select(.engine==\"$engine\" and .profile==\"$profile\" and .dataset==\"$dataset\") | .size_bytes" "$WINDOWS_DATA" | head -1)
+            linux_size=$(jq -r ".[] | select(.engine==\"$engine\" and .profile==\"$profile\" and .dataset==\"$dataset\") | .size_bytes" "$LINUX_DATA" | head -1)
+
+            if [ "$win_size" = "$linux_size" ]; then
+              ((matching++))
+            else
+              echo "⚠️  **Mismatch**: $engine/$profile/$dataset (Windows: $win_size, Linux: $linux_size)" >> comparison_report.md
+            fi
+
+            ((total++))
+          done
+
+          echo "" >> comparison_report.md
+          echo "## Summary" >> comparison_report.md
+          echo "- **Total Benchmarks**: $total" >> comparison_report.md
+          echo "- **Matching**: $matching" >> comparison_report.md
+          echo "- **Mismatches**: $((total - matching))" >> comparison_report.md
+
+          if [ $matching -eq $total ]; then
+            echo "- **Status**: ✅ DETERMINISTIC" >> comparison_report.md
+            exit 0
+          else
+            echo "- **Status**: ❌ NON-DETERMINISTIC" >> comparison_report.md
+            exit 1
+          fi
+
+      - name: Upload comparison report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: determinism-comparison
+          path: comparison_report.md
+          retention-days: 30

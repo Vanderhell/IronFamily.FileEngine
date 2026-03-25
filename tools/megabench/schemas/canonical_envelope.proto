@@ -1,0 +1,8 @@
+syntax = "proto3";
+package megabench;
+
+option csharp_namespace = "MegaBench.Schemas.Protobuf";
+
+message CanonicalEnvelope {
+  bytes canonical_json = 1;
+}

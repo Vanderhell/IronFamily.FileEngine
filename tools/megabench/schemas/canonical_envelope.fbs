@@ -1,0 +1,7 @@
+namespace MegaBench.Schemas.FlatBuffers;
+
+table CanonicalEnvelope {
+  canonical_json:[ubyte];
+}
+
+root_type CanonicalEnvelope;

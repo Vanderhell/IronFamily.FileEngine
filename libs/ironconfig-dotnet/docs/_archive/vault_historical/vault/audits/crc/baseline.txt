@@ -1,0 +1,26 @@
+PHASE 0 - BASELINE SNAPSHOT
+==========================
+
+dotnet --info:
+- .NET SDK Version: 9.0.308
+- .NET Runtime Version: 9.0.11
+- OS: Windows 10.0.26100 (x64)
+- .NET 8.0.416 and 9.0.308 available
+
+dotnet test results:
+- Test Project: IronConfig.Tests.csproj
+- Passed: 32
+- Failed: 0
+- Skipped: 0
+- Duration: 424 ms
+- Status: ALL TESTS PASSING
+
+CLI status (dotnet run tools/ironconfigtool -- --help):
+- Tool: IronConfig Engine v0.1.0
+- Commands available: encode, encode-secure, decode, validate, dump, tojson, stats, bench
+- Legacy commands: pack, encrypt, decrypt
+- CRC option present: --crc on|off
+- VSP option present: --vsp off|auto|force
+- Status: READY FOR CRC IMPLEMENTATION
+
+Next: Phase 1 - Create Crc32Ieee helper class

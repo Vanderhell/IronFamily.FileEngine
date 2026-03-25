@@ -1,0 +1,21 @@
+{
+  "name": "tiny-config",
+  "version": "1.0.0",
+  "enabled": true,
+  "timeout_ms": 5000,
+  "servers": [
+    {
+      "host": "localhost",
+      "port": 8080
+    },
+    {
+      "host": "192.168.1.1",
+      "port": 9000
+    }
+  ],
+  "features": {
+    "logging": true,
+    "metrics": false,
+    "tracing": true
+  }
+}

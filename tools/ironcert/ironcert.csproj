@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
+    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig.ILog/IronConfig.ILog.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BLAKE3" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

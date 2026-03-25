@@ -1,0 +1,30 @@
+{
+  "size_bytes": {
+    "warn_pct": 1.0,
+    "fail_pct": 2.0
+  },
+  "encode_ms_median": {
+    "warn_pct": -5.0,
+    "fail_pct": -10.0
+  },
+  "decode_ms_median": {
+    "warn_pct": -5.0,
+    "fail_pct": -10.0
+  },
+  "validate_fast_ms_median": {
+    "warn_pct": -10.0,
+    "fail_pct": -20.0
+  },
+  "validate_strict_ms_median": {
+    "warn_pct": -10.0,
+    "fail_pct": -20.0
+  },
+  "managed_alloc_bytes_median": {
+    "warn_pct": 10.0,
+    "fail_pct": 20.0
+  },
+  "working_set_bytes_median": {
+    "warn_pct": 10.0,
+    "fail_pct": 20.0
+  }
+}

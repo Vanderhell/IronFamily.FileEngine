@@ -1,0 +1,29 @@
+name: MegaBench Determinism Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  determinism:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build MegaBench
+        run: dotnet build tools/megabench/MegaBench.csproj -c Release
+      - name: Run determinism-check
+        run: dotnet run --project tools/megabench/MegaBench.csproj -c Release -- determinism-check
+      - name: Upload determinism report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: determinism-report-${{ matrix.os }}
+          path: tools/artifacts/bench/megabench_determinism/

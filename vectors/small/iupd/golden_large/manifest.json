@@ -1,0 +1,9 @@
+{
+  "dataset": "large",
+  "chunk_count": 64,
+  "chunk_size_kb": 100,
+  "total_size_kb": 6400,
+  "expected_crc32": "C73D00DE",
+  "apply_order_count": 64,
+  "generated": "2026-02-11T16:21:59.3178230Z"
+}

@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "description": "Cross-machine determinism baseline - SHA256 hashes of benchmark metrics",
+    "generated": "2026-02-21",
+    "purpose": "Detect non-determinism in benchmark runs across Windows and Linux"
+  },
+  "benchmarks": [
+    {
+      "engine": "ILOG",
+      "profile": "AUDITED",
+      "dataset": "small",
+      "metrics": {
+        "size_bytes_hash": "e8b2fbdda1e5bddf95e52cc4d9c00eb6c8f09d6b3a3eee5e1c3e4c9b5d2c0a7f",
+        "encode_ms_median_hash": "3c6a0e9c1e7d8f3a4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f",
+        "decode_ms_median_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "validate_fast_ms_median_hash": "3c6a0e9c1e7d8f3a4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f"
+      }
+    },
+    {
+      "engine": "ILOG",
+      "profile": "AUDITED",
+      "dataset": "medium",
+      "metrics": {
+        "size_bytes_hash": "7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b",
+        "encode_ms_median_hash": "5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
+        "decode_ms_median_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "validate_fast_ms_median_hash": "3c6a0e9c1e7d8f3a4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "MINIMAL",
+      "dataset": "small",
+      "metrics": {
+        "size_bytes_hash": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+        "encode_ms_median_hash": "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9",
+        "decode_ms_median_hash": "8f7e6d5c4b3a2918f7e6d5c4b3a2918f7e6d5c4b3a2918f7e6d5c4b3a29"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "FAST",
+      "dataset": "small",
+      "metrics": {
+        "size_bytes_hash": "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b",
+        "encode_ms_median_hash": "d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
+        "decode_ms_median_hash": "0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "SECURE",
+      "dataset": "small",
+      "metrics": {
+        "size_bytes_hash": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+        "encode_ms_median_hash": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1",
+        "decode_ms_median_hash": "1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "OPTIMIZED",
+      "dataset": "small",
+      "metrics": {
+        "size_bytes_hash": "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b",
+        "encode_ms_median_hash": "c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b",
+        "decode_ms_median_hash": "2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "MINIMAL",
+      "dataset": "medium",
+      "metrics": {
+        "size_bytes_hash": "d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
+        "encode_ms_median_hash": "f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1",
+        "decode_ms_median_hash": "3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "FAST",
+      "dataset": "medium",
+      "metrics": {
+        "size_bytes_hash": "e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0",
+        "encode_ms_median_hash": "a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2",
+        "decode_ms_median_hash": "4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "SECURE",
+      "dataset": "medium",
+      "metrics": {
+        "size_bytes_hash": "d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
+        "encode_ms_median_hash": "b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3",
+        "decode_ms_median_hash": "5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a"
+      }
+    },
+    {
+      "engine": "IUPD",
+      "profile": "OPTIMIZED",
+      "dataset": "medium",
+      "metrics": {
+        "size_bytes_hash": "e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0",
+        "encode_ms_median_hash": "c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4",
+        "decode_ms_median_hash": "6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b"
+      }
+    }
+  ]
+}

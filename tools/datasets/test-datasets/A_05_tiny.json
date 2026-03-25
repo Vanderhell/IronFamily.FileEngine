@@ -1,0 +1,21 @@
+{
+  "name": "tiny-config-47",
+  "version": "2.6.6",
+  "enabled": true,
+  "timeout_ms": 13350,
+  "servers": [
+    {
+      "host": "127.0.0.1",
+      "port": 8964
+    },
+    {
+      "host": "192.168.1.1",
+      "port": 9792
+    }
+  ],
+  "features": {
+    "logging": true,
+    "metrics": true,
+    "tracing": false
+  }
+}

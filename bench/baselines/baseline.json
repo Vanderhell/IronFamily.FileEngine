@@ -1,0 +1,122 @@
+[
+  {
+    "engine": "ILOG",
+    "profile": "AUDITED",
+    "dataset": "small",
+    "size_bytes": 1368,
+    "encode_ms_median": 0.023,
+    "decode_ms_median": 0.0,
+    "validate_fast_ms_median": 1.0,
+    "validate_strict_ms_median": 0.1,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "ILOG",
+    "profile": "AUDITED",
+    "dataset": "medium",
+    "size_bytes": 102744,
+    "encode_ms_median": 0.120,
+    "decode_ms_median": 0.0,
+    "validate_fast_ms_median": 1541.0,
+    "validate_strict_ms_median": 0.656,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "MINIMAL",
+    "dataset": "small",
+    "size_bytes": 1153,
+    "encode_ms_median": 19.263,
+    "decode_ms_median": 1.629,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "FAST",
+    "dataset": "small",
+    "size_bytes": 419,
+    "encode_ms_median": 3.823,
+    "decode_ms_median": 2.121,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "SECURE",
+    "dataset": "small",
+    "size_bytes": 1153,
+    "encode_ms_median": 0.187,
+    "decode_ms_median": 0.004,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "OPTIMIZED",
+    "dataset": "small",
+    "size_bytes": 419,
+    "encode_ms_median": 0.291,
+    "decode_ms_median": 0.086,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "MINIMAL",
+    "dataset": "medium",
+    "size_bytes": 10369,
+    "encode_ms_median": 0.189,
+    "decode_ms_median": 0.012,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "FAST",
+    "dataset": "medium",
+    "size_bytes": 525,
+    "encode_ms_median": 0.299,
+    "decode_ms_median": 0.099,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "SECURE",
+    "dataset": "medium",
+    "size_bytes": 10369,
+    "encode_ms_median": 0.102,
+    "decode_ms_median": 0.019,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  },
+  {
+    "engine": "IUPD",
+    "profile": "OPTIMIZED",
+    "dataset": "medium",
+    "size_bytes": 525,
+    "encode_ms_median": 0.292,
+    "decode_ms_median": 0.113,
+    "validate_fast_ms_median": 0.0,
+    "validate_strict_ms_median": 0.0,
+    "managed_alloc_bytes_median": 0,
+    "working_set_bytes_median": 0
+  }
+]

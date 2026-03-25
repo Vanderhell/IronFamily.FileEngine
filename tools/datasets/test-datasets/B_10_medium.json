@@ -1,0 +1,623 @@
+{
+  "name": "medium-config-52",
+  "timestamp": "2026-01-09T21:32:20.3095982Z",
+  "cluster": {
+    "id": "cluster-52",
+    "region": "us-east-1",
+    "zone": "b",
+    "services": [
+      {
+        "name": "service-000",
+        "endpoint": "http://localhost:8000",
+        "version": "4.0.1",
+        "healthy": true,
+        "latency_ms": 686,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-001",
+        "endpoint": "http://localhost:8001",
+        "version": "1.2.5",
+        "healthy": false,
+        "latency_ms": 454,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-002",
+        "endpoint": "http://localhost:8002",
+        "version": "3.0.3",
+        "healthy": true,
+        "latency_ms": 386,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-003",
+        "endpoint": "http://localhost:8003",
+        "version": "3.7.2",
+        "healthy": false,
+        "latency_ms": 454,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-004",
+        "endpoint": "http://localhost:8004",
+        "version": "3.6.7",
+        "healthy": false,
+        "latency_ms": 798,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-005",
+        "endpoint": "http://localhost:8005",
+        "version": "4.6.9",
+        "healthy": true,
+        "latency_ms": 960,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-006",
+        "endpoint": "http://localhost:8006",
+        "version": "2.1.2",
+        "healthy": false,
+        "latency_ms": 801,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-007",
+        "endpoint": "http://localhost:8007",
+        "version": "1.1.8",
+        "healthy": false,
+        "latency_ms": 488,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-008",
+        "endpoint": "http://localhost:8008",
+        "version": "2.1.8",
+        "healthy": false,
+        "latency_ms": 330,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-009",
+        "endpoint": "http://localhost:8009",
+        "version": "3.0.2",
+        "healthy": false,
+        "latency_ms": 103,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-010",
+        "endpoint": "http://localhost:8010",
+        "version": "2.1.4",
+        "healthy": false,
+        "latency_ms": 610,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-011",
+        "endpoint": "http://localhost:8011",
+        "version": "2.2.9",
+        "healthy": true,
+        "latency_ms": 714,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-012",
+        "endpoint": "http://localhost:8012",
+        "version": "2.2.6",
+        "healthy": false,
+        "latency_ms": 73,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-013",
+        "endpoint": "http://localhost:8013",
+        "version": "2.8.0",
+        "healthy": true,
+        "latency_ms": 370,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-014",
+        "endpoint": "http://localhost:8014",
+        "version": "2.9.9",
+        "healthy": true,
+        "latency_ms": 33,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-015",
+        "endpoint": "http://localhost:8015",
+        "version": "3.7.6",
+        "healthy": true,
+        "latency_ms": 216,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-016",
+        "endpoint": "http://localhost:8016",
+        "version": "4.3.6",
+        "healthy": true,
+        "latency_ms": 513,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-017",
+        "endpoint": "http://localhost:8017",
+        "version": "1.7.1",
+        "healthy": true,
+        "latency_ms": 518,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-018",
+        "endpoint": "http://localhost:8018",
+        "version": "3.1.9",
+        "healthy": true,
+        "latency_ms": 132,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-019",
+        "endpoint": "http://localhost:8019",
+        "version": "1.5.4",
+        "healthy": false,
+        "latency_ms": 873,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-020",
+        "endpoint": "http://localhost:8020",
+        "version": "3.9.5",
+        "healthy": true,
+        "latency_ms": 696,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-021",
+        "endpoint": "http://localhost:8021",
+        "version": "3.1.8",
+        "healthy": false,
+        "latency_ms": 53,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-022",
+        "endpoint": "http://localhost:8022",
+        "version": "3.6.0",
+        "healthy": true,
+        "latency_ms": 770,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-023",
+        "endpoint": "http://localhost:8023",
+        "version": "4.6.8",
+        "healthy": true,
+        "latency_ms": 836,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-024",
+        "endpoint": "http://localhost:8024",
+        "version": "3.7.4",
+        "healthy": false,
+        "latency_ms": 646,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-025",
+        "endpoint": "http://localhost:8025",
+        "version": "1.9.4",
+        "healthy": false,
+        "latency_ms": 897,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-026",
+        "endpoint": "http://localhost:8026",
+        "version": "1.3.5",
+        "healthy": false,
+        "latency_ms": 482,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-027",
+        "endpoint": "http://localhost:8027",
+        "version": "1.8.8",
+        "healthy": false,
+        "latency_ms": 959,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-028",
+        "endpoint": "http://localhost:8028",
+        "version": "1.9.0",
+        "healthy": true,
+        "latency_ms": 961,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-029",
+        "endpoint": "http://localhost:8029",
+        "version": "1.1.3",
+        "healthy": true,
+        "latency_ms": 142,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-030",
+        "endpoint": "http://localhost:8030",
+        "version": "3.7.4",
+        "healthy": false,
+        "latency_ms": 168,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-031",
+        "endpoint": "http://localhost:8031",
+        "version": "1.5.3",
+        "healthy": false,
+        "latency_ms": 485,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-032",
+        "endpoint": "http://localhost:8032",
+        "version": "3.7.3",
+        "healthy": false,
+        "latency_ms": 32,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-033",
+        "endpoint": "http://localhost:8033",
+        "version": "1.1.0",
+        "healthy": false,
+        "latency_ms": 768,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-034",
+        "endpoint": "http://localhost:8034",
+        "version": "1.7.6",
+        "healthy": true,
+        "latency_ms": 776,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-035",
+        "endpoint": "http://localhost:8035",
+        "version": "4.6.7",
+        "healthy": false,
+        "latency_ms": 597,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-036",
+        "endpoint": "http://localhost:8036",
+        "version": "1.6.6",
+        "healthy": false,
+        "latency_ms": 392,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-037",
+        "endpoint": "http://localhost:8037",
+        "version": "2.8.2",
+        "healthy": true,
+        "latency_ms": 482,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-038",
+        "endpoint": "http://localhost:8038",
+        "version": "2.4.5",
+        "healthy": true,
+        "latency_ms": 360,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-039",
+        "endpoint": "http://localhost:8039",
+        "version": "2.5.9",
+        "healthy": true,
+        "latency_ms": 727,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-040",
+        "endpoint": "http://localhost:8040",
+        "version": "4.1.1",
+        "healthy": false,
+        "latency_ms": 965,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-041",
+        "endpoint": "http://localhost:8041",
+        "version": "3.0.4",
+        "healthy": false,
+        "latency_ms": 383,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-042",
+        "endpoint": "http://localhost:8042",
+        "version": "2.7.0",
+        "healthy": true,
+        "latency_ms": 419,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-043",
+        "endpoint": "http://localhost:8043",
+        "version": "4.0.9",
+        "healthy": true,
+        "latency_ms": 744,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-044",
+        "endpoint": "http://localhost:8044",
+        "version": "2.8.1",
+        "healthy": true,
+        "latency_ms": 308,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-045",
+        "endpoint": "http://localhost:8045",
+        "version": "3.2.0",
+        "healthy": true,
+        "latency_ms": 436,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-046",
+        "endpoint": "http://localhost:8046",
+        "version": "1.7.1",
+        "healthy": true,
+        "latency_ms": 692,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-047",
+        "endpoint": "http://localhost:8047",
+        "version": "4.5.6",
+        "healthy": false,
+        "latency_ms": 679,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-048",
+        "endpoint": "http://localhost:8048",
+        "version": "1.3.7",
+        "healthy": false,
+        "latency_ms": 148,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      },
+      {
+        "name": "service-049",
+        "endpoint": "http://localhost:8049",
+        "version": "3.3.9",
+        "healthy": false,
+        "latency_ms": 393,
+        "tags": [
+          "prod",
+          "api",
+          "v1"
+        ]
+      }
+    ]
+  },
+  "config": {
+    "log_level": "DEBUG",
+    "max_connections": 1816,
+    "timeout_sec": 26,
+    "retry_count": 1,
+    "features": {
+      "cache": true,
+      "compression": false,
+      "auth": true,
+      "tls": false
+    }
+  }
+}

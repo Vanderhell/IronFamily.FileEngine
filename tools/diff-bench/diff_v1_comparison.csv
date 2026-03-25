@@ -1,0 +1,13 @@
+caseId,changeKind,baseBytes,targetBytes,copyBytes,deltaV1Bytes,diffEngineBytes,copyRatio,deltaV1Ratio,diffEngineRatio,deltaV1Ok,diffEngineOk
+512K_sparse,sparse,524288,524288,524288,525408,524369,1,0000,1,0021,1,0002,True,True
+512K_header_ins,header_insert,524288,524544,524544,4464,350,1,0000,0,0085,0,0007,True,True
+512K_middle_ins,middle_insert,524288,524544,524544,4464,363,1,0000,0,0085,0,0007,True,True
+512K_append,append,524288,524544,524544,360,350,1,0000,0,0007,0,0007,True,True
+1MB_sparse,sparse,1048576,1048576,1048576,1050720,1048657,1,0000,1,0020,1,0001,True,True
+1MB_header_ins,header_insert,1048576,1048832,1048832,4464,350,1,0000,0,0043,0,0003,True,True
+1MB_middle_ins,middle_insert,1048576,1048832,1048832,4464,363,1,0000,0,0043,0,0003,True,True
+1MB_append,append,1048576,1048832,1048832,360,350,1,0000,0,0003,0,0003,True,True
+2MB_sparse,sparse,2097152,2097152,2097152,2101344,2097233,1,0000,1,0020,1,0000,True,True
+2MB_header_ins,header_insert,2097152,2097408,2097408,4464,350,1,0000,0,0021,0,0002,True,True
+2MB_middle_ins,middle_insert,2097152,2097408,2097408,4464,363,1,0000,0,0021,0,0002,True,True
+2MB_append,append,2097152,2097408,2097408,360,350,1,0000,0,0002,0,0002,True,True

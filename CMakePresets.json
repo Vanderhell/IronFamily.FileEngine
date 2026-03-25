@@ -1,0 +1,51 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "native-linux-debug",
+      "displayName": "Native Linux Debug",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/out/native/linux-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "native-windows-debug",
+      "displayName": "Native Windows Debug",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/out/native/windows-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "native-linux-debug",
+      "configurePreset": "native-linux-debug"
+    },
+    {
+      "name": "native-windows-debug",
+      "configurePreset": "native-windows-debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "native-linux-debug",
+      "configurePreset": "native-linux-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "native-windows-debug",
+      "configurePreset": "native-windows-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

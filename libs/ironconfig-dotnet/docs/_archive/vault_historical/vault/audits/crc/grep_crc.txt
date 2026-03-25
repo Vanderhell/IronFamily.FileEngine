@@ -1,0 +1,156 @@
+README.md:| CRC field defined in format | ❌ | ✅ |
+README.md:| CRC Field | CRC32 field defined by the format (reference libraries currently do not compute or validate CRC) |
+benchmarks/README.md:- **Configuration matrix**: 2 KeyId types (16, 32) × 3 VSP modes (off, auto, force) × 2 CRC modes (off, on) = 12 configurations
+benchmarks/README.md:| KeyId16 VSP=off CRC=on | Speed (tiny configs) | Minimal compression |
+benchmarks/README.md:| KeyId16 VSP=force CRC=off | Balance (medium configs) | Moderate speed hit |
+benchmarks/README.md:3. **Validate** the encoded ICFG (check structure, CRC if enabled)
+benchmarks/README.md:- **Relative comparison**: Useful for comparing KeyId/VSP/CRC trade-offs on the same machine
+benchmarks/README.md:ironcfg pack config.json config.icfg --keyid 16 --vsp force --crc on
+benchmarks/README.md:time ironcfg pack config.json config.icfg --keyid 16 --vsp force --crc on
+benchmarks/reports/GATE_ONEFILE_REPORT.md:| KeyId | VSP   | CRC | JSON (B) | BJV (B) | Ratio % | Encode (μs) | Open+Val (μs) | Decode (μs) | Status |
+benchmarks/reports/GATE_ONEFILE_REPORT.md:- **Fastest Encode:** 253 μs (KeyId=32, VSP=off, CRC=on)
+benchmarks/reports/GATE_ONEFILE_REPORT.md:- **Fastest Decode:** 390 μs (KeyId=16, VSP=auto, CRC=on)
+benchmarks/reports/GATE_ONEFILE_REPORT.md:- **Best Compression:** 32.0% (KeyId=16, all VSP/CRC combinations)
+docs/FORMAT.md:- Byte 4: Flags (bit 0: little-endian [always 1], bit 1: CRC present, bit 2: VSP present, bits 3–7: reserved [must be 0])
+docs/FORMAT.md:- CRC32 checksum field/flag (not computed/verified by current reference libraries)
+docs/FORMAT.md:| **CRC** | CRC32 field/flag defined in BJV (reference libraries currently do not compute/verify CRC) |
+docs/FORMAT.md:A simple object `{"name": "Alice", "age": 30}` encodes to approximately 60 bytes in BJV2 format (vs. 27 bytes raw JSON, but with deterministic binary representation, optional encryption (ICFS); CRC is defined but not implemented in the reference libraries).
+docs/LIMITS.md:- Use CRC for flash/network configs
+docs/SECURITY.md:2. **Validate after decryption**: After decrypting an ICFS file, validate the resulting BJV (check structure, magic, CRC if present)
+fuzz/README.md:- **golden_bjv2_crc.bjv** (157 bytes)
+fuzz/README.md:  - BJV v2 with CRC32, no VSP
+fuzz/README.md:- **golden_bjv4_crc.bjv** (171 bytes)
+fuzz/README.md:  - BJV v4 with CRC32, no VSP
+fuzz/README.md:- **repeat_bjv2_crc_vsp.bjv** (190 bytes)
+fuzz/README.md:  - BJV v2 with CRC32 and VSP enabled
+Binary file libs/bjv-c/build/Debug/bjv-c.lib matches
+Binary file libs/bjv-c/build/Debug/bjv-c.pdb matches
+Binary file libs/bjv-c/build/bjv-c.dir/Debug/bjv.obj matches
+libs/bjv-c/include/bjv.h:    uint32_t crc_off;
+libs/bjv-c/include/bjv.h:    bool has_crc;
+libs/bjv-c/src/bjv.c:    uint32_t crc_off = bytes[24] | ((uint32_t)bytes[25] << 8) |
+libs/bjv-c/src/bjv.c:    out_doc->crc_off = crc_off;
+libs/bjv-c/src/bjv.c:    out_doc->has_crc = (flags & 0x02) != 0;
+libs/bjv-c/tests/test_bjv_c.c:    /* Header: BJV2, flags=0x01 (little-endian only), no CRC, no VSP */
+libs/bjv-c/tests/test_bjv_c.c:        0x00, 0x00, 0x00, 0x00,       /* CRC offset: 0 */
+libs/bjv-c/tests/test_bjv_c.c:    assert_eq_int((int)doc.has_crc, 0, "No CRC");
+Binary file libs/bjv-cpp/build/Debug/bjv-core.lib matches
+Binary file libs/bjv-cpp/build/Debug/bjv-core.pdb matches
+Binary file libs/bjv-cpp/build/Debug/test_wrapper.pdb matches
+Binary file libs/bjv-cpp/build/bjv-core.dir/Debug/bjv.obj matches
+Binary file libs/bjv-cpp/build/test_wrapper.dir/Debug/vc143.pdb matches
+libs/bjv-dotnet/src/IronConfig/BjvDocument.cs:    public bool HasCrc { get; }
+libs/bjv-dotnet/src/IronConfig/BjvDocument.cs:    private BjvDocument(byte[] data, bool isBjv4, bool hasCrc, bool hasVsp, List<string> dict, List<string> vsp)
+libs/bjv-dotnet/src/IronConfig/BjvDocument.cs:        HasCrc = hasCrc;
+libs/bjv-dotnet/src/IronConfig/BjvDocument.cs:        bool hasCrc = (flags & 0x02) != 0;
+libs/bjv-dotnet/src/IronConfig/BjvDocument.cs:        return new BjvDocument(data, isBjv4, hasCrc, hasVsp, dict, vsp);
+libs/bjv-dotnet/src/IronConfig/BjvEncoder.cs:    private readonly bool _useCrc;
+libs/bjv-dotnet/src/IronConfig/BjvEncoder.cs:    public BjvEncoder(bool isBjv4 = false, bool useVsp = false, bool useCrc = false)
+libs/bjv-dotnet/src/IronConfig/BjvEncoder.cs:        _useCrc = useCrc;
+libs/bjv-dotnet/src/IronConfig/BjvEncoder.cs:        if (_useCrc) flags |= 0x02;
+libs/bjv-dotnet/src/IronConfig/BjvWriter.cs:    private bool _useCrc;
+libs/bjv-dotnet/src/IronConfig/BjvWriter.cs:    public BjvWriter(bool isBjv4 = false, bool useVsp = false, bool useCrc = false)
+libs/bjv-dotnet/src/IronConfig/BjvWriter.cs:        _useCrc = useCrc;
+libs/bjv-dotnet/src/IronConfig/README_NUGET_CORE.md:- **CRC Corruption Detection**: Built-in checksum verification
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:    public void EncodeBjv4_WithVspOff_CrcOff_NoException()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        // Regression test for keyId=32, VSP=off, CRC=off configuration crash
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        var encoder = new BjvEncoder(isBjv4: true, useVsp: false, useCrc: false);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:    public void EncodeBjv4_WithVspOff_CrcOn_NoException()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        // Regression test for keyId=32, VSP=off, CRC=on configuration crash
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        var encoder = new BjvEncoder(isBjv4: true, useVsp: false, useCrc: true);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        var encoder = new BjvEncoder(isBjv4: true, useVsp: false, useCrc: false);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:    public void EncodeBjv4_VspOff_CrcOff_DeepNested_NoException()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        // Regression test: Deep nesting with BJV4, VSP=off, CRC=off
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        var encoder = new BjvEncoder(isBjv4: true, useVsp: false, useCrc: false);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:    public void EncodeBjv4_VspOff_CrcOn_DeepNested_Validate_Success()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        // Regression test: Deep nesting with BJV4, VSP=off, CRC=on can be validated
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:        var encoder = new BjvEncoder(isBjv4: true, useVsp: false, useCrc: true);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("golden_bjv2_crc.bjv", 157)]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("golden_bjv4_crc.bjv", 171)]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("repeat_bjv2_crc_vsp.bjv", 190)]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("golden_bjv2_crc.bjv")]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("golden_bjv4_crc.bjv")]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("repeat_bjv2_crc_vsp.bjv")]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:        var path = Path.Combine(_goldenDir, "golden_bjv2_crc.bjv");
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:        Assert.True(doc.HasCrc);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:        var path = Path.Combine(_goldenDir, "golden_bjv4_crc.bjv");
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:        Assert.True(doc.HasCrc);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:        var path = Path.Combine(_goldenDir, "repeat_bjv2_crc_vsp.bjv");
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("golden_bjv2_crc.bjv", false, false, true)]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("golden_bjv4_crc.bjv", true, false, true)]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    [InlineData("repeat_bjv2_crc_vsp.bjv", false, true, true)]
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:    public void GoldenVector_CanonicalRoundtrip(string filename, bool isBjv4, bool useVsp, bool useCrc)
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:        var encoder = new BjvEncoder(isBjv4, useVsp, useCrc);
+release/RELEASE_NOTES_NUGET.md:✓ **CRC field/flag defined** (not computed/verified by current reference libraries)
+release/build_release.ps1:  * CRC corruption detection
+release/build_release.sh:  * CRC corruption detection
+Binary file release/tmp/linux/IronConfig.dll matches
+Binary file release/tmp/linux/ironconfigtool.dll matches
+spec/bjv_v2.md:[CRC32] (optional)
+spec/bjv_v2.md:| 24 | 4 | CRC Offset | Byte offset to CRC32 (or 0 if not present) |
+spec/bjv_v2.md:| 1 | CRC32 Present | If 1, CRC32 follows file data |
+spec/bjv_v2.md:## CRC32 [Optional]
+spec/bjv_v2.md:BJV v2 defines an optional CRC32 trailer:
+spec/bjv_v2.md:- If `flags.bit1 = 1`, the file layout reserves a CRC32 checksum at the offset indicated by the header's `crc_offset` field.
+spec/bjv_v2.md:- CRC32 algorithm: IEEE 802.3
+spec/bjv_v2.md:- Data covered: bytes `[0 .. crc_offset - 1]` (everything except the CRC itself)
+spec/bjv_v2.md:**Important:** The current reference implementations in this repository do **not** compute or validate CRC32. Do not rely on CRC for corruption detection unless you add CRC handling in your integration.
+spec/bjv_v2.md:- CRC-32 (IEEE 802.3)
+spec/bjx_v1.md:The encrypted payload is the entire, valid BJV file (including its header, dictionary, VSP, root value, and optional CRC32).
+spec/test_vectors.md:### golden_bjv2_crc.bjv (157 bytes)
+spec/test_vectors.md:- CRC32: Present (flags = 0x03)
+spec/test_vectors.md:- Header[4]: flags = 0x03 (canonical | CRC)
+spec/test_vectors.md:### golden_bjv4_crc.bjv (171 bytes)
+spec/test_vectors.md:- CRC32: Present
+spec/test_vectors.md:### repeat_bjv2_crc_vsp.bjv (190 bytes)
+spec/test_vectors.md:- CRC32: Present
+spec/test_vectors.md:- Header[4]: flags = 0x07 (canonical | CRC | VSP)
+spec/test_vectors.md:- Source: golden_bjv2_crc.bjv (encrypted)
+spec/test_vectors.md:- Decryption with password "test123" must yield golden_bjv2_crc.bjv bytes
+spec/test_vectors.md:2. **CRC Check**: CRC32 correct when present
+spec/test_vectors.md:- `golden_bjv2_crc.bjv`
+spec/test_vectors.md:- `golden_bjv4_crc.bjv`
+spec/test_vectors.md:- `repeat_bjv2_crc_vsp.bjv`
+tools/ironconfigtool/Program.cs:        bool useCrc = HasOption(args, "--crc", "on");
+tools/ironconfigtool/Program.cs:        var encoder = new BjvEncoder(isBjv4, useVsp, useCrc);
+tools/ironconfigtool/Program.cs:            Console.WriteLine($"CRC: {(doc.HasCrc ? "present" : "absent")}");
+tools/ironconfigtool/Program.cs:            throw new ArgumentException("bench: usage bench <input_dir> [--outdir <dir>] [--keyid 16|32] [--vsp off|auto|force] [--crc on|off]");
+tools/ironconfigtool/Program.cs:        bool useCrc = false;
+tools/ironconfigtool/Program.cs:            else if (args[i] == "--crc" && args[i + 1] == "on")
+tools/ironconfigtool/Program.cs:                useCrc = true;
+tools/ironconfigtool/Program.cs:            var encoder = new BjvEncoder(isBjv4, useVsp, useCrc);
+tools/ironconfigtool/Program.cs:        PrintBenchmarkTable(results, isBjv4, useVsp, useCrc);
+tools/ironconfigtool/Program.cs:                PrintBenchmarkTable(results, isBjv4, useVsp, useCrc, writer);
+tools/ironconfigtool/Program.cs:    static void PrintBenchmarkTable(List<BenchmarkResult> results, bool isBjv4, bool useVsp, bool useCrc, StreamWriter? writer = null)
+tools/ironconfigtool/Program.cs:        output($"# Benchmark Results (BJV{(isBjv4 ? "4" : "2")}, VSP={(useVsp ? "on" : "off")}, CRC={(useCrc ? "on" : "off")})");
+tools/ironconfigtool/Program.cs:        // Config matrix: keyId (16, 32) × VSP (off, auto, force) × CRC (off, on)
+tools/ironconfigtool/Program.cs:        var allConfigs = new List<(int keyId, string vsp, bool crc)>
+tools/ironconfigtool/Program.cs:            foreach (var (keyId, vspMode, crc) in configs)
+tools/ironconfigtool/Program.cs:                    var result = RunBench2(jsonFile, jsonText, jsonSize, group, isBjv4, useVsp, crc, runs, warmup, outDir,
+tools/ironconfigtool/Program.cs:                    Console.WriteLine($"  Error with config keyId={keyId} vsp={vspMode} crc={crc}: {ex.GetBaseException().Message}");
+tools/ironconfigtool/Program.cs:        bool isBjv4, bool useVsp, bool useCrc, int runs, int warmup, string outDir,
+tools/ironconfigtool/Program.cs:            Crc = useCrc ? "on" : "off",
+tools/ironconfigtool/Program.cs:            Console.WriteLine($"Config: BJV{debugKeyId}, VSP={debugVsp}, CRC={useCrc}");
+tools/ironconfigtool/Program.cs:        var encoder = new BjvEncoder(isBjv4, useVsp, useCrc);
+tools/ironconfigtool/Program.cs:            var _ = new BjvEncoder(isBjv4, useVsp, useCrc);
+tools/ironconfigtool/Program.cs:            var enc = new BjvEncoder(isBjv4, useVsp, useCrc);
+tools/ironconfigtool/Program.cs:        string configPath = $"keyid_{result.KeyId}_vsp_{result.Vsp}_crc_{result.Crc}";
+tools/ironconfigtool/Program.cs:            writer.WriteLine("FileName,Group,KeyId,VSP,CRC,JsonBytes,BjvBytes,RatioPercent,EncodeUs,OpenValidateUs,DecodeTojsonUs,LookupUs,LookupOps,BjxBytes,OverheadPercent,EncryptUs,DecryptUs,DecryptValidateUs");
+tools/ironconfigtool/Program.cs:                writer.WriteLine($"{r.FileName},{r.Group},{r.KeyId},{r.Vsp},{r.Crc},{r.JsonBytes},{r.BjvBytes},{r.RatioPercent:F2},{r.EncodeMs},{r.OpenValidateMs},{r.DecodeTojsonMs},{r.LookupMs},{r.LookupOps},{r.BjxBytes},{r.OverheadPercent:F2},{r.EncryptMs},{r.DecryptMs},{r.DecryptValidateMs}");
+tools/ironconfigtool/Program.cs:                writer.WriteLine("| File | KeyId | VSP | CRC | JSON (B) | BJV (B) | Ratio % | Encode (us) | Open+Val (us) | Decode (us) | Lookup (us) | Ops | BJX (B) | OH % | Enc (us) | Dec (us) | DecVal (us) |");
+tools/ironconfigtool/Program.cs:                    writer.WriteLine($"| {r.FileName,-20} | {r.KeyId} | {r.Vsp,-3} | {r.Crc,-3} | {r.JsonBytes,8} | {r.BjvBytes,7} | {r.RatioPercent,7:F1} | {r.EncodeMs,10} | {r.OpenValidateMs,13} | {r.DecodeTojsonMs,10} | {r.LookupMs,11} | {r.LookupOps,5} | {r.BjxBytes,7} | {r.OverheadPercent,4:F1} | {r.EncryptMs,7} | {r.DecryptMs,7} | {r.DecryptValidateMs,11} |");
+tools/ironconfigtool/Program.cs:                var dataByConfig = datasetGroup.GroupBy(r => new { r.KeyId, r.Vsp, r.Crc })
+tools/ironconfigtool/Program.cs:                    .ToDictionary(g => (g.Key.KeyId, g.Key.Vsp, g.Key.Crc == "on"));
+tools/ironconfigtool/Program.cs:                foreach (var (keyId, vspMode, crcBool) in allConfigs)
+tools/ironconfigtool/Program.cs:                    var crcStr = crcBool ? "on" : "off";
+tools/ironconfigtool/Program.cs:                    var configKey = (keyId, vspMode, crcBool);
+tools/ironconfigtool/Program.cs:                        writer.WriteLine($"- **BJV{keyId}, VSP={vspMode}, CRC={crcStr}**");
+tools/ironconfigtool/Program.cs:                        writer.WriteLine($"- **BJV{keyId}, VSP={vspMode}, CRC={crcStr}** - N/A (no data)");
+tools/ironconfigtool/Program.cs:            foreach (var (keyId, vspMode, crcBool) in allConfigs)
+tools/ironconfigtool/Program.cs:                var crcStr = crcBool ? "on" : "off";
+tools/ironconfigtool/Program.cs:                var configResults = results.Where(r => r.KeyId == keyId && r.Vsp == vspMode && r.Crc == crcStr).ToList();
+tools/ironconfigtool/Program.cs:                    writer.WriteLine($"- **BJV{keyId}, VSP={vspMode}, CRC={crcStr}**");
+tools/ironconfigtool/Program.cs:                    writer.WriteLine($"- **BJV{keyId}, VSP={vspMode}, CRC={crcStr}** - N/A (no data across all datasets)");
+tools/ironconfigtool/Program.cs:              --crc on|off                        Include CRC32
+tools/ironconfigtool/Program.cs:    public string Crc { get; set; } = "";
+tools/ironconfigtool/README_NUGET_TOOL.md:- Checks format validity and CRC

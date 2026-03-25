@@ -1,0 +1,87 @@
+# ICFX Stack Overflow Fix - Final Proof
+
+## Summary
+Fixed critical bugs in ICFX encoder that caused stack overflow when decoding nested structures (arrays of objects). All test cases now pass successfully.
+
+## Root Cause Analysis
+
+### Bug 1: Dictionary Not Shared with Nested Encoders
+**Symptom**: Objects inside arrays showed as empty `{}` when decoded
+**Root Cause**: When encoding array elements or object values, temporary IcfxEncoder instances were created for pre-encoding, but these did NOT have the dictionary populated. This caused keyId lookups to return -1, which when cast to uint becomes 0xFFFFFFFF, causing massive varuint offsets.
+**Fix**: Copy dictionary and VSP to temporary encoders so nested structures can properly look up dictionary keys.
+
+### Bug 2: Varuint Size Mismatch in Offset Calculation
+**Symptom**: Offset values were calculated incorrectly due to placeholder size estimates
+**Root Cause**: When encoding arrays and objects, offsets were calculated using placeholder zeros (all 1 byte) to estimate offset table size. However, actual offset values might be larger (2-5 bytes), shifting where element data actually starts.
+**Fix**: Iterate offset calculation until stable - measure actual size of encoded offsets and recalculate until convergent (usually 1-2 iterations).
+
+## Test Results
+
+### Test 1: Simple Object
+Command: packx simple_object.json simple_object_fixed.icfx && tojson simple_object_fixed.icfx
+Input:  {"x": 1}
+Output: {"x":1}
+Status: ✓ PASS
+
+### Test 2: Simple Array
+Command: packx simple_array.json simple_array_fixed.icfx && tojson simple_array_fixed.icfx
+Input:  [1, 2, 3]
+Output: [1,2,3]
+Status: ✓ PASS
+
+### Test 3: Small Object (Original Bug Case)
+Command: packx small.json small_fixed.icfx && tojson small_fixed.icfx
+Input:  {"name": "Alice", "age": 30}
+Output: {"age":30,"name":"Alice"}
+Status: ✓ PASS (previously caused stack overflow)
+
+### Test 4: Array of Objects (Critical Bug Case)
+Command: packx array_of_objects.json array_of_objects.icfx && tojson array_of_objects.icfx
+Input:  [{"x": 1}, {"x": 2}]
+Output: [{"x":1},{"x":2}]
+Status: ✓ PASS (previously showed [{}{}])
+
+### Test 5: Large Objects with Many Fields
+Command: packx test_large_offsets.json test_large_offsets_fixed.icfx && tojson test_large_offsets_fixed.icfx
+Input:  [{"a":"x","b":"y","c":"z","d":"w","e":"q"}, {"a":"x","b":"y","c":"z","d":"w","e":"q"}]
+Output: [{"a":"x","b":"y","c":"z","d":"w","e":"q"},{"a":"x","b":"y","c":"z","d":"w","e":"q"}]
+Status: ✓ PASS
+
+### Test 6: Medium Array (from Phase 2 debugging)
+Command: packx medium.json medium_fixed2.icfx && tojson medium_fixed2.icfx
+Input:  Array of 5 objects with id/name/active fields
+Output: [{"active":true,"id":1,"name":"User1"},{"active":false,"id":2,"name":"User2"},{"active":true,"id":3,"name":"User3"},{"active":true,"id":4,"name":"User4"},{"active":false,"id":5,"name":"User5"}]
+Status: ✓ PASS
+
+## Code Changes
+
+### IcfxEncoder.cs - VisitArray Method
+- Added iterative calculation of offset table size until convergence
+- Ensures offset encoding size matches the size assumed during offset calculation
+- Copies dictionary/VSP to temporary encoders for proper key lookup
+
+### IcfxEncoder.cs - VisitObject Method
+- Added iterative calculation of metadata size until convergence
+- Ensures keyId and offset varuint sizes are correctly accounted for
+- Copies dictionary/VSP to temporary encoders for proper key lookup
+
+### Key Fix Details
+1. **Shared Dictionary**: elemEncoder._dictionary.AddRange(_encoder._dictionary) and elemEncoder._vsp.AddRange(_encoder._vsp)
+2. **Iterative Convergence**: do-while loop recalculates offsets until the total offset table size stabilizes
+3. **No Cycle Detection**: Removed hash-based cycle detection (was false positive), kept depth guard (MAX_DEPTH=256)
+
+## Verification
+
+✓ All test cases pass without stack overflow
+✓ Objects properly nested in arrays decode correctly
+✓ Large objects with many fields encode/decode correctly
+✓ Deterministic canonical output maintained
+✓ Zero-copy architecture preserved (no degradation to copy-based parsing)
+✓ Build succeeds with only minor bitwise operator warnings (non-critical)
+
+## Status: COMPLETE
+All phase 6 requirements met:
+- ✓ Tests run successfully
+- ✓ Stack overflow fixed
+- ✓ Objects in arrays now decode correctly
+- ✓ FINAL_PROOF.txt created with commands and results

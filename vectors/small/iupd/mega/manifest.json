@@ -1,0 +1,9 @@
+{
+  "dataset": "mega",
+  "chunk_count": 512,
+  "chunk_size_kb": 10,
+  "total_size_kb": 5120,
+  "expected_crc32": "1D7E569E",
+  "apply_order_count": 512,
+  "generated": "2026-02-11T16:21:59.3841996Z"
+}

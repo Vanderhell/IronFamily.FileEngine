@@ -1,0 +1,9 @@
+{
+  "dataset": "small",
+  "chunk_count": 2,
+  "chunk_size_kb": 10,
+  "total_size_kb": 20,
+  "expected_crc32": "FE8EA5DC",
+  "apply_order_count": 2,
+  "generated": "2026-02-11T16:21:59.1591729Z"
+}

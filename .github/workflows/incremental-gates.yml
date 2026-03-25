@@ -1,0 +1,149 @@
+name: INCREMENTAL Profile Gates
+
+on:
+  push:
+    branches: [ main, develop, "feat/**" ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  dotnet-incremental-tests:
+    name: .NET INCREMENTAL Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore libs/ironconfig-dotnet
+
+    - name: Build .NET
+      run: dotnet build libs/ironconfig-dotnet -c Release --no-restore
+
+    - name: Run INCREMENTAL Tests
+      run: |
+        dotnet test libs/ironconfig-dotnet -c Release --no-build \
+          --logger "console;verbosity=normal" \
+          --filter "(FullyQualifiedName~IupdIncrementalApply)|(FullyQualifiedName~TestIncrementalProfile)"
+      continue-on-error: false
+
+  native-incremental-windows:
+    name: Native C INCREMENTAL Tests (Windows)
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure Native Build
+      run: |
+        cmake -S native -B out\native\windows-debug `
+          -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Build Native
+      run: cmake --build out\native\windows-debug --config Debug
+
+    - name: Run test_incremental_metadata
+      run: |
+        .\out\native\windows-debug\tests\Debug\test_incremental_metadata.exe
+      continue-on-error: false
+
+    - name: Run test_incremental_vectors
+      run: |
+        .\out\native\windows-debug\tests\Debug\test_incremental_vectors.exe
+      continue-on-error: false
+
+    - name: Run test_iupd_vectors (Signature Verification)
+      run: |
+        .\out\native\windows-debug\tests\Debug\test_iupd_vectors.exe
+      continue-on-error: false
+
+    - name: Upload Build Artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: native-incremental-windows
+        path: out/native/windows-debug/
+
+  native-incremental-linux:
+    name: Native C INCREMENTAL Tests (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install build tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake make build-essential
+
+    - name: Configure Native Build
+      run: |
+        cmake -S native -B out/native/linux-debug \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+    - name: Build Native
+      run: cmake --build out/native/linux-debug
+
+    - name: Run test_incremental_metadata
+      run: |
+        ./out/native/linux-debug/tests/test_incremental_metadata
+      continue-on-error: false
+
+    - name: Run test_incremental_vectors
+      run: |
+        ./out/native/linux-debug/tests/test_incremental_vectors
+      continue-on-error: false
+
+    - name: Run test_iupd_vectors (Signature Verification)
+      run: |
+        ./out/native/linux-debug/tests/test_iupd_vectors
+      continue-on-error: false
+
+    - name: Upload Build Artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: native-incremental-linux
+        path: out/native/linux-debug/
+
+  incremental-gates-summary:
+    name: INCREMENTAL Gates Summary
+    runs-on: ubuntu-latest
+    needs: [ dotnet-incremental-tests, native-incremental-windows, native-incremental-linux ]
+    if: always()
+
+    steps:
+    - name: Check Results
+      run: |
+        echo "=== INCREMENTAL Profile CI Gates ==="
+        echo ".NET INCREMENTAL Tests: ${{ needs.dotnet-incremental-tests.result }}"
+        echo "Native INCREMENTAL Windows: ${{ needs.native-incremental-windows.result }}"
+        echo "Native INCREMENTAL Linux: ${{ needs.native-incremental-linux.result }}"
+
+        if [[ "${{ needs.dotnet-incremental-tests.result }}" != "success" ]]; then
+          echo "FAILED: .NET INCREMENTAL tests did not pass"
+          exit 1
+        fi
+
+        if [[ "${{ needs.native-incremental-windows.result }}" != "success" ]]; then
+          echo "FAILED: Native C INCREMENTAL tests (Windows) did not pass"
+          exit 1
+        fi
+
+        if [[ "${{ needs.native-incremental-linux.result }}" != "success" ]]; then
+          echo "WARNING: Native C INCREMENTAL tests (Linux) did not pass"
+          echo "Linux INCREMENTAL support is currently EXPERIMENTAL"
+          echo "Windows INCREMENTAL gates passed - CI will pass"
+        fi
+
+        echo "✓ INCREMENTAL Profile CI Gates PASSED"

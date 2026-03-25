@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>IronConfig</AssemblyName>
+    <RootNamespace>IronConfig</RootNamespace>
+    <!-- Disable default includes to use explicit ItemGroup compile control -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- NuGet Package Configuration -->
+    <PackageId>IronCfg.Core</PackageId>
+    <Title>IRONCFG Core - Flagship</Title>
+    <Description>Deterministic binary configuration format (.icfg) with safe parsing, validation, and schema support. Flagship IronCfg format.</Description>
+    <PackageReadmeFile>README_NUGET_CORE.md</PackageReadmeFile>
+    <IsPackable>true</IsPackable>
+	<NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../IronConfig.Common/IronConfig.Common.csproj" />
+    <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
+    <PackageReference Include="BLAKE3" Version="2.0.0" />
+    <None Include="README_NUGET_CORE.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Flagship: Always include IronCfg -->
+  <ItemGroup>
+    <Compile Include="IronCfg/**/*.cs" />
+    <Compile Include="Crc32Ieee.cs" />
+    <Compile Include="Blake3Ieee.cs" />
+    <Compile Include="IronEdgeError.cs" />
+  </ItemGroup>
+
+  <!-- New Engines -->
+  <ItemGroup>
+    <Compile Include="Iupd/**/*.cs" />
+    <Compile Include="Crypto/**/*.cs" />
+    <Compile Include="DiffEngine/**/*.cs" />
+  </ItemGroup>
+
+  <!-- Legacy engines: Only compile when IRONCONFIG_LEGACY is defined -->
+  <ItemGroup Condition="'$(IRONCONFIG_LEGACY)' == 'true'">
+    <Compile Include="legacy/**/*.cs" />
+  </ItemGroup>
+
+</Project>

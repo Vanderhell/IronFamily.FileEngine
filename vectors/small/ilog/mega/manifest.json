@@ -1,0 +1,10 @@
+{
+  "engine": "ILOG",
+  "version": 1,
+  "dataset": "mega",
+  "expected_fast": "PASS",
+  "expected_strict": "PASS",
+  "expected_events": 1,
+  "expected_crc32": "8b5bb30b",
+  "expected_blake3": "3efbd9223db34104062e5f00e6117ffb92154f41cb9b0baa375423e2dae17d84"
+}

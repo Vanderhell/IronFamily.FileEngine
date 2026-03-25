@@ -1,0 +1,68 @@
+{
+  "timestamp": "2026-01-16T17:02:24.5299821Z",
+  "engine": "ironcfg",
+  "methodology": {
+    "warmup_iterations": "5",
+    "measure_iterations": "10",
+    "datasets": "small, medium, large, mega (nocrc)",
+    "environment": ".NET 8.0"
+  },
+  "datasets": [
+    {
+      "name": "small",
+      "size_bytes": 155,
+      "metrics": {
+        "open_latency_ms": 0,
+        "validate_fast_mb_s": 153.97866566975912,
+        "validate_strict_mb_s": 48.946860610254554,
+        "encode_mb_s": 119.20928955078125,
+        "decode_mb_s": 335.9534523703835
+      }
+    },
+    {
+      "name": "medium",
+      "size_bytes": 630,
+      "metrics": {
+        "open_latency_ms": 0,
+        "validate_fast_mb_s": 1465.4019983803355,
+        "validate_strict_mb_s": 556.3100179036459,
+        "encode_mb_s": 125.48346268503289,
+        "decode_mb_s": 1430.5114746093752
+      }
+    },
+    {
+      "name": "large",
+      "size_bytes": 6883,
+      "metrics": {
+        "open_latency_ms": 0,
+        "validate_fast_mb_s": 15628.905523390998,
+        "validate_strict_mb_s": 2723.7096762756096,
+        "encode_mb_s": 113.53265671502977,
+        "decode_mb_s": 15628.905523390998
+      }
+    },
+    {
+      "name": "mega",
+      "size_bytes": 81501,
+      "metrics": {
+        "open_latency_ms": 0,
+        "validate_fast_mb_s": 194313.52615356445,
+        "validate_strict_mb_s": 74024.20043945312,
+        "encode_mb_s": 78.17002593493852,
+        "decode_mb_s": 185060.50109863284
+      }
+    }
+  ],
+  "aggregates": {
+    "open_latency_ms_p50": 0,
+    "open_latency_ms_p95": 0,
+    "validate_fast_mb_s_p50": 15628.905523390998,
+    "validate_fast_mb_s_p95": 194313.52615356445,
+    "validate_strict_mb_s_p50": 2723.7096762756096,
+    "validate_strict_mb_s_p95": 74024.20043945312,
+    "encode_mb_s_p50": 119.20928955078125,
+    "encode_mb_s_p95": 125.48346268503289,
+    "decode_mb_s_p50": 15628.905523390998,
+    "decode_mb_s_p95": 185060.50109863284
+  }
+}

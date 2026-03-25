@@ -1,0 +1,189 @@
+On branch chore/strict-repo-layout
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .gitignore
+	deleted:    _gen/GenerateVectors.cs
+	deleted:    _gen/GenerateVectors.csproj
+	deleted:    _icfx_debug/FINAL_PROOF.txt
+	deleted:    _icfx_debug/array_of_objects.icfx
+	deleted:    _icfx_debug/array_of_objects.json
+	deleted:    _icfx_debug/debug_test.cs
+	deleted:    _icfx_debug/medium.icfx
+	deleted:    _icfx_debug/medium.json
+	deleted:    _icfx_debug/medium_fixed.icfx
+	deleted:    _icfx_debug/medium_fixed2.icfx
+	deleted:    _icfx_debug/simple_array.icfx
+	deleted:    _icfx_debug/simple_array.json
+	deleted:    _icfx_debug/simple_array_fixed.icfx
+	deleted:    _icfx_debug/simple_object.icfx
+	deleted:    _icfx_debug/simple_object.json
+	deleted:    _icfx_debug/simple_object_fixed.icfx
+	deleted:    _icfx_debug/small.icfx
+	deleted:    _icfx_debug/small.json
+	deleted:    _icfx_debug/small_fixed.icfx
+	deleted:    _icfx_debug/test_large_offsets.icfx
+	deleted:    _icfx_debug/test_large_offsets.json
+	deleted:    _icfx_debug/test_large_offsets_fixed.icfx
+	deleted:    fuzz/CMakeLists.txt
+	deleted:    fuzz/README.md
+	deleted:    fuzz/fuzz-bjv/corpus/almost_header.bin
+	deleted:    fuzz/fuzz-bjv/corpus/bad_magic.bin
+	deleted:    fuzz/fuzz-bjv/corpus/duplicate_dict_keys.bin
+	deleted:    fuzz/fuzz-bjv/corpus/empty.bin
+	deleted:    fuzz/fuzz-bjv/corpus/golden_bjv2_crc.bjv
+	deleted:    fuzz/fuzz-bjv/corpus/golden_bjv4_crc.bjv
+	deleted:    fuzz/fuzz-bjv/corpus/huge_array_count.bin
+	deleted:    fuzz/fuzz-bjv/corpus/non_minimal_varint.bin
+	deleted:    fuzz/fuzz-bjv/corpus/offset_overflow.bin
+	deleted:    fuzz/fuzz-bjv/corpus/repeat_bjv2_crc_vsp.bjv
+	deleted:    fuzz/fuzz-bjv/corpus/single_byte.bin
+	deleted:    fuzz/fuzz-bjv/corpus/small_filesize.bin
+	deleted:    fuzz/fuzz-bjv/corpus/truncated_header.bin
+	deleted:    fuzz/fuzz-bjv/fuzz_bjv_open.c
+	deleted:    generate-icf2-vectors.csx
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CMakeCCompilerId.obj
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.exe.recipe
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CL.read.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CL.write.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/Cl.items.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CompilerIdC.lastbuildstate
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.command.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.read.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.secondary.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.write.1.tlog
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/VCTargetsPath/x64/Debug/VCTargetsPath.recipe
+	deleted:    libs/bjv-c/build/CMakeFiles/4.1.0/VCTargetsPath/x64/Debug/VCTargetsPath.tlog/VCTargetsPath.lastbuildstate
+	deleted:    libs/bjv-c/build/Debug/bjv-c.lib
+	deleted:    libs/bjv-c/build/Debug/bjv-c.pdb
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.lib.recipe
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/CL.read.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/CL.write.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/Cl.items.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/Lib-link.read.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/Lib-link.write.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/Lib.command.1.tlog
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv-c.tlog/bjv-c.lastbuildstate
+	deleted:    libs/bjv-c/build/bjv-c.dir/Debug/bjv.obj
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/test_bjv_c.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/test_bjv_c.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/test_bjv_c.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/test_bjv_c.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/test_bjv_c.tlog/test_bjv_c.lastbuildstate
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/test_bjv_c.tlog/unsuccessfulbuild
+	deleted:    libs/bjv-c/build/test_bjv_c.dir/Debug/vc143.pdb
+	deleted:    libs/bjv-c/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.recipe
+	deleted:    libs/bjv-c/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-c/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-c/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-c/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/ZERO_CHECK.lastbuildstate
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CMakeCCompilerId.obj
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.exe.recipe
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CL.read.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CL.write.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/Cl.items.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/CompilerIdC.lastbuildstate
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.command.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.read.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.secondary.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdC/Debug/CompilerIdC.tlog/link.write.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CMakeCXXCompilerId.obj
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.exe.recipe
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.read.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.write.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/Cl.items.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CompilerIdCXX.lastbuildstate
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.command.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.read.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.secondary.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.write.1.tlog
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/VCTargetsPath/x64/Debug/VCTargetsPath.recipe
+	deleted:    libs/bjv-cpp/build/CMakeFiles/4.1.0/VCTargetsPath/x64/Debug/VCTargetsPath.tlog/VCTargetsPath.lastbuildstate
+	deleted:    libs/bjv-cpp/build/Debug/bjv-core.lib
+	deleted:    libs/bjv-cpp/build/Debug/bjv-core.pdb
+	deleted:    libs/bjv-cpp/build/Debug/test_wrapper.exe
+	deleted:    libs/bjv-cpp/build/Debug/test_wrapper.pdb
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.lib.recipe
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/CL.read.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/CL.write.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/Cl.items.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/Lib-link.read.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/Lib-link.write.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/Lib.command.1.tlog
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv-core.tlog/bjv-core.lastbuildstate
+	deleted:    libs/bjv-cpp/build/bjv-core.dir/Debug/bjv.obj
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.exe.recipe
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.ilk
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.obj
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/CL.command.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/CL.read.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/CL.write.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/Cl.items.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/link.command.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/link.read.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/link.secondary.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/link.write.1.tlog
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.tlog/test_wrapper.lastbuildstate
+	deleted:    libs/bjv-cpp/build/test_wrapper.dir/Debug/vc143.pdb
+	deleted:    libs/bjv-cpp/build/x64/Debug/ALL_BUILD/ALL_BUILD.recipe
+	deleted:    libs/bjv-cpp/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/ALL_BUILD.lastbuildstate
+	deleted:    libs/bjv-cpp/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-cpp/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-cpp/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-cpp/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.recipe
+	deleted:    libs/bjv-cpp/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.command.1.tlog
+	deleted:    libs/bjv-cpp/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.read.1.tlog
+	deleted:    libs/bjv-cpp/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.write.1.tlog
+	deleted:    libs/bjv-cpp/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/ZERO_CHECK.lastbuildstate
+	deleted:    tools/datasets/bin/Debug/net8.0/dataset-gen.deps.json
+	deleted:    tools/datasets/bin/Debug/net8.0/dataset-gen.dll
+	deleted:    tools/datasets/bin/Debug/net8.0/dataset-gen.exe
+	deleted:    tools/datasets/bin/Debug/net8.0/dataset-gen.pdb
+	deleted:    tools/datasets/bin/Debug/net8.0/dataset-gen.runtimeconfig.json
+	deleted:    tools/datasets/obj/DatasetGenerator.csproj.nuget.dgspec.json
+	deleted:    tools/datasets/obj/DatasetGenerator.csproj.nuget.g.props
+	deleted:    tools/datasets/obj/DatasetGenerator.csproj.nuget.g.targets
+	deleted:    tools/datasets/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.AssemblyInfo.cs
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.AssemblyInfoInputs.cache
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.GeneratedMSBuildEditorConfig.editorconfig
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.assets.cache
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.csproj.CoreCompileInputs.cache
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.csproj.FileListAbsolute.txt
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.genruntimeconfig.cache
+	deleted:    tools/datasets/obj/Debug/net8.0/DatasetGenerator.sourcelink.json
+	deleted:    tools/datasets/obj/Debug/net8.0/apphost.exe
+	deleted:    tools/datasets/obj/Debug/net8.0/dataset-gen.dll
+	deleted:    tools/datasets/obj/Debug/net8.0/dataset-gen.pdb
+	deleted:    tools/datasets/obj/Debug/net8.0/ref/dataset-gen.dll
+	deleted:    tools/datasets/obj/Debug/net8.0/refint/dataset-gen.dll
+	deleted:    tools/datasets/obj/project.nuget.cache
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	CLAUDE_ROADMAP.md
+	FAMILY_STANDARD.md
+	docs/family/
+	docs/tools/
+	libs/bjv-dotnet/src/IronConfig/Engines/
+	libs/bjv-dotnet/tests/IronConfig.Tests/FamilyDetectTests.cs
+	libs/bjv-dotnet/tests/IronConfig.Tests/FamilyValidateFastStrictTests.cs
+	scripts/
+	vectors/small/manifest.json
+	tools/ironcert/
+
+no changes added to commit (use "git add" and/or "git commit -a")

@@ -1,0 +1,21 @@
+{
+  "name": "tiny-config-51",
+  "version": "2.7.4",
+  "enabled": false,
+  "timeout_ms": 7722,
+  "servers": [
+    {
+      "host": "localhost",
+      "port": 8756
+    },
+    {
+      "host": "192.168.1.1",
+      "port": 9287
+    }
+  ],
+  "features": {
+    "logging": false,
+    "metrics": true,
+    "tracing": false
+  }
+}

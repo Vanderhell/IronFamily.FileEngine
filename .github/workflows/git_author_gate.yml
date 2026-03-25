@@ -1,0 +1,50 @@
+name: Git Author Gate
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+
+jobs:
+  git_author_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Scan commits for AI authors
+        run: |
+          echo "Scanning last 200 commits for AI author patterns..."
+          git log -n 200 --format="%H|%an|%ae|%cn|%ce|%s" | tee commit_log.txt
+
+          # Check for AI author patterns
+          if grep -Eiq '(claude|chatgpt|openai)\b' commit_log.txt; then
+            echo "❌ ERROR: AI author detected in commit history (Claude, ChatGPT, or OpenAI)"
+            echo ""
+            echo "Detected commits:"
+            grep -Ei '(claude|chatgpt|openai)\b' commit_log.txt || true
+            exit 1
+          else
+            echo "✅ All commits have human authors"
+          fi
+
+      - name: Check for AI coauthors
+        run: |
+          echo "Scanning commits for AI CoAuthor lines..."
+          git log -n 200 --format="%B" | tee commit_messages.txt
+
+          if grep -Eiq 'co-authored-by:.*(claude|chatgpt|openai)\b' commit_messages.txt; then
+            echo "❌ ERROR: AI CoAuthor detected in commit messages"
+            exit 1
+          else
+            echo "✅ No AI CoAuthor lines found"
+          fi

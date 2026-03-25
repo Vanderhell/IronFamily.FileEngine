@@ -1,0 +1,21 @@
+{
+  "name": "tiny-config-50",
+  "version": "4.4.7",
+  "enabled": false,
+  "timeout_ms": 23629,
+  "servers": [
+    {
+      "host": "localhost",
+      "port": 8308
+    },
+    {
+      "host": "10.0.0.1",
+      "port": 9163
+    }
+  ],
+  "features": {
+    "logging": true,
+    "metrics": false,
+    "tracing": true
+  }
+}

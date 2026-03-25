@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+an="$(git config user.name || true)"
+ae="$(git config user.email || true)"
+
+# Block AI as configured identity
+if echo "$an $ae" | grep -Eiq '\b(claude|chatgpt|openai|ai)\b'; then
+  echo "ERROR: AI author identity is forbidden by policy." >&2
+  exit 1
+fi
+
+exit 0

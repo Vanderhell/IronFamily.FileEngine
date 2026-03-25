@@ -1,0 +1,33 @@
+name: MegaBench Sanity Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  sanity:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build MegaBench
+        run: dotnet build tools/megabench/MegaBench.csproj -c Release
+      - name: gen-all --validate strict
+        run: dotnet run --project tools/megabench/MegaBench.csproj -c Release -- gen-all --validate strict
+      - name: bench-sanity --ci-mode
+        run: dotnet run --project tools/megabench/MegaBench.csproj -c Release -- bench-sanity --ci-mode
+      - name: Upload sanity artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sanity-artifacts-${{ matrix.os }}
+          path: |
+            tools/artifacts/bench/megabench_datasets/
+            tools/artifacts/bench/megabench_metrics/

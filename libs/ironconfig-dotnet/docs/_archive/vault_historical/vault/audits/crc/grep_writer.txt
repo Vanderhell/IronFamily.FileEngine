@@ -1,0 +1,45 @@
+libs/bjv-dotnet/src/IronConfig/BjvWriter.cs:9:/// BJV Writer - encodes values to binary BJV format
+libs/bjv-dotnet/src/IronConfig/BjvWriter.cs:11:public class BjvWriter
+libs/bjv-dotnet/src/IronConfig/BjvWriter.cs:20:    public BjvWriter(bool isBjv4 = false, bool useVsp = false, bool useCrc = false)
+release/RELEASE_NOTES_NUGET.md:15:- `BjvReader/BjvWriter` - Format I/O
+Binary file release/tmp/linux/IronConfig.dll matches
+Binary file release/tmp/linux/ironconfigtool matches
+Binary file release/tmp/linux/ironconfigtool.dll matches
+Binary file tools/datasets/bin/Debug/net8.0/dataset-gen.exe matches
+Binary file tools/datasets/bin/Debug/net8.0/dataset-gen.pdb matches
+Binary file tools/datasets/obj/Debug/net8.0/apphost.exe matches
+Binary file tools/datasets/obj/Debug/net8.0/dataset-gen.pdb matches
+tools/ironconfigtool/Program.cs:483:            using (var writer = new StreamWriter(outputPath))
+tools/ironconfigtool/Program.cs:485:                PrintBenchmarkTable(results, isBjv4, useVsp, useCrc, writer);
+tools/ironconfigtool/Program.cs:491:    static void PrintBenchmarkTable(List<BenchmarkResult> results, bool isBjv4, bool useVsp, bool useCrc, StreamWriter? writer = null)
+tools/ironconfigtool/Program.cs:496:            writer?.WriteLine(line);
+tools/ironconfigtool/Program.cs:1093:        using (var writer = new StreamWriter(path))
+tools/ironconfigtool/Program.cs:1095:            writer.WriteLine("FileName,Group,KeyId,VSP,CRC,JsonBytes,BjvBytes,RatioPercent,EncodeUs,OpenValidateUs,DecodeTojsonUs,LookupUs,LookupOps,BjxBytes,OverheadPercent,EncryptUs,DecryptUs,DecryptValidateUs");
+tools/ironconfigtool/Program.cs:1099:                writer.WriteLine($"{r.FileName},{r.Group},{r.KeyId},{r.Vsp},{r.Crc},{r.JsonBytes},{r.BjvBytes},{r.RatioPercent:F2},{r.EncodeMs},{r.OpenValidateMs},{r.DecodeTojsonMs},{r.LookupMs},{r.LookupOps},{r.BjxBytes},{r.OverheadPercent:F2},{r.EncryptMs},{r.DecryptMs},{r.DecryptValidateMs}");
+tools/ironconfigtool/Program.cs:1101:            writer.Flush();
+tools/ironconfigtool/Program.cs:1107:        using (var writer = new StreamWriter(path))
+tools/ironconfigtool/Program.cs:1109:            writer.WriteLine("# MEGA BENCH Results - Stage 11");
+tools/ironconfigtool/Program.cs:1110:            writer.WriteLine();
+tools/ironconfigtool/Program.cs:1116:                writer.WriteLine($"## {group.Key}");
+tools/ironconfigtool/Program.cs:1117:                writer.WriteLine();
+tools/ironconfigtool/Program.cs:1118:                writer.WriteLine("| File | KeyId | VSP | CRC | JSON (B) | BJV (B) | Ratio % | Encode (us) | Open+Val (us) | Decode (us) | Lookup (us) | Ops | BJX (B) | OH % | Enc (us) | Dec (us) | DecVal (us) |");
+tools/ironconfigtool/Program.cs:1119:                writer.WriteLine("|------|-------|-----|-----|----------|---------|---------|------------|---------------|------------|-------------|-----|---------|------|---------|---------|-------------|");
+tools/ironconfigtool/Program.cs:1123:                    writer.WriteLine($"| {r.FileName,-20} | {r.KeyId} | {r.Vsp,-3} | {r.Crc,-3} | {r.JsonBytes,8} | {r.BjvBytes,7} | {r.RatioPercent,7:F1} | {r.EncodeMs,10} | {r.OpenValidateMs,13} | {r.DecodeTojsonMs,10} | {r.LookupMs,11} | {r.LookupOps,5} | {r.BjxBytes,7} | {r.OverheadPercent,4:F1} | {r.EncryptMs,7} | {r.DecryptMs,7} | {r.DecryptValidateMs,11} |");
+tools/ironconfigtool/Program.cs:1126:                writer.WriteLine();
+tools/ironconfigtool/Program.cs:1128:            writer.Flush();
+tools/ironconfigtool/Program.cs:1134:        using (var writer = new StreamWriter(path))
+tools/ironconfigtool/Program.cs:1136:            writer.WriteLine("# MEGA BENCH Summary - Stage 11");
+tools/ironconfigtool/Program.cs:1137:            writer.WriteLine();
+tools/ironconfigtool/Program.cs:1141:                writer.WriteLine("No benchmark results available.");
+tools/ironconfigtool/Program.cs:1142:                writer.Flush();
+tools/ironconfigtool/Program.cs:1170:            writer.WriteLine("## Key Findings");
+tools/ironconfigtool/Program.cs:1171:            writer.WriteLine();
+tools/ironconfigtool/Program.cs:1172:            writer.WriteLine($"- **Best compression**: {bestCompressionFile.FileName} ({bestCompressionFile.RatioPercent:F1}%)");
+tools/ironconfigtool/Program.cs:1173:            writer.WriteLine($"- **Fastest encode**: {fastestEncode.FileName} ({fastestEncode.EncodeMs}us)");
+tools/ironconfigtool/Program.cs:1174:            writer.WriteLine($"- **Fastest validation**: {fastestValidate.FileName} ({fastestValidate.OpenValidateMs}us)");
+tools/ironconfigtool/Program.cs:1175:            writer.WriteLine($"- **Fastest lookup**: {fastestLookup.FileName} ({fastestLookup.LookupMs}us, {fastestLookup.LookupOps} ops)");
+tools/ironconfigtool/Program.cs:1176:            writer.WriteLine($"- **Average encryption overhead**: {avgEncryptOverhead:F1}%");
+tools/ironconfigtool/Program.cs:1177:            writer.WriteLine();
+tools/ironconfigtool/Program.cs:1180:            writer.WriteLine("## Performance by Dataset Group");
+tools/ironconfigtool/Program.cs:1181:            writer.WriteLine();
+tools/ironconfigtool/Program.cs:1187:     

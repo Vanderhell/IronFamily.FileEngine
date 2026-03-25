@@ -1,0 +1,18 @@
+<Project>
+  <!-- Centralized package metadata for all NuGet packages -->
+  <PropertyGroup>
+    <Version>1.0.1</Version>
+    <Authors>Peter Hajduch</Authors>
+    <Company>IRONCFG</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Vanderhell/ironcfg</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Vanderhell/ironcfg</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,10 @@
+{
+  "engine": "ILOG",
+  "version": 1,
+  "dataset": "medium",
+  "expected_fast": "PASS",
+  "expected_strict": "PASS",
+  "expected_events": 1,
+  "expected_crc32": "b3125202",
+  "expected_blake3": "d1de74f46b5ac203b76d3e7587f2a6ad11cfbdc915b0854553809b76e28df55e"
+}

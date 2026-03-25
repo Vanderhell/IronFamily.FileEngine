@@ -1,0 +1,89 @@
+# OS/editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+.vs/
+
+# Local agent/tooling
+.claude/
+
+# Build outputs
+build/
+out/
+dist/
+tmp/
+temp/
+artifacts/
+scratch/
+testing/
+_trash/
+# Large test vectors - store locally or as release assets
+vectors/large/
+artifacts/_dev/tmp_*.log
+
+# C/C++
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.pdb
+*.ilk
+*.exp
+*.idb
+*.tlog
+*.recipe
+*.lastbuildstate
+*.vcxproj.user
+*.opendb
+*.sdf
+*.ipch
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
+Testing/
+
+# .NET
+**/bin/
+**/obj/
+**/TestResults/
+*.trx
+*.coverage
+*.coveragexml
+*.dmp
+*.user
+*.suo
+*.nupkg
+*.snupkg
+project.assets.json
+project.nuget.cache
+*.csproj.nuget.dgspec.json
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+
+# Logs
+*.log
+*.tmp
+
+# Root-local diagnostics/scripts (keep root clean)
+/*.txt
+/*.cs
+/*.csx
+/*.json
+!/CMakeLists.txt
+!/CMakePresets.json
+/artifacts/_dev
+/artifacts/_dump
+/artifacts/benchmarks
+/tools/unified-bench
+/tools/unified-bench/artifacts/benchmarks/datasets
+/artifacts/benchmarks
+/artifacts/benchmarks/datasets
+/tools/unified-bench/artifacts

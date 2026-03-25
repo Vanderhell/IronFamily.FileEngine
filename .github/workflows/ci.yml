@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dotnet-build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: .NET Build and Test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore libs/ironconfig-dotnet/IronConfig.sln
+
+      - name: Build
+        run: dotnet build libs/ironconfig-dotnet/IronConfig.sln -c Release --no-restore
+
+      - name: Run tests
+        run: dotnet test libs/ironconfig-dotnet/IronConfig.sln -c Release --no-build --logger "console;verbosity=normal"
+
+  native-build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: Native Build and Test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure native build
+        run: cmake -S native -B native/build
+
+      - name: Build native
+        run: cmake --build native/build --config Release
+
+      - name: Run native tests
+        run: ctest --test-dir native/build -C Release --output-on-failure
+
+  docs-truth-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    name: Enforce Documentation Truth Gate
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify docs truth (normative claims)
+        run: |
+          chmod +x ./tools/docs_truth_gate/verify_docs_truth.sh
+          ./tools/docs_truth_gate/verify_docs_truth.sh docs/
+
+      - name: Report
+        if: success()
+        run: |
+          echo "[OK] Documentation Truth Gate PASSED"
+          echo "All normative claims in docs/ are verifiable"
+
+      - name: Report failure
+        if: failure()
+        run: |
+          echo "[FAIL] Documentation Truth Gate FAILED"
+          echo "Found normative claims without evidence references"
+          exit 1
+
+  summary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    name: CI Summary
+    needs: [dotnet-build-test, native-build-test, docs-truth-gate]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          echo ".NET Build and Test: ${{ needs.dotnet-build-test.result }}"
+          echo "Native Build and Test: ${{ needs.native-build-test.result }}"
+          echo "Docs Truth Gate: ${{ needs.docs-truth-gate.result }}"
+
+          if [[ "${{ needs.dotnet-build-test.result }}" != "success" ]] || \
+             [[ "${{ needs.native-build-test.result }}" != "success" ]] || \
+             [[ "${{ needs.docs-truth-gate.result }}" != "success" ]]; then
+            echo "CI FAILED"
+            exit 1
+          fi
+
+          echo "[OK] All CI checks passed"
+

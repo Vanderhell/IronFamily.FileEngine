@@ -1,0 +1,235 @@
+================================================================================
+IRONCFG CRC32 AUDIT - FINAL SUMMARY
+================================================================================
+
+MISSION: Verify whether IRONCFG reference libraries compute/validate CRC32
+
+CONCLUSION: CRC is NOT computed and NOT validated
+================================================================================
+
+1. REPOSITORY RECONNAISSANCE
+================================================================================
+Project: IRONCFG (Binary JSON Configuration Format)
+Languages: C, C++, C# (.NET)
+CLI Tool: tools/ironconfigtool/ (C# .NET)
+Reference Lib: libs/bjv-dotnet/src/IronConfig/ (C# .NET)
+Test Vectors: vectors/small/, fuzz/
+
+Key Files:
+  - libs/bjv-dotnet/src/IronConfig/BjvEncoder.cs    (encoder)
+  - libs/bjv-dotnet/src/IronConfig/BjvDocument.cs   (decoder/parser)
+  - tools/ironconfigtool/Program.cs                  (CLI validate command)
+  - docs/FORMAT.md                                    (format spec)
+  - spec/bjv_v2.md                                    (BJV2 binary spec)
+
+================================================================================
+
+2. STATIC CODE SEARCH RESULTS
+================================================================================
+
+Keyword Searches (git grep):
+  âš "crc"               â†’ 15,959 bytes (107 matches)
+  âš "crc32"            â†’ 1,596 bytes
+  âš "checksum"         â†’ 1,088 bytes
+  X "0xEDB88320"       â†’ 0 matches (CRC polynomial)
+  X "0x04C11DB7"       â†’ 0 matches (alternate polynomial)
+  X "zlib"             â†’ 0 matches (zlib dependency)
+
+Location: ./_crc_audit/grep_*.txt
+
+Finding: No CRC computation constants or functions found
+
+================================================================================
+
+3. CODE VALIDATION
+
+File: libs/bjv-dotnet/src/IronConfig/BjvEncoder.cs
+Lines 18-116: BjvEncoder class
+
+âš Accepts useCrc parameter in constructor (line 20)
+âš Stores _useCrc field (line 18)
+âš Sets CRC flag in header when useCrc=true (line 104)
+X Does NOT compute actual CRC value
+X Does NOT write CRC bytes to output
+X Does NOT call any CRC function
+
+Code at line 103-106:
+  byte flags = 0x01;
+  if (_useCrc) flags |= 0x02;     // FLAG only, no computation
+  if (_useVsp) flags |= 0x04;
+  header[4] = flags;
+
+Verdict: CRC is flagged but not computed
+
+
+File: libs/bjv-dotnet/src/IronConfig/BjvDocument.cs
+Lines 40-78: BjvDocument.Parse() method
+
+âš Reads CRC flag from header (line 57)
+âš Stores hasCrc property (line 29)
+X Does NOT validate CRC value
+X Does NOT call any CRC check function
+X Proceeds to parse dictionary/vsp/root without CRC validation
+
+Code at line 57:
+  bool hasCrc = (flags & 0x02) != 0;   // Read flag only
+
+Verdict: CRC flag is recognized but not validated
+
+
+File: tools/ironconfigtool/Program.cs
+Lines 310-321: ValidateBjv() function (called by validate command)
+
+Code:
+  static void ValidateBjv(byte[] data)
+  {
+      try
+      {
+          var doc = BjvDocument.Parse(data);  // Only parses structure
+          Console.WriteLine($"âś“ BJV{doc.Version} valid");
+      }
+      catch (Exception ex)
+      {
+          throw new InvalidOperationException($"Invalid BJV: {ex.Message}");
+      }
+  }
+
+Verdict: Validation only checks structure, not CRC
+
+================================================================================
+
+4. DOCUMENTATION VERIFICATION
+
+File: docs/FORMAT.md
+
+Line 51 (Endianness section):
+  "CRC32 checksum field/flag (not computed/verified by current reference libraries)"
+
+Line 93 (Glossary):
+  "CRC | CRC32 field/flag defined in BJV (reference libraries currently do not
+   compute/verify CRC)"
+
+Line 102 (Example):
+  "...with deterministic binary representation, optional encryption (ICFS);
+   CRC is defined but not implemented in the reference libraries."
+
+
+File: spec/bjv_v2.md
+
+Lines 176-184 (CRC32 section):
+  "BJV v2 defines an optional CRC32 trailer:
+
+   - If flags.bit1 = 1, the file layout reserves a CRC32 checksum at the offset
+     indicated by the header's crc_offset field.
+   - CRC32 algorithm: IEEE 802.3
+   - Data covered: bytes [0 .. crc_offset - 1] (everything except the CRC itself)
+
+   **Important:** The current reference implementations in this repository do
+   **not** compute or validate CRC32. Do not rely on CRC for corruption detection
+   unless you add CRC handling in your integration."
+
+Verdict: Documentation explicitly states CRC is not implemented
+
+================================================================================
+
+5. RUNTIME CORRUPTION TEST
+
+Setup:
+  Input JSON: {"a": 1, "b": "x", "c": [1,2,3]}
+  Packed with: --crc on (enables CRC flag)
+  Output: min.icfg (90 bytes)
+  Header check: "CRC: present" confirmed
+
+
+Test Step 1: Validate Original File
+  Command: dotnet run -- validate min.icfg
+  Result:  âš BJV2 valid
+           âš File is valid
+  Status:  PASS (expected)
+
+
+Test Step 2: Corrupt One Byte
+  Position: 45 (midpoint of 90-byte file)
+  Original: 0x00
+  Corrupted: 0xFF (XOR with 0xFF)
+  Output: min_corrupt.icfg
+
+
+Test Step 3: Validate Corrupted File
+  Command: dotnet run -- validate min_corrupt.icfg
+  Result:  âš BJV2 valid
+           âš File is valid
+  Status:  PASS (should have FAILED!)
+
+
+Critical Finding:
+  File marked "CRC: present" in header
+  One byte corrupted in file data
+  Validation still PASSES
+
+  => CRC is NOT being validated
+  => Corrupted files are silently accepted
+
+Evidence Location: ./_crc_audit/run_test/TEST_RESULTS.txt
+
+================================================================================
+
+6. CONCLUSION
+
+FINDING: CRC is NOT computed and NOT validated
+
+Evidence Summary:
+
+1. CODE ANALYSIS
+   âš CRC flag field exists
+   âš CRC flag is SET when --crc on is used
+   X No CRC computation function exists
+   X No CRC polynomial constants defined
+   X No CRC validation in parse/validate path
+
+2. IMPLEMENTATION
+   X BjvEncoder: Sets flag but doesn't compute CRC
+   X BjvDocument: Reads flag but doesn't validate CRC
+   X Program.validate: Only calls Parse(), no CRC check
+
+3. DOCUMENTATION
+   âš FORMAT.md explicitly states: "not computed/verified"
+   âš bjv_v2.md explicit disclaimer: "do not compute or validate CRC32"
+   âš Clear that feature is defined but not implemented
+
+4. RUNTIME TEST
+   âš Original file validates: PASS
+   X Corrupted file validates: PASS (should fail)
+   => CRC validation does not occur
+
+COMPREHENSIVE VERDICT:
+  CRC is a documented format placeholder with no functional implementation.
+  Users cannot rely on CRC for corruption detection.
+
+================================================================================
+
+7. FILES DELIVERED
+
+Audit Output:
+  ./_crc_audit/
+  â”śâ”€â”€ AUDIT_REPORT.md           (comprehensive technical report)
+  â”śâ”€â”€ SUMMARY.txt               (this file)
+  â”śâ”€â”€ grep_crc.txt              (15,959 bytes - keyword search)
+  â”śâ”€â”€ grep_crc32.txt
+  â”śâ”€â”€ grep_checksum.txt
+  â”śâ”€â”€ grep_validate.txt
+  â”śâ”€â”€ grep_reader.txt
+  â”śâ”€â”€ grep_writer.txt
+  â”śâ”€â”€ grep_0xEDB88320.txt       (empty)
+  â”śâ”€â”€ grep_0x04C11DB7.txt       (empty)
+  â”śâ”€â”€ grep_zlib.txt             (empty)
+  â””â”€â”€ run_test/
+      â”śâ”€â”€ min.json              (test input)
+      â”śâ”€â”€ min.icfg              (original, 90 bytes)
+      â”śâ”€â”€ min_corrupt.icfg      (corrupted, still validates)
+      â”śâ”€â”€ corrupt.ps1           (corruption script)
+      â””â”€â”€ TEST_RESULTS.txt      (runtime evidence)
+
+================================================================================
+AUDIT COMPLETE - 2026-01-12
+================================================================================

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>ironconfigtool</AssemblyName>
+    <RootNamespace>IronConfigTool</RootNamespace>
+    <!-- NuGet Tool Package Configuration -->
+    <PackageId>IronCfg.Tool</PackageId>
+    <Title>IRONCFG CLI Tool</Title>
+    <Description>IRONCFG command-line tool: pack/validate/tojson/encrypt/decrypt/bench. Install as dotnet global tool: dotnet tool install -g IronCfg.Tool</Description>
+    <PackageReadmeFile>README_NUGET_TOOL.md</PackageReadmeFile>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>ironcfg</ToolCommandName>
+    <IsPackable>true</IsPackable>
+	<GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
+    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig.Tooling/IronConfig.Tooling.csproj" />
+    <ProjectReference Include="../../libs/ironconfig-dotnet/legacy/IronConfig.Crypto/IronConfig.Crypto.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README_NUGET_TOOL.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

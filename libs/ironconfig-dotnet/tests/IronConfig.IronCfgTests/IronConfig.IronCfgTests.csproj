@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject>
+    <AssemblyName>IronConfig.IronCfgTests</AssemblyName>
+    <RootNamespace>IronConfig.Tests.IronCfg</RootNamespace>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
+    <PackageReference Include="MessagePack" Version="2.5.140" />
+    <PackageReference Include="protobuf-net" Version="3.0.113" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reference IronConfig in flagship mode (IRONCONFIG_LEGACY not defined) -->
+    <ProjectReference Include="../../src/IronConfig/IronConfig.csproj">
+      <SetPlatformTarget>true</SetPlatformTarget>
+    </ProjectReference>
+    <!-- Required for NonRegressionPerfSmoke tests -->
+    <ProjectReference Include="../../src/IronConfig.ILog/IronConfig.ILog.csproj" />
+    <!-- Required for Runtime Verify tests -->
+    <ProjectReference Include="../../src/IronConfig.Tooling/IronConfig.Tooling.csproj" />
+  </ItemGroup>
+
+  <!-- Copy test vectors to output directory for self-contained tests -->
+  <ItemGroup>
+    <Content Include="../../../../vectors/**/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>vectors/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+</Project>

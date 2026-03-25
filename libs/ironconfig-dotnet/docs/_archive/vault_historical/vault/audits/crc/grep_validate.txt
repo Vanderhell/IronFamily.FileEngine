@@ -1,0 +1,79 @@
+README.md:43:| CRC Field | CRC32 field defined by the format (reference libraries currently do not compute or validate CRC) |
+README.md:76:ironcfg validate config.icfg
+benchmarks/README.md:11:- **Validation time**: Time to validate an ICFG file
+benchmarks/README.md:59:- Encode/Validate/Decode timings (microseconds)
+benchmarks/README.md:109:3. **Validate** the encoded ICFG (check structure, CRC if enabled)
+benchmarks/README.md:140:# Validate
+benchmarks/README.md:141:ironcfg validate config.icfg
+docs/COMPAT.md:73:ironcfg validate <input.icfg>
+docs/COMPAT.md:145:- Format conformance validated against reference spec
+docs/SECURITY.md:54:1. Read and validate BJX header
+docs/SECURITY.md:60:7. Validate decrypted plaintext as valid BJV file
+docs/SECURITY.md:129:2. Validate the decrypted BJV
+docs/SECURITY.md:137:2. **Validate after decryption**: After decrypting an ICFS file, validate the resulting BJV (check structure, magic, CRC if present)
+docs/SECURITY.md:159:### Validate encryption parameters (advanced)
+fuzz/README.md:127:   - `bjv_validate_root()` with depth limit
+fuzz/README.md:183:This fuzzer validates:
+fuzz/fuzz-bjv/fuzz_bjv_open.c:91:    /* Validate root (with depth limit) */
+fuzz/fuzz-bjv/fuzz_bjv_open.c:92:    if (bjv_validate_root(&doc, MAX_DEPTH) != 0) {
+Binary file libs/bjv-c/build/CMakeFiles/4.1.0/CMakeDetermineCompilerABI_C.bin matches
+Binary file libs/bjv-c/build/Debug/bjv-c.lib matches
+Binary file libs/bjv-c/build/Debug/bjv-c.pdb matches
+Binary file libs/bjv-c/build/bjv-c.dir/Debug/bjv.obj matches
+libs/bjv-c/include/bjv.h:96: * Parse BJV header and dictionary. Does NOT validate root.
+libs/bjv-c/include/bjv.h:221: * Recursively validate root value (canonical checks).
+libs/bjv-c/include/bjv.h:226:bjv_err_t bjv_validate_root(const bjv_doc_t* doc, uint32_t max_depth);
+libs/bjv-c/src/bjv.c:281:    /* Skip dictionary content validation for now (done in validate_root) */
+libs/bjv-c/src/bjv.c:716:static bjv_err_t bjv_validate_value(const bjv_doc_t* doc, uint32_t off, uint32_t depth);
+libs/bjv-c/src/bjv.c:718:bjv_err_t bjv_validate_root(const bjv_doc_t* doc, uint32_t max_depth) {
+libs/bjv-c/src/bjv.c:723:    return bjv_validate_value(doc, doc->root_off, max_depth);
+libs/bjv-c/src/bjv.c:726:static bjv_err_t bjv_validate_value(const bjv_doc_t* doc, uint32_t off, uint32_t depth) {
+libs/bjv-c/src/bjv.c:810:                bjv_err_t err = bjv_validate_value(doc, abs_offset, depth - 1);
+libs/bjv-c/src/bjv.c:865:                bjv_err_t err = bjv_validate_value(doc, abs_offset, depth - 1);
+libs/bjv-cpp/README.md:24:    doc.validate();
+libs/bjv-cpp/README.md:53:doc.validate();                // Validate
+Binary file libs/bjv-cpp/build/CMakeFiles/4.1.0/CMakeDetermineCompilerABI_C.bin matches
+Binary file libs/bjv-cpp/build/CMakeFiles/4.1.0/CMakeDetermineCompilerABI_CXX.bin matches
+Binary file libs/bjv-cpp/build/Debug/bjv-core.lib matches
+Binary file libs/bjv-cpp/build/Debug/bjv-core.pdb matches
+Binary file libs/bjv-cpp/build/Debug/test_wrapper.exe matches
+Binary file libs/bjv-cpp/build/Debug/test_wrapper.pdb matches
+Binary file libs/bjv-cpp/build/bjv-core.dir/Debug/bjv.obj matches
+Binary file libs/bjv-cpp/build/test_wrapper.dir/Debug/test_wrapper.ilk matches
+Binary file libs/bjv-cpp/build/test_wrapper.dir/Debug/vc143.pdb matches
+libs/bjv-cpp/include/bjv.hpp:103:    /// Validate (depth limit for safety)
+libs/bjv-cpp/include/bjv.hpp:104:    void validate(uint32_t max_depth = 256) const {
+libs/bjv-cpp/include/bjv.hpp:105:        bjv_err_t rc = bjv_validate_root(&doc_, max_depth);
+libs/bjv-cpp/src/bjv.cpp:10:bool BjvReader::validate()
+libs/bjv-cpp/tests/test_bjv_cpp.cpp:10:    if (reader.validate()) {
+libs/bjv-dotnet/src/IronConfig/BjvReader.cs:18:    /// Validate binary JSON data
+libs/bjv-dotnet/src/IronConfig/BjvReader.cs:20:    public bool Validate()
+libs/bjv-dotnet/src/IronConfig/README_NUGET_CORE.md:46:### Validate Binary Files
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:148:    public void EncodeAndValidate_Roundtrip()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:202:    public void EncodeBjv4_WithVspOff_Validate_Success()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:204:        // Regression test: ensure encoded BJV4 with VSP=off can be validated without IndexOutOfRangeException
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:217:        // Parse and validate - this should not throw IndexOutOfRangeException
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:224:        // Validate the structure
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:257:    public void EncodeBjv4_VspOff_CrcOn_DeepNested_Validate_Success()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:259:        // Regression test: Deep nesting with BJV4, VSP=off, CRC=on can be validated
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:282:        // Parse and validate - should handle deep nesting without IndexOutOfRangeException
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvEncoderTests.cs:288:        // Validate can traverse deep nesting
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvGoldenTests.cs:72:    public void GoldenVector_ValidatesSuccessfully(string filename)
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:19:    public void Validate_WithValidData_ReturnsTrue()
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:24:        Assert.True(reader.Validate());
+release/RELEASE_NOTES_NUGET.md:74:Full-featured CLI for pack/validate/tojson/encrypt/decrypt operations.
+release/RELEASE_NOTES_NUGET.md:90:ironcfg validate config.icfg
+release/RELEASE_NOTES_NUGET.md:216:✓ IronCfg.Tool includes CLI with pack/validate/tojson/encrypt/decrypt commands
+release/build_release.ps1:115:  ironcfg validate file.icfg              Validate binary file
+release/build_release.ps1:125:  # Validate after pack
+release/build_release.ps1:126:  ironcfg validate config.icfg
+release/build_release.sh:124:  ./ironcfg validate file.icfg              Validate binary file
+release/build_release.sh:134:  # Validate after pack
+release/build_release.sh:135:  ./ironcfg validate config.icfg
+Binary file release/tmp/linux/IronConfig.dll matches
+Binary file release/tmp/linux/ironconfigtool.dll matches
+spec/bjv_v2.md:184:**Important:** The current reference implementations in this repository do **not** compute or validate CRC32. Do not rely on CRC for corruption detection unless you add CRC handling in your integration.
+spec/bjx_v1.md:89:1. **Read and validate header**:
+spec/bjx_v1.md:117:   - Optionally validate as BJV file (tooling feature)
+spec/bjx_v1.md:180:- Validate file size before allocation
+spec/test_vectors.md:92:1. **Parse & Validate**: No errors, all values accessible

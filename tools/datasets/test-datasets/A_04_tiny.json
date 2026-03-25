@@ -1,0 +1,21 @@
+{
+  "name": "tiny-config-46",
+  "version": "4.3.9",
+  "enabled": false,
+  "timeout_ms": 29256,
+  "servers": [
+    {
+      "host": "0.0.0.0",
+      "port": 8516
+    },
+    {
+      "host": "10.0.0.1",
+      "port": 9668
+    }
+  ],
+  "features": {
+    "logging": false,
+    "metrics": false,
+    "tracing": false
+  }
+}

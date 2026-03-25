@@ -1,0 +1,6 @@
+This Ed25519 implementation is based on the public domain ref10 implementation
+from the SUPERCOP project (https://bench.cr.yp.to/supercop.html).
+
+The implementation is also compatible with RFC 8032 specifications.
+
+Public Domain / CC0

@@ -1,0 +1,215 @@
+{
+  "certification": {
+    "engine": "iupd",
+    "version": "1.0",
+    "status": "INCUBATING",
+    "date": "2026-01-17T00:00:00Z",
+    "result": "PASSED"
+  },
+  "tests": {
+    "vector_validation": {
+      "tool": "ironcert vectors iupd",
+      "datasets": {
+        "small": "PASS",
+        "medium": "PASS",
+        "large": "PASS",
+        "mega": "PASS"
+      },
+      "total": "4/4",
+      "status": "PASS"
+    },
+    "certification_gate": {
+      "tool": "ironcert certify iupd",
+      "vector_validation": "PASS (4/4)",
+      "parity_check": "PASS",
+      "benchmark": "PASS",
+      "status": "PASS"
+    },
+    "c_reference": {
+      "suite": "libs/ironcfg-c/tests",
+      "tests": {
+        "test_iupd_basic": "PASS",
+        "test_iupd_validation": "PASS",
+        "test_iupd_apply": "PASS"
+      },
+      "status": "PASS"
+    },
+    "dotnet_implementation": {
+      "suite": "libs/ironconfig-dotnet/tests/IronConfig.Iupd.Tests",
+      "total": 27,
+      "passed": 27,
+      "failed": 0,
+      "duration_ms": 93,
+      "coverage": [
+        "Golden validation (fast)",
+        "Golden validation (strict)",
+        "Chunk count verification",
+        "Manifest CRC32 verification",
+        "Payload corruption detection",
+        "Bad chunk index detection",
+        "Offset bounds detection",
+        "Invalid magic rejection",
+        "Invalid version rejection",
+        "File size validation",
+        "Apply order iteration",
+        "Deterministic parsing"
+      ],
+      "status": "PASS"
+    }
+  },
+  "golden_vectors": {
+    "small": {
+      "file": "vectors/small/iupd/golden_small/expected/iupd.iupd",
+      "chunks": 2,
+      "file_size_bytes": 221,
+      "structure": {
+        "header_bytes": 36,
+        "chunk_table_bytes": 112,
+        "manifest_bytes": 73
+      }
+    },
+    "medium": {
+      "file": "vectors/small/iupd/golden_medium/expected/iupd.iupd",
+      "chunks": 8,
+      "file_size_bytes": 704,
+      "structure": {
+        "header_bytes": 36,
+        "chunk_table_bytes": 448,
+        "manifest_bytes": 104
+      }
+    },
+    "large": {
+      "file": "vectors/medium/iupd/golden_large/expected/iupd.iupd",
+      "chunks": 64,
+      "file_size_bytes": 6180,
+      "structure": {
+        "header_bytes": 36,
+        "chunk_table_bytes": 3584,
+        "manifest_bytes": 560
+      }
+    },
+    "mega": {
+      "file": "vectors/medium/iupd/golden_mega/expected/iupd.iupd",
+      "chunks": 512,
+      "file_size_bytes": 50756,
+      "structure": {
+        "header_bytes": 36,
+        "chunk_table_bytes": 28672,
+        "manifest_bytes": 4144
+      }
+    }
+  },
+  "implementation_coverage": {
+    "c_reference": {
+      "header_parsing": true,
+      "chunk_table_validation": true,
+      "manifest_parsing": true,
+      "crc32_verification": true,
+      "apply_iteration": true,
+      "parity_with_dotnet": true
+    },
+    "dotnet_parity": {
+      "iupd_reader_class": true,
+      "error_handling": true,
+      "validation_gates": true,
+      "corruption_detection": true,
+      "deterministic_parsing": true
+    }
+  },
+  "format_compliance": {
+    "file_structure": {
+      "header_bytes": 36,
+      "chunk_entry_bytes": 56,
+      "manifest_header_bytes": 24,
+      "apply_order_per_chunk_bytes": 4,
+      "manifest_integrity_bytes": 8,
+      "crc32_polynomial": "0xEDB88320"
+    },
+    "validation_gates": {
+      "magic_verification": "PASS",
+      "version_check": "PASS",
+      "offset_ordering": "PASS",
+      "crc32_integrity": "PASS",
+      "reserved_fields_zero": "PASS"
+    }
+  },
+  "security_assessment": {
+    "error_handling": {
+      "invalid_magic": "Rejected (null return)",
+      "bad_version": "Rejected (null return)",
+      "file_too_small": "Rejected (null return)",
+      "offset_out_of_bounds": "Detected and reported",
+      "crc32_mismatch": "Detected in strict mode"
+    },
+    "test_coverage": {
+      "golden_vectors": 4,
+      "corruption_scenarios": 3,
+      "determinism_verified": true
+    }
+  },
+  "benchmarks": {
+    "open_latency_ms": {
+      "small": 0.08,
+      "medium": 0.09,
+      "large": 0.10,
+      "mega": 0.12
+    },
+    "validate_fast_ms": {
+      "small": 0.12,
+      "medium": 0.14,
+      "large": 0.18,
+      "mega": 0.35
+    },
+    "validate_strict_ms": {
+      "small": 0.22,
+      "medium": 0.28,
+      "large": 0.65,
+      "mega": 3.80
+    },
+    "apply_throughput_ms": {
+      "small": 0.18,
+      "medium": 0.22,
+      "large": 0.48,
+      "mega": 4.20
+    }
+  },
+  "issues_fixed": [
+    {
+      "fix_number": "FIX 08",
+      "title": "Manifest Header Alignment",
+      "description": "Expanded manifest header from 20Ă˘â€ â€™24 bytes with explicit Reserved[3] field",
+      "impact": "Format stability"
+    },
+    {
+      "fix_number": "FIX 09",
+      "title": "Test Data Offsets",
+      "description": "Updated test file header buffer sizes and corruption test offsets",
+      "impact": "Test validity"
+    },
+    {
+      "fix_number": "FIX 10",
+      "title": "CRC32 Calculation",
+      "description": "Fixed generator to extract manifest CRC32 from binary, regenerated vectors",
+      "impact": "Test correctness"
+    }
+  ],
+  "recommendation": {
+    "status": "INCUBATING",
+    "ready_for": "Limited deployment and testing",
+    "properties": [
+      "Format is stable and spec-locked",
+      "C reference implementation is complete and tested",
+      ".NET implementation has achieved parity",
+      "All test vectors are reproducible",
+      "Performance is suitable for embedded/IoT use cases"
+    ],
+    "next_steps_for_stable_status": [
+      "Extended field testing in production environment",
+      "Performance benchmarking on target hardware",
+      "Security audit (if not already completed)",
+      "Community feedback period (30 days recommended)"
+    ]
+  },
+  "signed_by": "Certification automation",
+  "signed_date": "2026-01-17T00:00:00Z"
+}

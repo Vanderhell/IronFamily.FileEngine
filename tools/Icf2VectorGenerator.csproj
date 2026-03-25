@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <NoWarn>CS1570</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../libs/bjv-dotnet/src/IronConfig/IronConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ironconfigtool/**" />
+    <Compile Remove="ironcert/**" />
+    <Compile Remove="diagnostics/**" />
+    <Compile Remove="datasets/**" />
+  </ItemGroup>
+
+</Project>

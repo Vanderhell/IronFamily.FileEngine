@@ -1,0 +1,66 @@
+name: Performance Budget Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  perf-budget-gate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Restore dependencies
+        run: |
+          cd libs/ironconfig-dotnet
+          dotnet restore
+
+      - name: Build BenchStabilized
+        run: |
+          cd tools/bench_profiles/BenchStabilized
+          dotnet build -c Release
+
+      - name: Run stabilized benchmarks
+        run: |
+          $repoRoot = Get-Location
+          & "$repoRoot\tools\bench_profiles\BenchStabilized\bin\Release\net8.0\BenchStabilized.exe"
+
+      - name: Run performance budget comparator
+        run: |
+          $repoRoot = Get-Location
+          & "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -File "tools/bench/compare_baseline.ps1"
+          $exitCode = $LASTEXITCODE
+          if ($exitCode -eq 2) {
+            Write-Host "FAIL: No valid benchmark data for comparison" -ForegroundColor Red
+            exit 1
+          }
+          exit $exitCode
+
+      - name: Upload PERF_BUDGET_REPORT.md
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-budget-report
+          path: artifacts/bench/PERF_BUDGET_REPORT.md
+          retention-days: 30
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('artifacts/bench/PERF_BUDGET_REPORT.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '## Performance Budget Report\n\n' + report
+            });

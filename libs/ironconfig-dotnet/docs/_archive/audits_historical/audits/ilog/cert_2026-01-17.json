@@ -1,0 +1,114 @@
+{
+  "engine": "ilog",
+  "status": "PASS",
+  "certification_date": "2026-01-17",
+  "spec_version": "1.0",
+  "spec_path": "spec/ILOG.md",
+  "implementations": {
+    "dotnet": {
+      "status": "PASS",
+      "path": "libs/ironconfig-dotnet/src/IronConfig.ILog/IlogReader.cs",
+      "language": "C#",
+      "target_framework": "net8.0"
+    },
+    "c99": {
+      "status": "PASS",
+      "path": "libs/ironcfg-c/src/ilog.c",
+      "language": "C99",
+      "standard": "C99"
+    }
+  },
+  "vectors": {
+    "small": {
+      "events": 3,
+      "file_size": 256,
+      "status": "PASS",
+      "crc32": "verified",
+      "blake3": "verified"
+    },
+    "medium": {
+      "events": 30,
+      "file_size": 661,
+      "status": "PASS",
+      "crc32": "verified",
+      "blake3": "verified"
+    },
+    "large": {
+      "events": 300,
+      "file_size": 5356,
+      "status": "PASS",
+      "crc32": "verified",
+      "blake3": "verified"
+    },
+    "mega": {
+      "events": 3000,
+      "file_size": 53956,
+      "status": "PASS",
+      "crc32": "verified",
+      "blake3": "verified"
+    }
+  },
+  "tests": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0,
+    "test_categories": {
+      "golden_vector_strict_pass": 4,
+      "manifest_parity_event_count": 4,
+      "manifest_parity_crc32": 4,
+      "manifest_parity_blake3": 4,
+      "corruption_detection": 3,
+      "determinism": 2,
+      "fast_validation_gate": 2,
+      "header_validation": 2
+    }
+  },
+  "validation": {
+    "strict_validation": true,
+    "crc32_supported": true,
+    "blake3_supported": true,
+    "error_codes_tested": 20,
+    "error_codes_covered": 20
+  },
+  "parity": {
+    "c_dotnet_parity": true,
+    "error_code_match": true,
+    "byte_offset_match": true,
+    "crc32_computation_match": true,
+    "blake3_computation_match": true,
+    "event_count_match": true
+  },
+  "determinism": {
+    "encoding_deterministic": true,
+    "parsing_deterministic": true,
+    "cross_platform_consistent": true
+  },
+  "compliance": {
+    "spec_locked": true,
+    "reader_implementation_dotnet": true,
+    "reader_implementation_c": true,
+    "writer_implementation": true,
+    "golden_vectors": true,
+    "unit_tests": true,
+    "parity_tests": true,
+    "error_handling": true,
+    "benchmarks": true,
+    "documentation": true
+  },
+  "performance": {
+    "open_latency_ms": 0.001,
+    "validate_fast_mbps": 110,
+    "validate_strict_mbps": 1,
+    "event_scan_rate": 270000,
+    "benchmark_date": "2026-01-17",
+    "benchmark_file": "benchmarks/ILOG_BENCH.md"
+  },
+  "certification_level": "INCUBATING",
+  "next_steps": [
+    "Extended fuzzing campaign",
+    "Performance tuning and optimization",
+    "Additional use-case validation",
+    "Proceed to PRODUCTION after validation"
+  ],
+  "notes": "Engine meets all mandatory requirements for INCUBATING status. Exact parity between C and .NET implementations verified on all test vectors. All 25 tests passing."
+}

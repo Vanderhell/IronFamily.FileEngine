@@ -1,0 +1,22 @@
+changelog:
+  categories:
+    - title: Breaking Changes
+      labels:
+        - breaking
+    - title: Features
+      labels:
+        - enhancement
+        - feature
+    - title: Fixes
+      labels:
+        - bug
+        - fix
+    - title: Performance
+      labels:
+        - perf
+        - benchmark
+    - title: Maintenance
+      labels:
+        - chore
+        - docs
+

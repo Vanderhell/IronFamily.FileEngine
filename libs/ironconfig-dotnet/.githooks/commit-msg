@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+msg_file="$1"
+msg="$(cat "$msg_file")"
+
+# Block AI coauthor lines
+if echo "$msg" | grep -Eiq 'co-authored-by:.*(claude|chatgpt|openai|ai)\b'; then
+  echo "ERROR: AI CoAuthor is forbidden by policy." >&2
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,8 @@
+IronConfig Family Engines:
+
+  • Bjv    .bjv     - Binary JSON v2
+  • Bjx    .bjx     - Encrypted Container
+  • Icfx   .icfx    - Columnar Format v1
+  • Icxs   .icxs    - Extended Schema
+  • Icf2   .icf2    - Columnar Format v2
+

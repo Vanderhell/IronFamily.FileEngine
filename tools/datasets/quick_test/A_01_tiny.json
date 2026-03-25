@@ -1,0 +1,21 @@
+{
+  "name": "tiny-config-43",
+  "version": "1.4.8",
+  "enabled": true,
+  "timeout_ms": 18977,
+  "servers": [
+    {
+      "host": "localhost",
+      "port": 8172
+    },
+    {
+      "host": "192.168.1.1",
+      "port": 9297
+    }
+  ],
+  "features": {
+    "logging": false,
+    "metrics": true,
+    "tracing": false
+  }
+}

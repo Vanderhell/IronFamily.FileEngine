@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>IronConfig.Crypto.Legacy</AssemblyName>
+    <RootNamespace>IronConfig.Crypto</RootNamespace>
+    <!-- Legacy/Frozen version - no NuGet distribution -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+libs/bjv-cpp/src/bjv.cpp:5:BjvReader::BjvReader(const std::vector<uint8_t>& data)
+libs/bjv-cpp/src/bjv.cpp:10:bool BjvReader::validate()
+libs/bjv-cpp/tests/test_bjv_cpp.cpp:8:    bjv::BjvReader reader(test_data);
+libs/bjv-cpp/tests/test_bjv_cpp.cpp:10:    if (reader.validate()) {
+libs/bjv-cpp/tests/test_bjv_cpp.cpp:11:        std::cout << "PASS: BjvReader initialization\n";
+libs/bjv-cpp/tests/test_bjv_cpp.cpp:15:    std::cout << "FAIL: BjvReader initialization\n";
+libs/bjv-dotnet/src/IronConfig/BjvReader.cs:6:/// BJV Reader - parses binary JSON format
+libs/bjv-dotnet/src/IronConfig/BjvReader.cs:8:public class BjvReader
+libs/bjv-dotnet/src/IronConfig/BjvReader.cs:12:    public BjvReader(byte[] data)
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:7:public class BjvReaderTests
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:13:        var reader = new BjvReader(data);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:15:        Assert.NotNull(reader);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:22:        var reader = new BjvReader(data);
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:24:        Assert.True(reader.Validate());
+libs/bjv-dotnet/tests/IronConfig.Tests/BjvReaderTests.cs:30:        Assert.Throws<ArgumentNullException>(() => new BjvReader(null!));
+release/RELEASE_NOTES_NUGET.md:15:- `BjvReader/BjvWriter` - Format I/O
+Binary file release/tmp/linux/IronConfig.dll matches
+Binary file tools/datasets/bin/Debug/net8.0/dataset-gen.pdb matches
+Binary file tools/datasets/obj/Debug/net8.0/dataset-gen.pdb matches

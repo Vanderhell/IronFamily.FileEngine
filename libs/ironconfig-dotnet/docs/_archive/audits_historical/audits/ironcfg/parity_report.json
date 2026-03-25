@@ -1,0 +1,54 @@
+{
+  "status": "FAIL",
+  "timestamp": "2026-01-16T16:55:08.6139553Z",
+  "datasets": [
+    {
+      "dataset": "small",
+      "variant": "nocrc",
+      "passed": false,
+      "mismatches": [
+        {
+          "probe_id": "root_type",
+          "category": "extraction_missing",
+          "message": ".NET extracted, C99 missing"
+        }
+      ]
+    },
+    {
+      "dataset": "medium",
+      "variant": "nocrc",
+      "passed": false,
+      "mismatches": [
+        {
+          "probe_id": "root_type",
+          "category": "extraction_missing",
+          "message": ".NET extracted, C99 missing"
+        }
+      ]
+    },
+    {
+      "dataset": "large",
+      "variant": "nocrc",
+      "passed": false,
+      "mismatches": [
+        {
+          "probe_id": "root_type",
+          "category": "extraction_missing",
+          "message": ".NET extracted, C99 missing"
+        }
+      ]
+    },
+    {
+      "dataset": "mega",
+      "variant": "nocrc",
+      "passed": false,
+      "mismatches": [
+        {
+          "probe_id": "root_type",
+          "category": "extraction_missing",
+          "message": ".NET extracted, C99 missing"
+        }
+      ]
+    }
+  ]
+}

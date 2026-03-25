@@ -1,0 +1,159 @@
+{
+    "array_of_objects": [
+        {
+            "active": true,
+            "id": 1,
+            "name": "User1",
+            "score": 0
+        },
+        {
+            "active": false,
+            "id": 2,
+            "name": "User2",
+            "score": 0
+        },
+        {
+            "active": true,
+            "id": 3,
+            "name": "User3",
+            "score": 0
+        }
+    ],
+    "arrays": {
+        "bool_array": [
+            true,
+            false,
+            true,
+            false
+        ],
+        "empty_array": [],
+        "int_array": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "mixed_array": [
+            1,
+            "two",
+            3,
+            true,
+            null
+        ],
+        "nested_arrays": [
+            [
+                1,
+                2
+            ],
+            [
+                3,
+                4
+            ],
+            [
+                5,
+                6
+            ]
+        ],
+        "string_array": [
+            "apple",
+            "banana",
+            "cherry"
+        ]
+    },
+    "complex_structure": {
+        "teams": [
+            {
+                "members": [
+                    {
+                        "member_id": 1001,
+                        "name": "Charlie",
+                        "role": "Lead",
+                        "skills": [
+                            "C#",
+                            "Go",
+                            "Rust"
+                        ]
+                    },
+                    {
+                        "member_id": 1002,
+                        "name": "Diana",
+                        "role": "Senior",
+                        "skills": [
+                            "Python",
+                            "JavaScript",
+                            "TypeScript"
+                        ]
+                    }
+                ],
+                "team_id": 101,
+                "team_name": "Engineering"
+            },
+            {
+                "members": [
+                    {
+                        "member_id": 2001,
+                        "name": "Eve",
+                        "role": "Manager",
+                        "skills": [
+                            "Strategy",
+                            "Leadership"
+                        ]
+                    }
+                ],
+                "team_id": 102,
+                "team_name": "Product"
+            }
+        ]
+    },
+    "metadata": {
+        "description": "Comprehensive golden vector for ICFX v0 format validation",
+        "timestamp": "2026-01-13T00:00:00Z",
+        "version": 1
+    },
+    "objects": {
+        "empty_object": {},
+        "nested_object": {
+            "person": {
+                "contact": {
+                    "email": "bob@example.com",
+                    "phone": "555-1234"
+                },
+                "name": "Bob"
+            }
+        },
+        "simple_object": {
+            "age": 30,
+            "name": "Alice"
+        }
+    },
+    "repeated_strings": {
+        "repeat1": "shared",
+        "repeat2": "shared",
+        "repeat3": "shared",
+        "unique": "unique_value"
+    },
+    "simple_types": {
+        "boolean_false": false,
+        "boolean_true": true,
+        "float_large": 0,
+        "float_negative": 0,
+        "float_positive": 0,
+        "float_tiny": 0,
+        "float_zero": 0,
+        "integer_max": 18446744073709551615,
+        "integer_min": -9223372036854775808,
+        "integer_negative": -67890,
+        "integer_positive": 12345,
+        "integer_zero": 0,
+        "null_value": null
+    },
+    "strings": {
+        "empty": "",
+        "long_string": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. This string is longer than 256 characters to test VSP handling in the ICFX format implementation for proper interning and offset calculation.",
+        "repeated_key_test": "repeated",
+        "simple": "hello",
+        "with_spaces": "hello world",
+        "with_unicode": "caf\u00e9 r\u00e9sum\u00e9 na\u00efve"
+    }
+}

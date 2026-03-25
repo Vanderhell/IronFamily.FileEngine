@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../IronConfig.Common/IronConfig.Common.csproj" />
+    <ProjectReference Include="../IronConfig/IronConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BLAKE3" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

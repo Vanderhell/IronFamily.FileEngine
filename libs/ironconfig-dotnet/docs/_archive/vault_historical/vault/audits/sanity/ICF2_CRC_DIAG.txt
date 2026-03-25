@@ -1,0 +1,41 @@
+# ICF2 CRC32 Diagnostic Report
+Date: 2026-01-13
+
+## golden_small.icf2 Analysis
+
+### File Metadata
+- File size: 246 bytes
+- Magic: ICF2 (0x49 0x43 0x46 0x32)
+- Version: 0
+- Flags: 0x0D (HasCRC32=True, HasBlake3=False, HasPrefixDict=True, HasColumns=True)
+
+### Header Offsets
+- dictOffset: 64, dictSize: 32
+- schemaOffset: 96, schemaSize: 22
+- columnsOffset: 118, columnsSize: 124
+- rowIndexOffset: 0, rowIndexSize: 0
+- payloadOffset: 0, payloadSize: 0
+- crcOffset: 242
+- blake3Offset: 0
+
+### CRC Data
+- Stored CRC (at offset 242): 0x3CC1798C
+- Computed CRC (System.IO.Hashing): 0x4C6AA91C
+- **Match: NO** ❌
+
+### CRC Range
+- Range: [0..242) = 242 bytes
+- First 16 bytes: 49-43-46-32-00-0D-00-00-F6-00-00-00-40-00-00-00
+- Last 16 bytes: 72-64-65-73-69-67-6E-65-72-6D-61-6E-61-67-65-72
+  (ASCII: "rdesignermanager" - last part of column data)
+
+## Root Cause Category: UNKNOWN (INVESTIGATING)
+
+The stored CRC does not match the computed CRC using System.IO.Hashing.Crc32.
+This indicates one of the following:
+- [?] File generated with different CRC algorithm
+- [?] File generated with different CRC parameters
+- [?] CRC byte range different between encoder and validator
+- [?] Endianness issue in CRC storage/reading
+
+## Next: Compare with other golden files

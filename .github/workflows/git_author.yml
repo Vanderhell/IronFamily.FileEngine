@@ -1,0 +1,32 @@
+name: Git Author Policy Enforcement
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  verify-author:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      - name: Verify Git Author (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          powershell -File .\tools\git_policy\verify_author.ps1
+        shell: powershell
+
+      - name: Verify Git Author (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          chmod +x ./tools/git_policy/verify_author.sh
+          ./tools/git_policy/verify_author.sh
+        shell: bash

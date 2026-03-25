@@ -1,0 +1,42 @@
+chore: finalize repository structure for product platform
+
+This commit implements strict repository layout normalization to establish
+IronConfig as a product platform with clean root directory.
+
+CHANGES:
+
+Structural Refactoring:
+- Create vault/ directory structure (audits, debug, generators, testing, forensics, misc)
+- Move audits/ → vault/audits/
+- Move _gen/ → vault/generators/_gen
+- Move _icfx_debug/ → vault/debug/_icfx_debug
+- Move Testing/ → vault/testing/Testing
+- Move fuzz/ → vault/testing/fuzz
+- Move generate-icf2-vectors.csx → vault/generators/
+- Move ICF2.md (root) → vault/misc/ICF2_root_copy.md
+- Move nul → vault/misc/nul
+
+Documentation Updates:
+- Update docs/family/ENGINES.md path references (audits → vault/audits)
+- Rewrite docs/family/REPO_LAYOUT.md to reflect new layout
+- Create vault/audits/FAMILY_COMPLIANCE_REPORT.md (verification report)
+
+Configuration Updates:
+- Update .gitignore: audits/ → vault/, **/_icfx_debug/ → vault/debug/_icfx_debug/
+- Add missing build artifact patterns (.../Debug/, .../Release/)
+
+Verification:
+✅ All 103 unit tests passing
+✅ All 17 golden vectors validated via ironcert
+✅ ironcert certification pipeline functional for all engines
+✅ No encoder/format behavior changed
+✅ Root structure matches FINAL ROOT specification
+✅ Vault contains all non-product archived content
+
+Result:
+- Clean product platform at root (13 directories, 6 key files)
+- All forensics/debug/archived content in vault/
+- Full compliance report generated
+- Ready for distribution and continuous integration
+
+Branch: chore/strict-repo-layout

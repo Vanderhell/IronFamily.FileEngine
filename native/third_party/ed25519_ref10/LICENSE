@@ -1,0 +1,6 @@
+Public domain implementation of Ed25519.
+
+This implementation is based on the reference implementation from https://ed25519.cr.yp.to/
+and the Ed25519 specification (RFC 8032).
+
+The reference implementation is in the public domain.

@@ -1,0 +1,20 @@
+README.md:| CRC Field | CRC32 field defined by the format (reference libraries currently do not compute or validate CRC) |
+docs/FORMAT.md:- CRC32 checksum field/flag (not computed/verified by current reference libraries)
+docs/FORMAT.md:| **CRC** | CRC32 field/flag defined in BJV (reference libraries currently do not compute/verify CRC) |
+fuzz/README.md:  - BJV v2 with CRC32, no VSP
+fuzz/README.md:  - BJV v4 with CRC32, no VSP
+fuzz/README.md:  - BJV v2 with CRC32 and VSP enabled
+spec/bjv_v2.md:[CRC32] (optional)
+spec/bjv_v2.md:| 24 | 4 | CRC Offset | Byte offset to CRC32 (or 0 if not present) |
+spec/bjv_v2.md:| 1 | CRC32 Present | If 1, CRC32 follows file data |
+spec/bjv_v2.md:## CRC32 [Optional]
+spec/bjv_v2.md:BJV v2 defines an optional CRC32 trailer:
+spec/bjv_v2.md:- If `flags.bit1 = 1`, the file layout reserves a CRC32 checksum at the offset indicated by the header's `crc_offset` field.
+spec/bjv_v2.md:- CRC32 algorithm: IEEE 802.3
+spec/bjv_v2.md:**Important:** The current reference implementations in this repository do **not** compute or validate CRC32. Do not rely on CRC for corruption detection unless you add CRC handling in your integration.
+spec/bjx_v1.md:The encrypted payload is the entire, valid BJV file (including its header, dictionary, VSP, root value, and optional CRC32).
+spec/test_vectors.md:- CRC32: Present (flags = 0x03)
+spec/test_vectors.md:- CRC32: Present
+spec/test_vectors.md:- CRC32: Present
+spec/test_vectors.md:2. **CRC Check**: CRC32 correct when present
+tools/ironconfigtool/Program.cs:              --crc on|off                        Include CRC32

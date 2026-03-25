@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "generated": "2026-02-19T22:30:00Z",
+  "description": "Root manifest for IronFamily test vectors (single source of truth)",
+  "vectors": [
+    {
+      "engine": "ilog",
+      "profile": "small",
+      "path": "testing/test-vectors/ilog/small/expected/ilog.ilog",
+      "size_bytes": 1355,
+      "sha256": "",
+      "generated_by": "testing/ilog/IlogVectorGenerator"
+    },
+    {
+      "engine": "ilog",
+      "profile": "medium",
+      "path": "testing/test-vectors/ilog/medium/expected/ilog.ilog",
+      "size_bytes": 102731,
+      "sha256": "",
+      "generated_by": "testing/ilog/IlogVectorGenerator"
+    },
+    {
+      "engine": "ilog",
+      "profile": "large",
+      "path": "testing/test-vectors/ilog/large/expected/ilog.ilog",
+      "size_bytes": 1048907,
+      "sha256": "",
+      "generated_by": "testing/ilog/IlogVectorGenerator"
+    },
+    {
+      "engine": "ilog",
+      "profile": "mega",
+      "path": "testing/test-vectors/ilog/mega/expected/ilog.ilog",
+      "size_bytes": 10486091,
+      "sha256": "",
+      "generated_by": "testing/ilog/IlogVectorGenerator"
+    },
+    {
+      "engine": "ironcfg",
+      "profile": "small",
+      "path": "testing/test-vectors/ironcfg/small/golden.icfg",
+      "size_bytes": 128,
+      "sha256": "",
+      "generated_by": "testing/ironcfg/IronCfgVectorGenerator"
+    },
+    {
+      "engine": "ironcfg",
+      "profile": "medium",
+      "path": "testing/test-vectors/ironcfg/medium/golden.icfg",
+      "size_bytes": 2048,
+      "sha256": "",
+      "generated_by": "testing/ironcfg/IronCfgVectorGenerator"
+    },
+    {
+      "engine": "ironcfg",
+      "profile": "large",
+      "path": "testing/test-vectors/ironcfg/large/golden.icfg",
+      "size_bytes": 32768,
+      "sha256": "",
+      "generated_by": "testing/ironcfg/IronCfgVectorGenerator"
+    },
+    {
+      "engine": "ironcfg",
+      "profile": "mega",
+      "path": "testing/test-vectors/ironcfg/mega/golden.icfg",
+      "size_bytes": 524288,
+      "sha256": "",
+      "generated_by": "testing/ironcfg/IronCfgVectorGenerator"
+    },
+    {
+      "engine": "iupd",
+      "profile": "small",
+      "path": "testing/test-vectors/iupd/small/expected/iupd.iupd",
+      "size_bytes": 20668,
+      "sha256": "",
+      "generated_by": "legacy"
+    },
+    {
+      "engine": "iupd",
+      "profile": "medium",
+      "path": "testing/test-vectors/iupd/medium/expected/iupd.iupd",
+      "size_bytes": 819764,
+      "sha256": "",
+      "generated_by": "legacy"
+    },
+    {
+      "engine": "iupd",
+      "profile": "large",
+      "path": "testing/test-vectors/iupd/large/expected/iupd.iupd",
+      "size_bytes": 6557524,
+      "sha256": "",
+      "generated_by": "legacy"
+    },
+    {
+      "engine": "iupd",
+      "profile": "mega",
+      "path": "testing/test-vectors/iupd/mega/expected/iupd.iupd",
+      "size_bytes": 5273684,
+      "sha256": "",
+      "generated_by": "legacy"
+    }
+  ]
+}
