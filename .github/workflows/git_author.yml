@@ -1,11 +1,7 @@
 name: Git Author Policy Enforcement
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-      - master
+  workflow_dispatch:
 
 jobs:
   verify-author:

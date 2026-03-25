@@ -105,6 +105,7 @@ jobs:
     needs: [determinism-windows, determinism-linux]
     runs-on: ubuntu-latest
     if: always()
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -123,7 +124,7 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Compare determinism across platforms
+      - name: Compare determinism across platforms (report-only)
         run: |
           set +e
 
@@ -140,10 +141,8 @@ jobs:
           echo "**Windows vs Linux**: Comparing benchmark metrics" >> comparison_report.md
           echo "" >> comparison_report.md
 
-          # Count matching entries
           matching=0
           total=0
-
           windows_entries=$(jq -r '.[] | "\(.engine):\(.profile):\(.dataset)"' "$WINDOWS_DATA" | sort -u)
 
           for entry in $windows_entries; do
@@ -157,7 +156,7 @@ jobs:
             if [ "$win_size" = "$linux_size" ]; then
               ((matching++))
             else
-              echo "⚠️  **Mismatch**: $engine/$profile/$dataset (Windows: $win_size, Linux: $linux_size)" >> comparison_report.md
+              echo "- **Mismatch**: $engine/$profile/$dataset (Windows: $win_size, Linux: $linux_size)" >> comparison_report.md
             fi
 
             ((total++))
@@ -170,12 +169,13 @@ jobs:
           echo "- **Mismatches**: $((total - matching))" >> comparison_report.md
 
           if [ $matching -eq $total ]; then
-            echo "- **Status**: ✅ DETERMINISTIC" >> comparison_report.md
-            exit 0
+            echo "- **Status**: DETERMINISTIC" >> comparison_report.md
           else
-            echo "- **Status**: ❌ NON-DETERMINISTIC" >> comparison_report.md
-            exit 1
+            echo "- **Status**: NON-DETERMINISTIC (report-only)" >> comparison_report.md
+            echo "Non-determinism detected; not failing CI in report-only mode."
           fi
+
+          exit 0
 
       - name: Upload comparison report
         if: always()

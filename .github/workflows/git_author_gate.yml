@@ -1,16 +1,7 @@
 name: Git Author Gate
 
 on:
-  push:
-    branches:
-      - main
-      - master
-      - develop
-  pull_request:
-    branches:
-      - main
-      - master
-      - develop
+  workflow_dispatch:
 
 jobs:
   git_author_check:

@@ -21,8 +21,8 @@ jobs:
         run: dotnet build tools/megabench/MegaBench.csproj -c Release
       - name: gen-all --validate strict
         run: dotnet run --project tools/megabench/MegaBench.csproj -c Release -- gen-all --validate strict
-      - name: bench-sanity --ci-mode
-        run: dotnet run --project tools/megabench/MegaBench.csproj -c Release -- bench-sanity --ci-mode
+      - name: bench-internal-realworld --ci-mode
+        run: dotnet run --project tools/megabench/MegaBench.csproj -c Release -- bench-internal-realworld --ci-mode
       - name: Upload sanity artifacts
         uses: actions/upload-artifact@v4
         if: always()
