@@ -13,6 +13,9 @@ namespace IronConfig.Tests;
 
 public class IronCfgBenchmarkTests
 {
+    private static bool IsFailedFormat(BenchmarkResult result) =>
+        result.Format.Contains("(FAILED)", StringComparison.OrdinalIgnoreCase);
+
     private class ConfigEntry
     {
         public int Id { get; set; }
@@ -320,6 +323,8 @@ public class IronCfgBenchmarkTests
     private void DisplayDetailedComparison(List<BenchmarkResult> results, int originalSize)
     {
         var sorted = results.OrderBy(r => r.EncodedSize).ToList();
+        var successful = results.Where(r => !IsFailedFormat(r)).ToList();
+        var rankingSource = successful.Count > 0 ? successful : results;
 
         Console.WriteLine("┌─ FORMAT COMPARISON ───────────────────────────────────────────────────────────────────────┐");
         Console.WriteLine("│ Format      │ Size        │ % Original  │ Encode (MB/s) │ Decode (MB/s) │ Time (ms)      │");
@@ -338,10 +343,13 @@ public class IronCfgBenchmarkTests
         Console.WriteLine("└─────────────┴─────────────┴─────────────┴───────────────┴───────────────┴────────────────┘");
 
         // Rankings
-        Console.WriteLine("\n   🏆 Winners:");
-        Console.WriteLine($"      • Fastest Encode:  {results.OrderByDescending(r => r.EncodeSpeedMBps).First().Format} ({results.OrderByDescending(r => r.EncodeSpeedMBps).First().EncodeSpeedMBps:F0} MB/s)");
-        Console.WriteLine($"      • Fastest Decode:  {results.OrderByDescending(r => r.DecodeSpeedMBps).First().Format} ({results.OrderByDescending(r => r.DecodeSpeedMBps).First().DecodeSpeedMBps:F0} MB/s)");
-        Console.WriteLine($"      • Smallest Size:   {results.OrderBy(r => r.EncodedSize).First().Format} ({FormatBytes(results.OrderBy(r => r.EncodedSize).First().EncodedSize)})");
+        Console.WriteLine("\n   Winners:");
+        var fastestEncode = rankingSource.OrderByDescending(r => r.EncodeSpeedMBps).First();
+        var fastestDecode = rankingSource.OrderByDescending(r => r.DecodeSpeedMBps).First();
+        var smallestSize = rankingSource.OrderBy(r => r.EncodedSize).First();
+        Console.WriteLine($"      - Fastest Encode:  {fastestEncode.Format} ({fastestEncode.EncodeSpeedMBps:F0} MB/s)");
+        Console.WriteLine($"      - Fastest Decode:  {fastestDecode.Format} ({fastestDecode.DecodeSpeedMBps:F0} MB/s)");
+        Console.WriteLine($"      - Smallest Size:   {smallestSize.Format} ({FormatBytes(smallestSize.EncodedSize)})");
     }
 
     private void DisplayFinalSummary(List<BenchmarkResult> allResults)
@@ -351,6 +359,8 @@ public class IronCfgBenchmarkTests
         Console.WriteLine(new string('═', 120));
 
         var byFormat = allResults.GroupBy(r => r.Format).ToList();
+        var successfulGroups = byFormat.Where(g => g.All(r => !IsFailedFormat(r))).ToList();
+        var recommendationGroups = successfulGroups.Count > 0 ? successfulGroups : byFormat;
 
         Console.WriteLine("\n📊 AVERAGE PERFORMANCE METRICS:\n");
         Console.WriteLine("┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐");
@@ -370,9 +380,9 @@ public class IronCfgBenchmarkTests
 
         Console.WriteLine("\n🎯 RECOMMENDATIONS:\n");
 
-        var bestSpeed = byFormat.OrderByDescending(g => g.Average(r => r.DecodeSpeedMBps)).First();
-        var bestSize = byFormat.OrderBy(g => g.Average(r => r.EncodedSize)).First();
-        var bestBalance = byFormat.OrderByDescending(g =>
+        var bestSpeed = recommendationGroups.OrderByDescending(g => g.Average(r => r.DecodeSpeedMBps)).First();
+        var bestSize = recommendationGroups.OrderBy(g => g.Average(r => r.EncodedSize)).First();
+        var bestBalance = recommendationGroups.OrderByDescending(g =>
         {
             var speedScore = g.Average(r => r.DecodeSpeedMBps);
             var sizeScore = 1.0 / (g.Average(r => r.EncodedSize / 1024.0) / 1000.0);

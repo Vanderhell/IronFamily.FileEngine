@@ -32,11 +32,6 @@ static uint64_t get_file_size(const char* path) {
     return (size < 0) ? 0 : (uint64_t)size;
 }
 
-/* Helper: Ensure directory exists */
-static void ensure_dir_exists(const char* dir) {
-    (void)dir;  /* Platform-dependent; just try to use it */
-}
-
 /* File reader implementation */
 static iron_error_t file_read_impl(void* ctx, uint64_t off, uint8_t* dst, uint32_t len) {
     file_reader_ctx_t* fr = (file_reader_ctx_t*)ctx;
@@ -116,7 +111,7 @@ static void test_delta2_case_01(void) {
     const char* base_path = "artifacts/vectors/v1/delta2/v1/case_01.base.bin";
     const char* patch_path = "artifacts/vectors/v1/delta2/v1/case_01.patch2.bin";
     const char* expected_path = "artifacts/vectors/v1/delta2/v1/case_01.out.bin";
-    const char* output_path = "artifacts/_dev/exec_delta_v2_03/out_case_01.bin";
+    const char* output_path = "artifacts/vectors/v1/delta2/v1/out_case_01.bin";
 
     /* Check files exist */
     FILE* f = fopen(base_path, "rb");
@@ -215,7 +210,7 @@ static void test_delta2_bad_magic(void) {
 
     const char* base_path = "artifacts/vectors/v1/delta2/v1/case_01.base.bin";
     const char* patch_path = "artifacts/vectors/v1/delta2/v1/case_01.patch2.bin";
-    const char* output_path = "artifacts/_dev/exec_delta_v2_03/out_bad_magic.bin";
+    const char* output_path = "artifacts/vectors/v1/delta2/v1/out_bad_magic.bin";
 
     FILE* f = fopen(patch_path, "rb");
     if (!f) {
@@ -249,7 +244,7 @@ static void test_delta2_bad_magic(void) {
     memcpy(patch_data, "BADMAGI!", 8);
 
     /* Write corrupted patch to temp file */
-    const char* temp_patch = "artifacts/_dev/exec_delta_v2_03/temp_bad_magic.bin";
+    const char* temp_patch = "artifacts/vectors/v1/delta2/v1/temp_bad_magic.bin";
     fp = fopen(temp_patch, "wb");
     if (!fp || fwrite(patch_data, 1, patch_size, fp) != patch_size) {
         printf("  ❌ FAIL: Cannot write temp patch file\n");
@@ -302,8 +297,6 @@ static void test_delta2_bad_magic(void) {
 
 int main(void) {
     printf("=== IRONDEL2 (Delta v2) Apply Tests ===\n");
-
-    ensure_dir_exists("artifacts/_dev/exec_delta_v2_03");
 
     /* Positive test */
     test_delta2_case_01();

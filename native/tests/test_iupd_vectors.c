@@ -119,6 +119,21 @@ static const test_case_t TEST_CASES[] = {
 
 static const int TEST_CASE_COUNT = sizeof(TEST_CASES) / sizeof(TEST_CASES[0]);
 
+static int load_bench_pubkey(uint8_t pubkey[32]) {
+    static const char* candidates[] = {
+        "artifacts/vectors/v1/iupd/v2/test_pubkey_hex.txt",
+        "native/tests/test_pubkey_hex.txt"
+    };
+
+    for (size_t i = 0; i < sizeof(candidates) / sizeof(candidates[0]); i++) {
+        if (load_public_key_from_file(candidates[i], pubkey)) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 int main(void) {
     int passed = 0, failed = 0;
     uint8_t bench_pubkey[32];
@@ -128,7 +143,7 @@ int main(void) {
     printf("========================================\n\n");
 
     /* Load public key from file */
-    if (!load_public_key_from_file("artifacts/vectors/v1/iupd/v2/test_pubkey_hex.txt", bench_pubkey)) {
+    if (!load_bench_pubkey(bench_pubkey)) {
         printf("ERROR: Cannot load public key from test_pubkey_hex.txt\n");
         return 1;
     }
