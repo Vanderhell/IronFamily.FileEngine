@@ -3,7 +3,8 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/Vanderhell/IronFamily.FileEngine/ci.yml?branch=master&label=CI)](https://github.com/Vanderhell/IronFamily.FileEngine/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Stage: Active Development](https://img.shields.io/badge/stage-active%20development-orange)](#)
-[![Tag](https://img.shields.io/github/v/tag/Vanderhell/IronFamily.FileEngine?sort=semver)](https://github.com/Vanderhell/IronFamily.FileEngine/tags)
+[![Latest Tag](https://img.shields.io/github/v/tag/Vanderhell/IronFamily.FileEngine?sort=semver&label=tag)](https://github.com/Vanderhell/IronFamily.FileEngine/tags)
+[![Wiki](https://img.shields.io/badge/wiki-enabled-blue)](https://github.com/Vanderhell/IronFamily.FileEngine/wiki)
 
 Internal monorepo for IronFamily file/data engines and tooling.
 
