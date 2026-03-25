@@ -32,7 +32,7 @@
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC) |
+| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC) - evidence: `IlogEncoder.cs`, `IlogReader.cs`, `IlogParityTests.cs` |
 | **Flags** | 0x01 | Bit 0 only (little-endian) |
 | **Integrity** | NONE | No CRC32 or BLAKE3 |
 | **Search** | NONE | No index |
@@ -96,7 +96,7 @@ Hex: 49 4C 4F 47 01 01 00 00 [toc_offset as u64LE]
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC), L4 (SEAL with CRC32) |
+| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC), L4 (SEAL with CRC32) - evidence: `IlogEncoder.cs`, `IlogReader.cs`, `IlogStrictRegressionTests.cs` |
 | **Flags** | 0x03 | Bits 0, 1 (little-endian + CRC32) |
 | **Integrity** | CRC32 IEEE | 4-byte IEEE CRC32 of L0 payload |
 | **Search** | NONE | No index |
@@ -147,7 +147,7 @@ Offset  Size  Content
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC), L2 (INDEX) |
+| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC), L2 (INDEX) - evidence: `IlogEncoder.cs`, `IlogReader.cs`, `IlogParityTests.cs` |
 | **Flags** | 0x09 | Bits 0, 3 (little-endian + L2 INDEX) |
 | **Integrity** | NONE | No CRC32 or BLAKE3 |
 | **Search** | ✓ Sorted Index | Byte-offset + size for each record |
@@ -222,7 +222,7 @@ Offset  Content
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **Blocks** | ✓ REQUIRED | L1 (TOC), L3 (ARCHIVE) |
+| **Blocks** | ✓ REQUIRED | L1 (TOC), L3 (ARCHIVE) - evidence: `IlogEncoder.cs`, `IlogReader.cs`, `IlogStrictRegressionTests.cs` |
 | **Flags** | 0x11 | Bits 0, 4 (little-endian + L3 ARCHIVE) |
 | **Integrity** | NONE | No CRC32 or BLAKE3 (use separate verification if needed) |
 | **Search** | NONE | No index (must decompress to search) |
@@ -296,7 +296,7 @@ Offset  Size  Content
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC with witness), L4 (SEAL with BLAKE3+Ed25519) |
+| **Blocks** | ✓ REQUIRED | L0 (DATA), L1 (TOC with witness), L4 (SEAL with BLAKE3+Ed25519) - evidence: `IlogEncoder.cs`, `IlogReader.cs`, `IlogWitnessChainTests.cs` |
 | **Flags** | 0x27 | Bits 0, 1, 2, 5 (little-endian + CRC32 + BLAKE3 + witness) |
 | **Integrity** | BLAKE3 + Signature | 32-byte BLAKE3 hash + 64-byte Ed25519 signature |
 | **Search** | NONE | No index |
