@@ -14,6 +14,7 @@ Kept here:
 Primary engine docs:
 
 - `IUPD_SPEC.md`
+- `IUPD_COMPATIBILITY.md`
 - `ILOG_SPEC.md`
 - `ILOG_SCHEMA_AND_TYPES.md`
 - `ICFG_SPEC.md`
