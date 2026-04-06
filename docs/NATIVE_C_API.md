@@ -116,10 +116,10 @@ static iron_error_t file_read_impl(void* ctx, uint64_t off, uint8_t* dst, uint32
 - **Stateless**: Functions are pure (no internal state)
 
 **File Format**:
-- IUPD v2 (see IUPD_SPEC.md)
-- Manifest (header + chunks)
-- Optional UpdateSequence trailer
-- Ed25519 signature (32 bytes)
+- IUPD v2 strict verification surface (see `IUPD_SPEC.md`)
+- Manifest and chunk table
+- Optional or required UpdateSequence trailer depending on profile policy
+- Ed25519 signature footer with 64-byte signature payload
 
 ### 2.2 Primary Function: `iron_iupd_verify_strict()`
 
@@ -161,9 +161,9 @@ iron_error_t iron_iupd_verify_strict(
 1. Parse IUPD v2 header (magic, version, format)
 2. Validate profile (SECURE or OPTIMIZED only; fail-closed)
 3. Enforce DoS limits:
-   - Manifest size: max 1 MB (configurable)
-   - Chunk count: max 1000 (configurable)
-   - Chunk size: max 100 MB (configurable)
+   - Manifest size: max 100 MB
+   - Chunk count: max 1,000,000
+   - Chunk size: max 1 GB
 4. Verify Ed25519 signature over manifest
 5. If UpdateSequence trailer present: validate sequence >= expected_min
 
@@ -559,7 +559,7 @@ ironcfg_get_root(&view, &root_data, &root_size);
 
 ### 7.2 Format Compatibility
 
-**IUPD v2**: Version 2 format only. Version 1 not supported.
+**IUPD native strict verifier**: Version 2 format only. The `.NET` reader supports v1 and v2, but the strict verifier documented here is the `v2` native surface.
 
 **ICFG v1**: Version 1 format only. Future versions not forward-compatible.
 

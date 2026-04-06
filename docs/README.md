@@ -11,6 +11,13 @@ Kept here:
 - release process
 - wiki source files under `docs/wiki/`
 
+Primary engine docs:
+
+- `IUPD_SPEC.md`
+- `ILOG_SPEC.md`
+- `ICFG_SPEC.md`
+- `ENGINE_TRUTH_SUMMARY.md`
+
 Not kept here:
 
 - audit snapshots
