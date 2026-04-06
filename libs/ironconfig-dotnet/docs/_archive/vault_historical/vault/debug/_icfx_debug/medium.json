@@ -1,7 +1,0 @@
-[
-  {"id": 1, "name": "User1", "active": true},
-  {"id": 2, "name": "User2", "active": false},
-  {"id": 3, "name": "User3", "active": true},
-  {"id": 4, "name": "User4", "active": true},
-  {"id": 5, "name": "User5", "active": false}
-]

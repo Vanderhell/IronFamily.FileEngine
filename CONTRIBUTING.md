@@ -32,3 +32,7 @@ ctest --test-dir native/build -C Release --output-on-failure
 - Validate with `tools/megabench` when touching hot paths.
 - Include before/after numbers in PR description for perf-related changes.
 
+## Documentation
+
+- Keep public documentation free of temporary notes, short-lived baselines, and non-public workflow details.
+- Document externally useful behavior, constraints, and supported workflows only.

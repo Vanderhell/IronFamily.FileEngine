@@ -8,8 +8,7 @@ Common command:
 dotnet run -c Release --project tools/megabench/MegaBench.csproj -- bench-overview --datasets 100KB,1MB --label current
 ```
 
-Source-of-truth outputs:
+Common outputs:
 
 - `artifacts/bench/megabench_metrics/overview/overview_<label>.json`
 - `artifacts/bench/megabench_metrics/overview/overview_<label>_ranking.csv`
-

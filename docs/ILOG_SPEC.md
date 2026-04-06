@@ -1,8 +1,7 @@
 # ILOG Format Specification (v1)
 
-**Status**: Production (verified by execution)
+**Status**: v1 format specification
 **Last Updated**: 2026-03-14
-**Source of Truth**: Live code in libs/ironconfig-dotnet/src/IronConfig.ILog/ and libs/ironcfg-c/src/ilog.c
 
 ---
 
@@ -324,7 +323,7 @@ result = crc ^ 0xFFFFFFFF
 
 ## 11. PROFILE DEPENDENCY TABLE
 
-See ILOG_PROFILE_MATRIX.md for detailed feature matrix.
+Profile behavior is defined directly by the flags, block rules, and validation requirements described in this specification.
 
 | Profile | L0 | L1 | L2 | L3 | L4 | Integrity | Search | Compress |
 |---------|----|----|----|----|----|-----------|---------| ---------|

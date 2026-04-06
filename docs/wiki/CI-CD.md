@@ -5,12 +5,11 @@ Main pipeline:
 - `.github/workflows/ci.yml`
   - .NET restore/build/test
   - Native configure/build/test
-  - Documentation truth gate
+  - Documentation checks
 
-Related workflows exist for determinism, evidence, incremental gates, and performance gates.
+Related workflows may cover additional validation and performance checks.
 
 Branch protection recommendation:
 
 - Require `CI / CI Summary`
 - Disallow direct pushes to protected branches
-

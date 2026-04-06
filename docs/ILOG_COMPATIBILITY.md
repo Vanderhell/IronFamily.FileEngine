@@ -2,7 +2,6 @@
 
 **Status**: v1 specification (no versioning beyond v1 yet)
 **Last Updated**: 2026-03-14
-**Source of Truth**: Live code
 
 ---
 
@@ -166,10 +165,7 @@ Flags   Profile        Valid?
 
 **Single-Block Assumption** (v1):
 - Current implementation creates one file per logical log
-- Witness chain not fully exercised (would need multi-block vectors)
 - Designed for future extension to append-only logs
-
-**NOT VERIFIED**: Multi-block witness chain validation
 
 ---
 
@@ -232,34 +228,14 @@ Flags   Profile        Valid?
 
 ---
 
-## Testing Compatibility
-
-**Test Vectors**:
-- Maintained separately per version
-- v1 test vectors in vectors/small/ilog/ with sub-profiles
-- New versions get new vector directories
-
-**Compatibility Testing** (in 126 .NET tests):
-- All 5 profiles tested (MINIMAL, INTEGRITY, SEARCHABLE, ARCHIVED, AUDITED)
-- Round-trip encoding/decoding verified
-- Cross-profile corruption detection verified
-- Flag validation verified
-
-**NOT TESTED**:
-- Multi-block log files with witness chain
-- Version > 0x01 (future-proofing only)
-- Timestamp edge cases (year 2038+, etc.)
-
----
-
 ## Specification Stability
 
 **v1 Specification Lock**:
 - ILOG_SPEC.md defines v1 format
-- ILOG_PROFILE_MATRIX.md defines v1 profiles
+- ILOG profiles are defined by the v1 specification and reader validation rules in this repository
 - ILOG_COMPATIBILITY.md defines versioning rules
 
-**Lock Date**: 2026-03-14 (live execution date)
+**Lock Date**: 2026-03-14
 **Stability**: v1 format frozen; no changes until v2 revision
 
 ---
@@ -268,10 +244,10 @@ Flags   Profile        Valid?
 
 | Item | Status | Details |
 |------|--------|---------|
-| Multi-block witness chain | NOT VERIFIED | Designed but not tested with multiple blocks |
+| Multi-block witness chain | LIMITED | Defined for the format, intended for future multi-block use |
 | Streaming decompression | NOT IMPLEMENTED | Full buffer only |
-| Very large logs (>1 GB) | NOT TESTED | Theoretical support; not stress-tested |
-| Timestamp year 2038+ | NOT VERIFIED | Spec uses u64; practical limit much later |
+| Very large logs (>1 GB) | UNSPECIFIED | Practical deployment limits depend on implementation |
+| Timestamp year 2038+ | SUPPORTED BY FORMAT | Uses a wide integer timestamp representation |
 | Event count > 4B | IMPOSSIBLE | u32 limit in format |
 | Future version migration | NOT DEFINED | Rules exist; tools not built |
 

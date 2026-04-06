@@ -1,9 +1,9 @@
 # Security Policy
 
-This repository is internal. If you identify a potential security issue:
+If you identify a potential security issue:
 
 - Do not open a public issue with exploit details.
-- Report directly to repository maintainers through internal channels.
+- Report it privately to the repository maintainers.
 
 When reporting, include:
 
@@ -11,4 +11,3 @@ When reporting, include:
 - Reproduction steps
 - Impact assessment
 - Suggested mitigation (if available)
-

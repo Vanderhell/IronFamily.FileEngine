@@ -1,6 +1,6 @@
 # Code of Conduct
 
-This is an internal engineering repository.
+This project expects direct, respectful, engineering-focused collaboration.
 
 Expected collaboration standards:
 
@@ -10,4 +10,3 @@ Expected collaboration standards:
 - Do not hide regressions; report risks early.
 
 Escalate unresolved conflicts to maintainers.
-

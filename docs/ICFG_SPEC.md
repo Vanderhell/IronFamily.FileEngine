@@ -3,7 +3,7 @@
 **Date**: 2026-03-14
 **Version**: 1 (v1 and v2 backward compatible)
 **Status**: LOCKED for v1
-**Source**: Live code analysis (IronCfgHeader.cs, IronCfgEncoder.cs, IronCfgValidator.cs, ironcfg_*.c)
+**Reference**: Current repository implementation
 
 ---
 

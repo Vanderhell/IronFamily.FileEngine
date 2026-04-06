@@ -1,26 +1,25 @@
 # Release Process
 
-This repository uses an internal-first release flow.
+This repository uses a standard tagged release flow.
 
 ## 1) Preconditions
 
 - CI green (`CI / CI Summary`)
 - Changelog updated
-- Benchmark evidence attached for perf-sensitive changes
+- Performance notes attached for perf-sensitive changes
 
 ## 2) Versioning
 
-- Internal milestones: `vX.Y.Z-internal`
-- Stable/public-ready releases: `vX.Y.Z`
+- Tags: `vX.Y.Z`
 
 ## 3) Steps
 
 ```powershell
 git checkout master
 git pull
-git tag -a vX.Y.Z-internal -m "Internal milestone"
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin master
-git push origin vX.Y.Z-internal
+git push origin vX.Y.Z
 ```
 
 ## 4) Release notes
@@ -32,9 +31,8 @@ git push origin vX.Y.Z-internal
   - Migration notes
   - Performance deltas
 
-## 5) Source of truth
+## 5) References
 
 - Code + tests in repository
 - Benchmark artifacts under `artifacts/bench/megabench_metrics/overview/`
 - Changelog entries in `CHANGELOG.md`
-

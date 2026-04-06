@@ -3,7 +3,7 @@
 **Date**: 2026-03-14
 **Version**: 1
 **Status**: LOCKED for v1
-**Source**: Live code analysis (IronCfgHeader.cs, validation logic)
+**Reference**: Current repository implementation
 
 ---
 
@@ -241,8 +241,6 @@ Same input (schema + data) produces identical byte sequence:
 - ✅ Float normalization (-0.0 → +0.0)
 - ✅ VarUInt minimal encoding
 - ✅ UTF-8 strings (no normalization)
-
-**Verified**: 106 tests passing, determinism tests included
 
 ### v2 Determinism
 

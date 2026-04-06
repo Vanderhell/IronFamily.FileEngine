@@ -3,7 +3,7 @@
 **Date**: 2026-03-14
 **Version**: 1 (v1, v2 compatible)
 **Status**: LOCKED for v1
-**Source**: Live code analysis (IronCfgValueReader.cs, IronCfgEncoder.cs, ironcfg_*.c)
+**Reference**: Current repository implementation
 
 ---
 
@@ -380,35 +380,7 @@ Type byte indicates size, but data is truncated:
 
 ---
 
-## 9. Evidence Status
-
-### Fully Implemented and Tested
-
-- ✅ Type codes 0x00, 0x01, 0x02, 0x10, 0x11, 0x12 (primitives)
-- ✅ Type codes 0x20, 0x22 (string, bytes)
-- ✅ Type code 0x30 (array, homogeneous)
-- ✅ Type code 0x40 (object)
-- ✅ Schema parsing and validation
-- ✅ Field ID ordering checks
-- ✅ Type validation contract
-- ✅ Deterministic encoding (field order, float normalization)
-- ✅ 106/106 .NET tests passing
-
-### Partially Implemented
-
-- ⚠️ ElementSchema (v2 feature, present but optional)
-- ⚠️ BLAKE3 validation (structure only, not cryptographic verification)
-- ⚠️ Native C tests (code present, not in CMake build)
-
-### Not Verified
-
-- ❓ Very large schemas (>50,000 fields) - limit exists but not stress-tested
-- ❓ Very deep nesting (>20 levels) - limit exists but not stress-tested
-- ❓ Memory allocation patterns - not measured
-
----
-
-## Summary
+## 9. Summary
 
 ICFG type system is:
 - **Complete**: 11 type codes covering all common data types

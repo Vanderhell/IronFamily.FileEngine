@@ -1,6 +1,6 @@
 # IronFamily Wiki
 
-This directory is the source-of-truth for wiki content.
+This directory contains the Markdown source for the project wiki.
 
 ## Sections
 
@@ -11,5 +11,4 @@ This directory is the source-of-truth for wiki content.
 ## Notes
 
 - Keep wiki content aligned with code and CI behavior.
-- Prefer short, decision-focused pages.
-
+- Prefer short, public-facing pages.

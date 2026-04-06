@@ -2,8 +2,7 @@
 
 **Version**: 1.0
 **Date**: 2026-03-14
-**Status**: VERIFIED_BY_EXECUTION
-**Scope**: Public C99 API for IUPD, ICFG codecs
+**Scope**: Public C99 API for IUPD and ICFG codecs
 
 ---
 
@@ -15,7 +14,6 @@ The IronFamily native C library provides zero-copy, streaming access to IUPD (up
 - **Language**: C99 (ISO/IEC 9899:1999)
 - **Memory Model**: Zero-copy where possible, explicit ownership
 - **Error Handling**: Error codes (enums), no exceptions
-- **Verification**: Execution-verified against golden test vectors
 - **Thread Safety**: Stateless functions (thread-safe if no shared state)
 - **Platforms**: Windows (MSVC 14.44), Linux (GCC/Clang in future)
 
@@ -225,7 +223,7 @@ iron_error_t iron_iupd_inc_parse_metadata(
 );
 ```
 
-**IUPD Type**: Not exposed as public API (internal to verification)
+**IUPD Type**: Not exposed as part of the public API surface
 
 ---
 
