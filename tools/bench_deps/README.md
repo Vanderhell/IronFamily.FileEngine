@@ -1,36 +1,36 @@
 # MegaBench Dependencies
 
-Pinned versions for external tools and libraries used in competitor benchmarks.
+Working notes for optional external benchmark dependencies. This file is not a source of truth for pinned production versions.
 
 ## .NET Libraries
 
 | Library | Version | Purpose | Notes |
 |---------|---------|---------|-------|
-| protobuf-net | TBD | Protobuf serialization | Specify in .csproj |
-| FlatSharp | TBD | FlatBuffers bindings | TBD |
-| Cap'n Proto | TBD | Cap'n Proto bindings | TBD |
-| MessagePack | TBD | MessagePack serialization | TBD |
-| Cbor | TBD | CBOR serialization | TBD |
+| protobuf-net | not pinned here | Protobuf serialization | Check benchmark project files |
+| FlatSharp | not pinned here | FlatBuffers bindings | Check benchmark project files |
+| Cap'n Proto | not pinned here | Cap'n Proto bindings | Check benchmark project files |
+| MessagePack | not pinned here | MessagePack serialization | Check benchmark project files |
+| Cbor | not pinned here | CBOR serialization | Check benchmark project files |
 
 ## External Tools
 
 | Tool | Version | Platform | Purpose |
 |------|---------|----------|---------|
-| xdelta3 | TBD | Linux/Windows | Binary delta patching |
-| bsdiff | TBD | Linux/Windows | Binary diff |
+| xdelta3 | environment-specific | Linux/Windows | Binary delta patching |
+| bsdiff | environment-specific | Linux/Windows | Binary diff |
 
 ## Installation
 
 ### Windows
 
 ```bash
-# TODO: Document Windows installation of external tools
+# Install external benchmark tools separately and ensure they are on PATH.
 ```
 
 ### Linux
 
 ```bash
-# TODO: Document Linux installation of external tools
+# Install external benchmark tools separately and ensure they are on PATH.
 ```
 
 ## Environment Setup
@@ -47,5 +47,5 @@ bsdiff -v
 
 ---
 
-**Status**: Skeleton (versions TBD during PHASE 3)
+**Status**: Informational only. Resolve exact versions from benchmark project files or the local benchmark environment before using this as a setup reference.
 

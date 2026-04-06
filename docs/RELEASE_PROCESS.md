@@ -10,16 +10,17 @@ This repository uses a standard tagged release flow.
 
 ## 2) Versioning
 
-- Tags: `vX.Y.Z`
+- Annotated tags use the repository release version, for example `v2.6.0`.
+- Replace the example version below with the actual release you are publishing.
 
 ## 3) Steps
 
 ```powershell
 git checkout master
 git pull
-git tag -a vX.Y.Z -m "Release vX.Y.Z"
+git tag -a v2.6.0 -m "Release v2.6.0"
 git push origin master
-git push origin vX.Y.Z
+git push origin v2.6.0
 ```
 
 ## 4) Release notes
