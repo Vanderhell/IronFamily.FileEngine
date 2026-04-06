@@ -15,6 +15,7 @@ Primary engine docs:
 
 - `IUPD_SPEC.md`
 - `ILOG_SPEC.md`
+- `ILOG_SCHEMA_AND_TYPES.md`
 - `ICFG_SPEC.md`
 - `ENGINE_TRUTH_SUMMARY.md`
 
