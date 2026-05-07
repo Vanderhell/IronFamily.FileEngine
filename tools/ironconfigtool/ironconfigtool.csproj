@@ -22,7 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
     <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig.Tooling/IronConfig.Tooling.csproj" />
-    <ProjectReference Include="../../libs/ironconfig-dotnet/legacy/IronConfig.Crypto/IronConfig.Crypto.csproj" />
   </ItemGroup>
 
   <ItemGroup>
