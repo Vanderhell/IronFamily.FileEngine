@@ -6,17 +6,11 @@
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <NoWarn>CS1570</NoWarn>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../libs/bjv-dotnet/src/IronConfig/IronConfig.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="ironconfigtool/**" />
-    <Compile Remove="ironcert/**" />
-    <Compile Remove="diagnostics/**" />
-    <Compile Remove="datasets/**" />
+    <Compile Include="Icf2VectorGenerator.cs" />
   </ItemGroup>
 
 </Project>
