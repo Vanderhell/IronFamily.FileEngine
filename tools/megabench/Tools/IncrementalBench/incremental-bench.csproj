@@ -3,12 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>IronFamily.MegaBench.Tools.IncrementalBench</RootNamespace>
+    <AssemblyName>megabench-incremental-bench</AssemblyName>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
+    <ProjectReference Include="../../../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
   </ItemGroup>
 
 </Project>
