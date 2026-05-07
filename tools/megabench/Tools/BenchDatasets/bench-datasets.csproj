@@ -3,7 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>BenchDatasets</RootNamespace>
+    <RootNamespace>IronFamily.MegaBench.Tools.BenchDatasets</RootNamespace>
+    <AssemblyName>megabench-bench-datasets</AssemblyName>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
