@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>IronFamily.MegaBench.Tools.Crc32Kat</RootNamespace>
+    <AssemblyName>megabench-crc32-kat</AssemblyName>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
+  </ItemGroup>
+
+</Project>
