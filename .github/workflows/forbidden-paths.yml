@@ -1,0 +1,54 @@
+name: forbidden-paths
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for forbidden tracked paths
+        shell: bash
+        run: |
+          set -e
+          # Patterns that should never be tracked (build outputs, scratch dirs)
+          PATTERNS=(
+            'bin/'
+            'obj/'
+            'build/'
+            'build-debug/'
+            'build_test/'
+            'CMakeFiles/'
+            'CMakeScratch/'
+            'pkgRedirects/'
+            'TestResults/'
+            '_dev/'
+            '_dump/'
+            '_gauntlet/'
+            '\.tlog$'
+            '\.tlog/'
+            '^tree\.txt$'
+            '^\.claude/'
+          )
+
+          FAIL=0
+          for pat in "${PATTERNS[@]}"; do
+            HITS=$(git ls-files | grep -E "$pat" || true)
+            if [ -n "$HITS" ]; then
+              echo "❌ Forbidden path pattern matched: $pat"
+              echo "$HITS" | head -20
+              echo ""
+              FAIL=1
+            fi
+          done
+
+          if [ "$FAIL" -ne 0 ]; then
+            echo "Build artifacts or scratch dirs are tracked in git."
+            echo "Remove them with 'git rm -rf --cached <path>' and ensure .gitignore covers them."
+            exit 1
+          fi
+
+          echo "✅ No forbidden paths tracked."
