@@ -2,7 +2,7 @@
 
 Date: 2026-05-07
 Branch: master
-Commits made this run: 9
+Commits made this run: 10
 
 ## 1. Summary
 
@@ -175,6 +175,7 @@ Top-level files (selected): `unified-bench.csproj`, `Program.cs`, `IoTArtifactBe
 
 ### Commits made this run
 ```
+2dd6e17 docs: add cleanup phase 2 report
 86d89ce ci: add forbidden-paths guard to prevent build artifacts in git
 5d47006 refactor(bench): consolidate iupd_bench_real into megabench/Tools
 98c210c refactor(bench): consolidate incremental-bench into megabench/Tools
