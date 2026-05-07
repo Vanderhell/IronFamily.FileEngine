@@ -87,3 +87,35 @@ project.nuget.cache
 /artifacts/benchmarks
 /artifacts/benchmarks/datasets
 /tools/unified-bench/artifacts
+
+# === Build outputs (.NET) ===
+**/bin/
+**/obj/
+**/TestResults/
+*.user
+*.suo
+
+# === Build outputs (CMake / native) ===
+**/build/
+**/build-debug/
+**/build_test/
+**/CMakeFiles/
+**/CMakeScratch/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/pkgRedirects/
+*.tlog
+
+# === IDE ===
+.vs/
+.vscode/
+.idea/
+*.swp
+
+# === Agent / dev scratch ===
+**/_dev/
+**/_dump/
+**/_gauntlet/
+
+# === Misc ===
+tree.txt
