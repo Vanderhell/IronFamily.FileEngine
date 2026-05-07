@@ -5,12 +5,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <AssemblyName>diff-bench</AssemblyName>
-    <RootNamespace>DiffBench</RootNamespace>
+    <AssemblyName>megabench-diff-bench</AssemblyName>
+    <RootNamespace>IronFamily.MegaBench.Tools.DiffBench</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
+    <ProjectReference Include="../../../../libs/ironconfig-dotnet/src/IronConfig/IronConfig.csproj" />
   </ItemGroup>
 
 </Project>
