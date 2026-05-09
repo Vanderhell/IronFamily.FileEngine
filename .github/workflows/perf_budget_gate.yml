@@ -35,7 +35,7 @@ jobs:
       - name: Run performance budget comparator
         run: |
           $repoRoot = Get-Location
-          & "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -File "tools/bench/compare_baseline.ps1"
+          & "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -File "bench/compare_baseline.ps1"
           $exitCode = $LASTEXITCODE
           if ($exitCode -eq 2) {
             Write-Host "FAIL: No valid benchmark data for comparison" -ForegroundColor Red
