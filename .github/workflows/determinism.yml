@@ -24,13 +24,13 @@ jobs:
 
       - name: Build BenchStabilized
         run: |
-          cd tools/bench_profiles/BenchStabilized
+          cd tools/megabench/Tools/BenchProfiles/BenchStabilized
           dotnet build -c Release
 
       - name: Run benchmarks
         run: |
           $repoRoot = Get-Location
-          & "$repoRoot\tools\bench_profiles\BenchStabilized\bin\Release\net8.0\BenchStabilized.exe"
+          & "$repoRoot\tools\megabench\Tools\BenchProfiles\BenchStabilized\bin\Release\net8.0\megabench-bench-profiles-stabilized.exe"
 
       - name: Run determinism CI (Windows)
         run: |
@@ -70,12 +70,12 @@ jobs:
 
       - name: Build BenchStabilized
         run: |
-          cd tools/bench_profiles/BenchStabilized
+          cd tools/megabench/Tools/BenchProfiles/BenchStabilized
           dotnet build -c Release
 
       - name: Run benchmarks
         run: |
-          ./tools/bench_profiles/BenchStabilized/bin/Release/net8.0/BenchStabilized
+          ./tools/megabench/Tools/BenchProfiles/BenchStabilized/bin/Release/net8.0/megabench-bench-profiles-stabilized
 
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq

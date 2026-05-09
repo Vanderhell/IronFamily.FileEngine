@@ -9,6 +9,8 @@ using IronConfig.ILog;
 using IronConfig.Iupd;
 using IronConfig;
 
+namespace BenchProfilesStabilized;
+
 class Program
 {
     static void Main()

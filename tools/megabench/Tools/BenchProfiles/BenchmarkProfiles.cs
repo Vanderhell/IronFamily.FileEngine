@@ -6,7 +6,9 @@ using System.Linq;
 using IronConfig.ILog;
 using IronConfig.Iupd;
 
-class BenchmarkProfiles
+namespace BenchProfiles;
+
+class Program
 {
     static void Main()
     {

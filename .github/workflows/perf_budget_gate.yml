@@ -24,13 +24,13 @@ jobs:
 
       - name: Build BenchStabilized
         run: |
-          cd tools/bench_profiles/BenchStabilized
+          cd tools/megabench/Tools/BenchProfiles/BenchStabilized
           dotnet build -c Release
 
       - name: Run stabilized benchmarks
         run: |
           $repoRoot = Get-Location
-          & "$repoRoot\tools\bench_profiles\BenchStabilized\bin\Release\net8.0\BenchStabilized.exe"
+          & "$repoRoot\tools\megabench\Tools\BenchProfiles\BenchStabilized\bin\Release\net8.0\megabench-bench-profiles-stabilized.exe"
 
       - name: Run performance budget comparator
         run: |
