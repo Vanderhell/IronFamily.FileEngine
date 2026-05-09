@@ -75,3 +75,22 @@ Runner zapisuje:
 - `--cold` resetuje strict metadata cache aj reader cache pred každým meraním.
 - Datasety `1KB`, `10KB`, `100KB` a `1MB` sú generované do root `artifacts/bench/megabench_datasets/`.
 - Po oprave dataset generatora už benchmark škáluje s reálnou veľkosťou payloadu, nie s malým fixným objektom.
+
+## Dependencies (optional)
+
+Working notes for optional external benchmark dependencies. This is **not** a source of truth for pinned production versions.
+
+### .NET libraries (examples)
+
+- `protobuf-net`
+- `FlatSharp`
+- `MessagePack`
+
+Exact versions live in the benchmark `.csproj` files.
+
+### External tools (examples)
+
+- `xdelta3` (binary delta patching)
+- `bsdiff` (binary diff)
+
+Install these separately (platform-specific) and ensure they are on `PATH`.
