@@ -15,7 +15,7 @@ This document explains `IUPD` at the implementation-flow level:
 - what `ValidateFast()` actually checks
 - what `ValidateStrict()` adds on top
 
-It is not a replacement for `IUPD_SPEC.md` or `IUPD_COMPATIBILITY.md`.
+It is not a replacement for `SPEC.md` or `COMPATIBILITY.md`.
 
 ---
 

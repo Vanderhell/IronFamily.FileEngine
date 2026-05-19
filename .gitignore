@@ -16,6 +16,7 @@ dist/
 tmp/
 temp/
 artifacts/
+**/artifacts/
 scratch/
 testing/
 _trash/

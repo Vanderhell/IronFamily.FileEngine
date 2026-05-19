@@ -1,0 +1,2 @@
+Documentation moved to: docs/vectors/small/iupd/delta/v1/MANIFEST.md
+

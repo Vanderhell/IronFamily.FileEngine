@@ -21,7 +21,7 @@
     <ProjectReference Include="../IronConfig.Common/IronConfig.Common.csproj" />
     <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
     <PackageReference Include="BLAKE3" Version="2.0.0" />
-    <None Include="README_NUGET_CORE.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\docs\libs\ironconfig-dotnet\README_NUGET_CORE.md" Link="README_NUGET_CORE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <!-- Flagship: Always include IronCfg -->

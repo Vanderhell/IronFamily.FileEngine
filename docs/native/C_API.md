@@ -116,7 +116,7 @@ static iron_error_t file_read_impl(void* ctx, uint64_t off, uint8_t* dst, uint32
 - **Stateless**: Functions are pure (no internal state)
 
 **File Format**:
-- IUPD v2 strict verification surface (see `IUPD_SPEC.md`)
+  - IUPD v2 strict verification surface (see `docs/engines/iupd/SPEC.md`)
 - Manifest and chunk table
 - Optional or required UpdateSequence trailer depending on profile policy
 - Ed25519 signature footer with 64-byte signature payload
@@ -603,15 +603,15 @@ ironcfg_get_root(&view, &root_data, &root_size);
 
 ## 10. Examples
 
-See `docs/NATIVE_C_EXAMPLES.md` for buildable example code.
+See `docs/native/C_EXAMPLES.md` for buildable example code.
 
 ---
 
 ## 11. References
 
-- **IUPD Specification**: `docs/IUPD_SPEC.md`
-- **ICFG Specification**: `docs/ICFG_SPEC.md`
-- **Build Instructions**: `docs/BUILD.md`
+- **IUPD Specification**: `docs/engines/iupd/SPEC.md`
+- **ICFG Specification**: `docs/engines/icfg/SPEC.md`
+- **Build Instructions**: `README.md`
 - **Test Vectors**: `vectors/small/`, `incremental_vectors/`, `artifacts/vectors/v1/`
 
 ---

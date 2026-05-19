@@ -1,0 +1,2 @@
+Attribution moved to: docs/attribution/Ed25519Vendor_ATTRIBUTION.md
+

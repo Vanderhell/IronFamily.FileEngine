@@ -231,9 +231,9 @@ Flags   Profile        Valid?
 ## Specification Stability
 
 **v1 Specification Lock**:
-- ILOG_SPEC.md defines v1 format
+- `SPEC.md` defines v1 format
 - ILOG profiles are defined by the v1 specification and reader validation rules in this repository
-- ILOG_COMPATIBILITY.md defines versioning rules
+- `COMPATIBILITY.md` defines versioning rules
 
 **Lock Date**: 2026-03-14
 **Stability**: v1 format frozen; no changes until v2 revision

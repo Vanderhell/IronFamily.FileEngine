@@ -1,0 +1,2 @@
+Documentation moved to: docs/libs/ironconfig-dotnet/TRUST_STORE_V1_SCHEMA.md
+
