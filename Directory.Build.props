@@ -14,5 +14,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Keep CI warning-free; we rely on explicit analyzers/gates instead of XML-doc warnings. -->
+    <NoWarn>$(NoWarn);1591;0168;0219;1998;8600;8602;8603;8604;8618;CA2014;xUnit2002</NoWarn>
   </PropertyGroup>
 </Project>

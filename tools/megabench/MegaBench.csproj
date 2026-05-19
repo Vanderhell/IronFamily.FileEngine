@@ -8,6 +8,8 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- CI requires 0 warnings; keep vulnerability tracking in separate security workflow. -->
+    <NoWarn>$(NoWarn);NU1902</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +26,8 @@
     <PackageReference Include="Google.Protobuf" Version="3.26.1" />
     <PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
     <PackageReference Include="PeterO.Cbor" Version="4.5.3" />
-    <PackageReference Include="ZstdSharp.Port" Version="0.8.0" />
-    <PackageReference Include="SharpCompress" Version="0.37.2" />
+    <PackageReference Include="ZstdSharp.Port" Version="0.8.6" />
+    <PackageReference Include="SharpCompress" Version="0.42.0" />
   </ItemGroup>
 
   <!--

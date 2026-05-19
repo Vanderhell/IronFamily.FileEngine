@@ -19,8 +19,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
-    <PackageReference Include="MessagePack" Version="2.5.140" />
-    <PackageReference Include="protobuf-net" Version="3.0.113" />
+    <PackageReference Include="MessagePack" Version="2.5.187" />
+    <PackageReference Include="protobuf-net" Version="3.0.125" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
   </ItemGroup>
 
