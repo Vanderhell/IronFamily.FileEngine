@@ -28,4 +28,12 @@
     <PackageReference Include="SharpCompress" Version="0.37.2" />
   </ItemGroup>
 
+  <!--
+    `tools/megabench/Tools/**` contains historical standalone utilities with their own `Main()`.
+    They must not be compiled into the `megabench` CLI executable (would create multiple entrypoints).
+  -->
+  <ItemGroup>
+    <Compile Remove="Tools\**\*.cs" />
+  </ItemGroup>
+
 </Project>

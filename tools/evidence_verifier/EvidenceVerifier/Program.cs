@@ -1,4 +1,3 @@
-#!/usr/bin/env dotnet
 using System;
 using System.Collections.Generic;
 using System.IO;
