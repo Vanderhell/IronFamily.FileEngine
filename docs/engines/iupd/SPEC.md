@@ -283,7 +283,7 @@ Current serialized structure:
 | Algorithm | Byte | Status |
 |---|---:|---|
 | `DELTA_V1` | `0x01` | legacy compatibility |
-| `IRONDEL2` | `0x02` | active production path |
+| `IRONDEL2` | `0x02` | incremental delta algorithm identifier present in current code |
 
 ### Current `.NET` requirements for `INCREMENTAL`
 
@@ -370,18 +370,4 @@ Important truth:
 
 ---
 
-## 15. Fresh Test State Already Confirmed In This Repository Session
-
-Fresh `.NET` result previously executed in this repository session:
-
-- `IronConfig.Iupd.Tests`: `253/253 passed`
-
-Fresh native executable results previously executed in this repository session:
-
-- `native/build/tests/Release/test_iupd_vectors.exe`: `6/6 passed`
-- `native/build/tests/Release/test_incremental_metadata.exe`: `10/10 passed`
-- `native/build/tests/Release/test_delta2_vectors.exe`: `2/2 passed`
-- `native/build/tests/Release/test_diff_vectors.exe`: `1/1 passed`
-
-These results are summarized together with code evidence in `docs/ENGINE_TRUTH_SUMMARY.md`.
-
+Implementation status is tracked separately in `docs/IMPLEMENTATION_STATUS.md`.

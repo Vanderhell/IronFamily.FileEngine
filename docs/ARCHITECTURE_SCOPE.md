@@ -1,6 +1,6 @@
 # Architecture Scope
 
-This document freezes the active product scope for the repair pack.
+This document defines the active repository scope for public documentation.
 
 ## Active Engines
 
@@ -14,4 +14,4 @@ This document freezes the active product scope for the repair pack.
 - The canonical native implementation target is portable `C99`.
 - `C#` remains in scope as host tooling, reference implementation, vector generator, parity oracle, and binding until native parity is proven.
 - `C++` is not an independent implementation target for this repository.
-- This repair pack does not introduce new engines, new profiles, or new file formats.
+- Documentation must not present historical codecs as active supported engines.

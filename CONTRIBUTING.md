@@ -15,8 +15,9 @@
 ## Validation before PR
 
 ```powershell
+dotnet restore libs/ironconfig-dotnet/IronConfig.sln
 dotnet build -c Release libs/ironconfig-dotnet/IronConfig.sln
-dotnet test  -c Release libs/ironconfig-dotnet/IronConfig.sln
+dotnet test -c Release libs/ironconfig-dotnet/IronConfig.sln
 ```
 
 If native components are affected:
@@ -27,10 +28,17 @@ cmake --build native/build --config Release
 ctest --test-dir native/build -C Release --output-on-failure
 ```
 
+If documentation is affected:
+
+```powershell
+bash tools/docs_truth_gate/verify_docs_truth.sh .
+git diff --check
+```
+
 ## Performance-sensitive areas
 
 - Validate with `tools/megabench` when touching hot paths.
-- Include before/after numbers in PR description for perf-related changes.
+- Include before/after numbers in PR description for perf-related changes when you actually ran the benchmarks.
 
 ## Documentation
 

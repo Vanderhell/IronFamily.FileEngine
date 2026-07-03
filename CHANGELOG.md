@@ -11,13 +11,10 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
-- Professional repository baseline (README, CONTRIBUTING, SECURITY, CODEOWNERS, templates)
-- Unified CI baseline in `.github/workflows/ci.yml`
-- Wiki source pages under `docs/wiki/`
-- Benchmark overview artifacts and analysis for `10KB,100KB,1MB`
+- Repository baseline documents and CI workflows
+- Initial public documentation set for active repository scope
 
 ### Changed
 
 - Test-vector path fixes after vectors migration
-- ILOG/IUPD test stability fixes
-- Manifest hash updates for ILOG vectors
+- ILOG and IUPD test stability fixes

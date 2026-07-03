@@ -4,28 +4,30 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Stage: Active Development](https://img.shields.io/badge/stage-active%20development-orange)](#)
 [![Latest Tag](https://img.shields.io/github/v/tag/Vanderhell/IronFamily.FileEngine?sort=semver&label=tag)](https://github.com/Vanderhell/IronFamily.FileEngine/tags)
-[![Wiki](https://img.shields.io/badge/wiki-enabled-blue)](https://github.com/Vanderhell/IronFamily.FileEngine/wiki)
 
-Monorepo for IronFamily file and data engines, native components, and supporting tools.
+Monorepo for the active `ICFG`, `ILOG`, and `IUPD` engines plus their native and managed support code.
 
-Status: this project is actively under development and still changing.
+The canonical native direction is portable `C99`. The current `C#` and `.NET` code remains in scope as host tooling, reference implementation, vector generation, parity support, and bindings support. Native and managed surfaces are not claimed equivalent unless a specific gate proves parity.
 
-## What is in this repo
+Historical codecs remain in the source tree for compatibility work, but they are not active supported engines. This documentation does not claim production readiness.
 
-- `libs/` .NET and native libraries (`IronConfig`, `ILog`, `IUPD`, related components)
-- `native/` native code and low-level integration assets
-- `tools/` development and benchmarking tools
-- `vectors/` canonical test vectors
-- `docs/` technical documentation and specifications
+## Repository layout
 
-## Quick start
+- `libs/ironconfig-dotnet/` managed libraries, tests, and host tooling
+- `libs/ironcfg-c/` public C API surface and related native code
+- `native/` top-level native build and `ironfamily_c` verifier-oriented code
+- `vectors/` canonical vectors referenced by tests
+- `docs/` public documentation for active repository scope
+
+## Build and test
 
 ```powershell
+dotnet restore libs/ironconfig-dotnet/IronConfig.sln
 dotnet build -c Release libs/ironconfig-dotnet/IronConfig.sln
-dotnet test  -c Release libs/ironconfig-dotnet/IronConfig.sln
+dotnet test -c Release libs/ironconfig-dotnet/IronConfig.sln
 ```
 
-Native (if configured in your environment):
+Native:
 
 ```powershell
 cmake -S native -B native/build
@@ -33,33 +35,19 @@ cmake --build native/build --config Release
 ctest --test-dir native/build -C Release --output-on-failure
 ```
 
-## Performance
+## Current dependency limits
 
-Overview benchmark:
+- The native build currently pulls in `libs/ironcfg-c`, whose CMake configuration requires `OpenSSL`.
+- Because of that dependency, the full native tree should not be described as dependency-free embedded core code.
+- `.NET 8.0` is required for the managed solution and its tests.
 
-```powershell
-dotnet run -c Release --project tools/megabench/MegaBench.csproj -- bench-overview --datasets 100KB,1MB --label current
-```
-
-Reference benchmark documents:
-- `artifacts/bench/megabench_metrics/overview/overview_mega_all_20260325_analysis.md`
-- `artifacts/bench/megabench_metrics/overview/overview_mega_all_20260325_ranking.csv`
-
-## Repository standards
-
-- Clean root, no ad-hoc logs/scripts in repository root
-- Canonical vectors live under `vectors/`
-- CI gates are required before merging
-- Documentation should stay aligned with code and released behavior
-
-## Wiki
-
-Wiki content source is maintained under `docs/wiki/`.
-Use this directory as source-of-truth for future GitHub Wiki sync.
-
-## Release
+## Documentation
 
 - Documentation index: [docs/README.md](./docs/README.md)
+- Build and install: [docs/BUILD_AND_INSTALL.md](./docs/BUILD_AND_INSTALL.md)
+- Architecture and scope: [docs/ARCHITECTURE_SCOPE.md](./docs/ARCHITECTURE_SCOPE.md)
+- Compatibility and versioning: [docs/COMPATIBILITY_AND_VERSIONING.md](./docs/COMPATIBILITY_AND_VERSIONING.md)
+- Security model: [docs/SECURITY_MODEL.md](./docs/SECURITY_MODEL.md)
+- Implementation status: [docs/IMPLEMENTATION_STATUS.md](./docs/IMPLEMENTATION_STATUS.md)
 - Release process: [docs/RELEASE_PROCESS.md](./docs/RELEASE_PROCESS.md)
 - Changelog: [CHANGELOG.md](./CHANGELOG.md)
-- Releases and changelog history are tracked in the repository

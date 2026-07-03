@@ -1,25 +1,28 @@
 # Documentation
 
-This directory contains public technical documentation for the repository.
+This directory contains the maintained public documentation set for the repository.
 
-Kept here:
+## Core documents
 
-- engine truth summary
-- format specifications
-- compatibility notes
-- native C API and usage examples
-- release process
-- wiki source files under `docs/wiki/`
+- `ARCHITECTURE_SCOPE.md`
+- `BUILD_AND_INSTALL.md`
+- `COMPATIBILITY_AND_VERSIONING.md`
+- `IMPLEMENTATION_STATUS.md`
+- `SECURITY_MODEL.md`
+- `RELEASE_PROCESS.md`
+- `HISTORICAL_NOTES.md`
 
-Primary engine docs:
+## Engine references
 
-- `engines/README.md`
-- `ENGINE_TRUTH_SUMMARY.md`
+- `engines/icfg/`
+- `engines/ilog/`
+- `engines/iupd/`
 
-Not kept here:
+## API references
 
-- audit snapshots
-- temporary benchmark snapshots
-- evidence matrices
-- session-specific status reports
-- environment-specific validation notes
+- `native/C_API.md`
+- `native/C_EXAMPLES.md`
+- `libs/ironcfg-c/README.md`
+- `libs/ironconfig-dotnet/README.md`
+
+This tree intentionally excludes session-specific execution logs, benchmark snapshots, internal prompts, and duplicate status reports.

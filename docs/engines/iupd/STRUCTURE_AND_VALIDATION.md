@@ -15,7 +15,7 @@ This document explains `IUPD` at the implementation-flow level:
 - what `ValidateFast()` actually checks
 - what `ValidateStrict()` adds on top
 
-It is not a replacement for `SPEC.md` or `COMPATIBILITY.md`.
+It is not a replacement for `SPEC.md` or `docs/COMPATIBILITY_AND_VERSIONING.md`.
 
 ---
 
@@ -262,14 +262,6 @@ The strict native verifier should be treated as the active device-side verificat
 
 ---
 
-## 16. Fresh Test Context Already Confirmed In This Repository Session
+## 16. Related Repository Status
 
-Previously executed in this repository session:
-
-- `.NET IUPD`: `253/253 passed`
-- native `test_iupd_vectors.exe`: `6/6 passed`
-- native `test_incremental_metadata.exe`: `10/10 passed`
-- native `test_delta2_vectors.exe`: `2/2 passed`
-- native `test_diff_vectors.exe`: `1/1 passed`
-
-For current executed-now engine status, see `docs/ENGINE_TRUTH_SUMMARY.md`.
+Implementation status and repository-wide scope are summarized in `docs/IMPLEMENTATION_STATUS.md`.

@@ -310,11 +310,7 @@ Current implementation rules that matter most:
 
 ---
 
-## 13. Fresh Test Coverage Already Confirmed In This Repository Session
-
-Fresh `.NET` test result already executed in this repository session:
-
-- `IronConfig.ILog.Tests`: `144/144 passed`
+## 13. Relevant Test Groups
 
 Relevant test groups visible in the repository:
 
@@ -325,4 +321,4 @@ Relevant test groups visible in the repository:
 - `IlogStrictRegressionTests.cs`
 - `SpecLockTests.cs`
 
-For broader engine status and executed-now evidence, see `docs/ENGINE_TRUTH_SUMMARY.md`.
+Implementation status and repository-wide scope are summarized in `docs/IMPLEMENTATION_STATUS.md`.

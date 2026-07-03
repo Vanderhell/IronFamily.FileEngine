@@ -14,11 +14,11 @@ This implementation is **fully RFC8032 compatible** and passes all official test
 
 ## Files Included
 
-- `SommerEngineering/Constants.cs` - Ed25519 curve constants and pre-computed values
-- `SommerEngineering/EdPoint.cs` - Elliptic curve point operations
-- `SommerEngineering/Extensions.cs` - SHA-512 hashing and BigInteger extensions
-- `SommerEngineering/Signer.cs` - Main signing and verification API
-- `SommerEngineering/LICENSE_BSD3` - BSD-3-Clause license
+- `libs/ironconfig-dotnet/src/IronConfig/Crypto/Ed25519Vendor/SommerEngineering/Constants.cs` - Ed25519 curve constants and pre-computed values
+- `libs/ironconfig-dotnet/src/IronConfig/Crypto/Ed25519Vendor/SommerEngineering/EdPoint.cs` - Elliptic curve point operations
+- `libs/ironconfig-dotnet/src/IronConfig/Crypto/Ed25519Vendor/SommerEngineering/Extensions.cs` - SHA-512 hashing and BigInteger extensions
+- `libs/ironconfig-dotnet/src/IronConfig/Crypto/Ed25519Vendor/SommerEngineering/Signer.cs` - Main signing and verification API
+- `libs/ironconfig-dotnet/src/IronConfig/Crypto/Ed25519Vendor/SommerEngineering/LICENSE_BSD3` - BSD-3-Clause license
 
 ## Usage
 
