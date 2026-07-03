@@ -3,6 +3,19 @@
 #include "ironcfg/ironcfg.h"
 #include <string.h>
 
+static ironcfg_error_t invalid_argument_error(void) {
+    ironcfg_error_t error = { IRONCFG_INVALID_ARGUMENT, 0 };
+    return error;
+}
+
+static bool checked_add_u32(uint32_t a, uint32_t b, uint32_t* out) {
+    if (UINT32_MAX - a < b) {
+        return false;
+    }
+    *out = a + b;
+    return true;
+}
+
 /* Little-endian byte reading */
 static uint32_t read_le32(const uint8_t *data) {
     return ((uint32_t)data[0] << 0) |
@@ -50,6 +63,18 @@ static bool offsets_monotonic(uint32_t off1, uint32_t size1,
 ironcfg_error_t ironcfg_open(const uint8_t *buffer, size_t buffer_size,
                              ironcfg_view_t *out_view) {
     ironcfg_error_t error = { IRONCFG_OK, 0 };
+
+    if (out_view == NULL) {
+        return invalid_argument_error();
+    }
+    if (buffer == NULL) {
+        return invalid_argument_error();
+    }
+    if (buffer_size > UINT32_MAX) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 8;
+        return error;
+    }
 
     /* Step 1: File size >= 64 bytes */
     if (buffer_size < 64) {
@@ -145,9 +170,28 @@ ironcfg_error_t ironcfg_open(const uint8_t *buffer, size_t buffer_size,
     }
 
     /* Step 10: Offset monotonicity */
-    uint32_t expected_file_size = data_offset + data_size;
-    if (crc_flag) expected_file_size += 4;
-    if (blake3_flag) expected_file_size += 32;
+    if ((string_pool_offset == 0) != (string_pool_size == 0)) {
+        error.code = IRONCFG_FLAG_MISMATCH;
+        error.offset = 20;
+        return error;
+    }
+
+    uint32_t expected_file_size;
+    if (!checked_add_u32(data_offset, data_size, &expected_file_size)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 28;
+        return error;
+    }
+    if (crc_flag && !checked_add_u32(expected_file_size, 4, &expected_file_size)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 36;
+        return error;
+    }
+    if (blake3_flag && !checked_add_u32(expected_file_size, 32, &expected_file_size)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 40;
+        return error;
+    }
 
     /* Check ordering: schema < schema+size <= pool < pool+size <= data < data+size <= crc <= blake3 <= file_end */
     if (schema_offset == 0 || schema_size == 0) {
@@ -162,25 +206,55 @@ ironcfg_error_t ironcfg_open(const uint8_t *buffer, size_t buffer_size,
         return error;
     }
 
-    uint32_t schema_end = schema_offset + schema_size;
+    uint32_t schema_end;
+    if (!checked_add_u32(schema_offset, schema_size, &schema_end)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 12;
+        return error;
+    }
     uint32_t pool_start = (string_pool_offset > 0) ? string_pool_offset : data_offset;
-    uint32_t pool_end = (string_pool_offset > 0) ? (string_pool_offset + string_pool_size) : data_offset;
+    uint32_t pool_end = data_offset;
+    if (string_pool_offset > 0) {
+        if (!checked_add_u32(string_pool_offset, string_pool_size, &pool_end)) {
+            error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+            error.offset = 20;
+            return error;
+        }
+    }
+    uint32_t data_end;
+    if (!checked_add_u32(data_offset, data_size, &data_end)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 28;
+        return error;
+    }
 
     if (!(schema_offset < schema_end && schema_end <= pool_start &&
           pool_start <= pool_end && pool_end <= data_offset &&
-          data_offset < data_offset + data_size)) {
+          data_offset < data_end)) {
         error.code = IRONCFG_BOUNDS_VIOLATION;
         error.offset = 12;
         return error;
     }
 
-    if (crc_offset > 0 && !(data_offset + data_size <= crc_offset)) {
+    if (crc_flag && crc_offset != data_end) {
         error.code = IRONCFG_BOUNDS_VIOLATION;
         error.offset = 36;
         return error;
     }
 
-    if (blake3_offset > 0 && !(crc_offset > 0 ? (crc_offset + 4 <= blake3_offset) : (data_offset + data_size <= blake3_offset))) {
+    if (blake3_flag) {
+        uint32_t expected_blake3_offset = data_end;
+        if (crc_flag && !checked_add_u32(expected_blake3_offset, 4, &expected_blake3_offset)) {
+            error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+            error.offset = 36;
+            return error;
+        }
+        if (blake3_offset != expected_blake3_offset) {
+            error.code = IRONCFG_BOUNDS_VIOLATION;
+            error.offset = 40;
+            return error;
+        }
+    } else if (blake3_offset != 0) {
         error.code = IRONCFG_BOUNDS_VIOLATION;
         error.offset = 40;
         return error;
@@ -193,9 +267,14 @@ ironcfg_error_t ironcfg_open(const uint8_t *buffer, size_t buffer_size,
         return error;
     }
 
-    if (buffer_size != file_size) {
+    if (buffer_size < file_size) {
         error.code = IRONCFG_TRUNCATED_FILE;
         error.offset = 0;
+        return error;
+    }
+    if (buffer_size > file_size) {
+        error.code = IRONCFG_BOUNDS_VIOLATION;
+        error.offset = file_size;
         return error;
     }
 
@@ -230,7 +309,7 @@ ironcfg_error_t ironcfg_get_root(const ironcfg_view_t *view,
                                  const uint8_t **out_data, size_t *out_size) {
     ironcfg_error_t error = { IRONCFG_OK, 0 };
     if (view == NULL || out_data == NULL || out_size == NULL) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
+        error.code = IRONCFG_INVALID_ARGUMENT;
         return error;
     }
 
@@ -250,7 +329,7 @@ ironcfg_error_t ironcfg_get_schema(const ironcfg_view_t *view,
                                    const uint8_t **out_data, size_t *out_size) {
     ironcfg_error_t error = { IRONCFG_OK, 0 };
     if (view == NULL || out_data == NULL || out_size == NULL) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
+        error.code = IRONCFG_INVALID_ARGUMENT;
         return error;
     }
 
@@ -270,7 +349,7 @@ ironcfg_error_t ironcfg_get_string_pool(const ironcfg_view_t *view,
                                         const uint8_t **out_data, size_t *out_size) {
     ironcfg_error_t error = { IRONCFG_OK, 0 };
     if (view == NULL || out_data == NULL || out_size == NULL) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
+        error.code = IRONCFG_INVALID_ARGUMENT;
         return error;
     }
 

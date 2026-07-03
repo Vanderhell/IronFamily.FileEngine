@@ -26,6 +26,8 @@ const char* iron_error_str(iron_error_t err) {
             return "IRON_E_DIFF_TARGET_HASH";
         case IRON_E_DIFF_OUT_OF_RANGE:
             return "IRON_E_DIFF_OUT_OF_RANGE";
+        case IRON_E_INVALID_ARGUMENT:
+            return "IRON_E_INVALID_ARGUMENT";
         default:
             return "UNKNOWN_ERROR";
     }

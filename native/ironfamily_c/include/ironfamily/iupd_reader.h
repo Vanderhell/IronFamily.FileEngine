@@ -11,18 +11,15 @@
  * Verification only; no writer/builder included.
  */
 
-#ifndef IUPD_READER_H
-#define IUPD_READER_H
+#ifndef IRONFAMILY_IUPD_READER_H
+#define IRONFAMILY_IUPD_READER_H
 
 #include <stdint.h>
 #include "io.h"
 #include "iupd_errors.h"
 
-/* Debug trace flag (test-only, disabled by default) */
-#ifdef IRONFAMILY_TRACE
-#define TRACE_ENABLED 1
-#else
-#define TRACE_ENABLED 0
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 /*
@@ -40,11 +37,16 @@
  *   file_size:              Total file size in bytes
  *   ed25519_pubkey:         Ed25519 public key (32 bytes)
  *   expected_min_update_sequence:  Minimum acceptable sequence (anti-replay)
- *   out_update_sequence:    Output: extracted sequence from trailer (0 if no trailer)
+ *   out_update_sequence:    Output: extracted sequence on success; reset to 0 on failure
  *
  * Returns:
  *   IRON_OK on successful verification
  *   IRON_E_* on any verification failure
+ *
+ * Compatibility note:
+ *   Current v2 inline signatures authenticate the manifest/witness path only.
+ *   If expected_min_update_sequence > 0 but the sequence is not authenticated by
+ *   the file's signed transcript, strict verification fails closed.
  */
 iron_error_t iron_iupd_verify_strict(
     const iron_reader_t* r,
@@ -54,4 +56,8 @@ iron_error_t iron_iupd_verify_strict(
     uint64_t* out_update_sequence
 );
 
-#endif /* IUPD_READER_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONFAMILY_IUPD_READER_H */

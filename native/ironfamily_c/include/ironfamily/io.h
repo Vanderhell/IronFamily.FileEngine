@@ -6,11 +6,15 @@
  * is caller's responsibility via context.
  */
 
-#ifndef IRON_IO_H
-#define IRON_IO_H
+#ifndef IRONFAMILY_IO_H
+#define IRONFAMILY_IO_H
 
 #include <stdint.h>
 #include "iupd_errors.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
     void* ctx;
@@ -28,4 +32,8 @@ typedef struct {
     int (*write)(void* ctx, uint64_t off, const uint8_t* src, uint32_t len);
 } iron_writer_t;
 
-#endif /* IRON_IO_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONFAMILY_IO_H */

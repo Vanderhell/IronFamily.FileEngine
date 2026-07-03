@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../ironfamily_c/include/ironcfg/ironcfg.h"
+#include "ironcfg/ironcfg.h"
 
 typedef bool (*test_fn)(void);
 

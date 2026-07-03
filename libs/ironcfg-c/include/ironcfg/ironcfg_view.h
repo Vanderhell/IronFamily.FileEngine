@@ -1,10 +1,14 @@
-#ifndef IRONCFG_VIEW_H
-#define IRONCFG_VIEW_H
+#ifndef IRONCFG_IRONCFG_VIEW_H
+#define IRONCFG_IRONCFG_VIEW_H
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "ironcfg_validate.h"
+#include "ironcfg.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Path element types */
 typedef enum {
@@ -82,4 +86,8 @@ ironcfg_error_t ironcfg_get_object_field_count(
     const ironcfg_path_elem_t* path, size_t path_len,
     uint32_t* out_count);
 
-#endif // IRONCFG_VIEW_H
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONCFG_IRONCFG_VIEW_H */

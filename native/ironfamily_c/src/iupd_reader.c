@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <limits.h>
 
 /* Debug trace function (test-only, disabled by default) */
 #ifdef IRONFAMILY_TRACE
@@ -43,6 +44,22 @@ static uint16_t read_u16_le(const uint8_t* data) {
     return ((uint16_t)data[0]) | (((uint16_t)data[1]) << 8);
 }
 
+static int checked_add_u64(uint64_t a, uint64_t b, uint64_t* out) {
+    if (UINT64_MAX - a < b) {
+        return 0;
+    }
+    *out = a + b;
+    return 1;
+}
+
+static int checked_mul_u64(uint64_t a, uint64_t b, uint64_t* out) {
+    if (a != 0 && UINT64_MAX / a < b) {
+        return 0;
+    }
+    *out = a * b;
+    return 1;
+}
+
 /* Helper: Read via reader interface with bounds checking */
 static iron_error_t read_bytes(
     const iron_reader_t* r,
@@ -51,10 +68,112 @@ static iron_error_t read_bytes(
     uint32_t len,
     uint8_t* dst
 ) {
-    if (offset + len > file_size) {
+    uint64_t end_offset;
+    if (r == NULL || r->read == NULL) {
+        return IRON_E_INVALID_ARGUMENT;
+    }
+    if (len > 0 && dst == NULL) {
+        return IRON_E_INVALID_ARGUMENT;
+    }
+    if (!checked_add_u64(offset, len, &end_offset) || end_offset > file_size) {
         return IRON_E_FORMAT;
     }
     return r->read(r->ctx, offset, dst, len);
+}
+
+static iron_error_t hash_region_blake3(
+    const iron_reader_t* r,
+    uint64_t file_size,
+    uint64_t offset,
+    uint64_t len,
+    uint8_t out_hash[32]
+) {
+    uint8_t scratch[512];
+    uint64_t remaining = len;
+    uint64_t cursor = offset;
+    blake3_hasher hasher;
+
+    if (out_hash == NULL) {
+        return IRON_E_INVALID_ARGUMENT;
+    }
+    if (!checked_add_u64(offset, len, &cursor) || cursor > file_size) {
+        return IRON_E_FORMAT;
+    }
+
+    cursor = offset;
+    blake3_hasher_init(&hasher);
+    while (remaining > 0) {
+        uint32_t chunk = remaining > sizeof(scratch) ? (uint32_t)sizeof(scratch) : (uint32_t)remaining;
+        iron_error_t err = read_bytes(r, file_size, cursor, chunk, scratch);
+        if (err != IRON_OK) {
+            return err;
+        }
+        blake3_hasher_update(&hasher, scratch, chunk);
+        cursor += chunk;
+        remaining -= chunk;
+    }
+    blake3_hasher_finalize(&hasher, out_hash, 32);
+    return IRON_OK;
+}
+
+static iron_error_t validate_chunk_table(
+    const iron_reader_t* r,
+    uint64_t file_size,
+    uint64_t chunk_table_offset,
+    uint64_t manifest_offset,
+    uint64_t payload_offset,
+    uint64_t chunk_count
+) {
+    uint64_t expected_chunk_table_size;
+    uint8_t entry_buf[IUPD_CHUNK_ENTRY_SIZE];
+    uint32_t previous_index = 0;
+    int have_previous_index = 0;
+
+    if (!checked_mul_u64(chunk_count, IUPD_CHUNK_ENTRY_SIZE, &expected_chunk_table_size)) {
+        return IRON_E_DOS_LIMIT;
+    }
+    if (chunk_table_offset > manifest_offset || manifest_offset - chunk_table_offset != expected_chunk_table_size) {
+        return IRON_E_FORMAT;
+    }
+
+    for (uint64_t i = 0; i < chunk_count; i++) {
+        uint64_t entry_offset;
+        uint64_t payload_end;
+        uint32_t chunk_index;
+        uint64_t payload_size;
+        uint64_t entry_payload_offset;
+
+        if (!checked_mul_u64(i, IUPD_CHUNK_ENTRY_SIZE, &entry_offset) ||
+            !checked_add_u64(chunk_table_offset, entry_offset, &entry_offset)) {
+            return IRON_E_DOS_LIMIT;
+        }
+
+        if (read_bytes(r, file_size, entry_offset, IUPD_CHUNK_ENTRY_SIZE, entry_buf) != IRON_OK) {
+            return IRON_E_FORMAT;
+        }
+
+        chunk_index = read_u32_le(&entry_buf[0]);
+        payload_size = read_u64_le(&entry_buf[4]);
+        entry_payload_offset = read_u64_le(&entry_buf[12]);
+
+        if (have_previous_index && chunk_index <= previous_index) {
+            return IRON_E_FORMAT;
+        }
+        previous_index = chunk_index;
+        have_previous_index = 1;
+
+        if (payload_size > IUPD_MAX_CHUNK_SIZE) {
+            return IRON_E_DOS_LIMIT;
+        }
+        if (entry_payload_offset < payload_offset) {
+            return IRON_E_FORMAT;
+        }
+        if (!checked_add_u64(entry_payload_offset, payload_size, &payload_end) || payload_end > file_size) {
+            return IRON_E_FORMAT;
+        }
+    }
+
+    return IRON_OK;
 }
 
 /*
@@ -71,8 +190,18 @@ iron_error_t iron_iupd_verify_strict(
     uint8_t manifest_header_buf[IUPD_MANIFEST_HEADER_SIZE];
     uint8_t sig_len_buf[4];
     uint8_t signature_buf[IUPD_SIGNATURE_LENGTH];
+    uint8_t witness_hash_buf[IUPD_WITNESS_HASH_LENGTH];
     uint8_t trailer_buf[IUPD_UPDATESEQ_TRAILER_SIZE];
+    uint8_t manifest_hash[32];
+    uint64_t manifest_end;
+    uint64_t signature_end;
+    uint64_t signed_region_size;
+    uint64_t extracted_sequence = 0;
     iron_error_t err;
+
+    if (r == NULL || r->read == NULL || ed25519_pubkey == NULL || out_update_sequence == NULL) {
+        return IRON_E_INVALID_ARGUMENT;
+    }
 
     *out_update_sequence = 0;
 
@@ -165,11 +294,15 @@ iron_error_t iron_iupd_verify_strict(
     uint64_t manifest_size = read_u64_le(&manifest_header_buf[16]);
     trace_printf("[TRACE] manifest_size=%llu (MAX=%llu)\n", (unsigned long long)manifest_size,
                 (unsigned long long)IUPD_MAX_MANIFEST_SIZE);
+    if (manifest_size < IUPD_MANIFEST_HEADER_SIZE + IUPD_MANIFEST_CRCRESV_SIZE) {
+        trace_printf("[TRACE] FAIL: manifest_size too small\n");
+        return IRON_E_FORMAT;
+    }
     if (manifest_size > IUPD_MAX_MANIFEST_SIZE) {
         trace_printf("[TRACE] FAIL: manifest_size > MAX (DOS_LIMIT)\n");
         return IRON_E_DOS_LIMIT;
     }
-    if (manifest_offset + manifest_size > file_size) {
+    if (!checked_add_u64(manifest_offset, manifest_size, &manifest_end) || manifest_end > file_size) {
         trace_printf("[TRACE] FAIL: manifest extends past file\n");
         return IRON_E_DOS_LIMIT;
     }
@@ -188,24 +321,10 @@ iron_error_t iron_iupd_verify_strict(
         return IRON_E_DOS_LIMIT;
     }
 
-    /* === GATE 6: Check chunk sizes (DoS limit) === */
-    /* Detect pathological chunk sizes that exceed 1GB limit.
-     * Only check if file_size is very small (< 1KB), indicating synthetic DoS vector.
-     * This avoids false positives from corrupted/garbage data in normal-sized files.
-     * Chunk entry [0] uncompressed_size field is at chunk_table_offset + 8
-     */
-    if (file_size < 1024 && chunk_count > 0 && chunk_table_offset + 16 <= file_size) {
-        uint8_t chunk_size_buf[8];
-        err = read_bytes(r, file_size, chunk_table_offset + 8, 8, chunk_size_buf);
-        if (err == IRON_OK) {
-            uint64_t chunk_uncompressed_size = read_u64_le(chunk_size_buf);
-            trace_printf("[TRACE] chunk_size check: chunk[0].uncompressed_size=%llu (MAX=%llu)\n",
-                        (unsigned long long)chunk_uncompressed_size, (unsigned long long)IUPD_MAX_CHUNK_SIZE);
-            if (chunk_uncompressed_size > IUPD_MAX_CHUNK_SIZE) {
-                trace_printf("[TRACE] FAIL: chunk_size > MAX (DOS_LIMIT)\n");
-                return IRON_E_DOS_LIMIT;
-            }
-        }
+    err = validate_chunk_table(r, file_size, chunk_table_offset, manifest_offset, payload_offset, chunk_count);
+    if (err != IRON_OK) {
+        trace_printf("[TRACE] FAIL: chunk table validation failed\n");
+        return err;
     }
 
     /* === GATE 7: UpdateSequence trailer validation (BEFORE signature) === */
@@ -217,42 +336,41 @@ iron_error_t iron_iupd_verify_strict(
         trace_printf("[TRACE] trailer_offset=%llu\n", (unsigned long long)trailer_offset);
 
         err = read_bytes(r, file_size, trailer_offset, IUPD_UPDATESEQ_TRAILER_SIZE, trailer_buf);
-        if (err == IRON_OK) {
-            /* Check magic */
-            if (memcmp(trailer_buf, IUPD_UPDATESEQ_MAGIC_STR, 8) == 0) {
-                /* Valid trailer found, extract sequence */
-                uint32_t trailer_len = read_u32_le(&trailer_buf[8]);
-                uint8_t trailer_version = trailer_buf[12];
-
-                trace_printf("[TRACE] trailer found: len=%u, version=%u\n", trailer_len, trailer_version);
-
-                if (trailer_len == IUPD_UPDATESEQ_TRAILER_SIZE && trailer_version == IUPD_UPDATESEQ_VERSION) {
-                    uint64_t sequence = read_u64_le(&trailer_buf[13]);
-                    trace_printf("[TRACE] sequence=%llu (expected_min=%llu)\n",
-                                (unsigned long long)sequence, (unsigned long long)expected_min_update_sequence);
-
-                    /* Anti-replay check */
-                    if (sequence < expected_min_update_sequence) {
-                        trace_printf("[TRACE] FAIL: sequence < expected_min (SEQ_INVALID)\n");
-                        return IRON_E_SEQ_INVALID;
-                    }
-
-                    *out_update_sequence = sequence;
-                } else {
-                    /* Trailer format invalid */
-                    trace_printf("[TRACE] FAIL: trailer format invalid (SEQ_INVALID)\n");
-                    return IRON_E_SEQ_INVALID;
-                }
+        if (err != IRON_OK) {
+            if (expected_min_update_sequence > 0) {
+                trace_printf("[TRACE] FAIL: trailer read failed while anti-replay required\n");
+                return IRON_E_SEQ_INVALID;
             }
+        } else if (memcmp(trailer_buf, IUPD_UPDATESEQ_MAGIC_STR, 8) == 0) {
+            uint32_t trailer_len = read_u32_le(&trailer_buf[8]);
+            uint8_t trailer_version = trailer_buf[12];
+
+            trace_printf("[TRACE] trailer found: len=%u, version=%u\n", trailer_len, trailer_version);
+
+            if (trailer_len != IUPD_UPDATESEQ_TRAILER_SIZE || trailer_version != IUPD_UPDATESEQ_VERSION) {
+                trace_printf("[TRACE] FAIL: trailer format invalid (SEQ_INVALID)\n");
+                return IRON_E_SEQ_INVALID;
+            }
+
+            extracted_sequence = read_u64_le(&trailer_buf[13]);
+            if (extracted_sequence < expected_min_update_sequence) {
+                trace_printf("[TRACE] FAIL: sequence < expected_min (SEQ_INVALID)\n");
+                return IRON_E_SEQ_INVALID;
+            }
+        } else if (expected_min_update_sequence > 0) {
+            trace_printf("[TRACE] FAIL: trailer missing while anti-replay required\n");
+            return IRON_E_SEQ_INVALID;
         }
-        /* If read fails or magic doesn't match, assume no trailer (optional) */
+    } else if (expected_min_update_sequence > 0) {
+        trace_printf("[TRACE] FAIL: payload_offset too small for mandatory trailer\n");
+        return IRON_E_SEQ_INVALID;
     }
 
     /* === GATE 8: Signature verification === */
     /* Signature is at: manifest_offset + manifest_size
      * Format: [length:4][signature:64][witness:32]
      */
-    uint64_t sig_footer_offset = manifest_offset + manifest_size;
+    uint64_t sig_footer_offset = manifest_end;
     trace_printf("[TRACE] sig_footer_offset=%llu\n", (unsigned long long)sig_footer_offset);
 
     err = read_bytes(r, file_size, sig_footer_offset, 4, sig_len_buf);
@@ -275,36 +393,18 @@ iron_error_t iron_iupd_verify_strict(
     }
 
     /* Read manifest data to be signed (exclude last 8 bytes: CRC32 + reserved) */
-    uint64_t signed_region_size = manifest_size - IUPD_MANIFEST_CRCRESV_SIZE;
+    signed_region_size = manifest_size - IUPD_MANIFEST_CRCRESV_SIZE;
     trace_printf("[TRACE] signed_region_size=%llu (manifest_size=%llu - 8)\n",
                 (unsigned long long)signed_region_size, (unsigned long long)manifest_size);
     if (signed_region_size == 0) {
         trace_printf("[TRACE] FAIL: signed_region_size is zero\n");
         return IRON_E_FORMAT;
     }
-
-    /* Allocate buffer for signed manifest (on stack for small manifests, or error if too large)
-     * To avoid heap allocation, we use a fixed-size buffer. If manifest > buffer, fail.
-     * This implements "no unbounded allocation" requirement.
-     */
-    uint8_t signed_manifest[8192];  /* Reasonable limit for stack */
-    if (signed_region_size > sizeof(signed_manifest)) {
-        trace_printf("[TRACE] FAIL: signed_region_size > buffer size (DOS_LIMIT)\n");
-        return IRON_E_DOS_LIMIT;  /* Manifest too large (exceeds practical limits) */
-    }
-
-    err = read_bytes(r, file_size, manifest_offset, signed_region_size, signed_manifest);
+    err = hash_region_blake3(r, file_size, manifest_offset, signed_region_size, manifest_hash);
     if (err != IRON_OK) {
-        trace_printf("[TRACE] FAIL: could not read manifest data\n");
+        trace_printf("[TRACE] FAIL: could not hash manifest data\n");
         return err;
     }
-
-    /* Compute BLAKE3-256 hash of manifest region */
-    uint8_t manifest_hash[32];
-    blake3_hasher hasher;
-    blake3_hasher_init(&hasher);
-    blake3_hasher_update(&hasher, signed_manifest, signed_region_size);
-    blake3_hasher_finalize(&hasher, manifest_hash, 32);
 
     trace_printf("[TRACE] manifest_hash (hex): ");
     for (int i = 0; i < 32; i++) {
@@ -320,6 +420,30 @@ iron_error_t iron_iupd_verify_strict(
         trace_printf("[TRACE] FAIL: signature verification failed (SIG_INVALID)\n");
         return IRON_E_SIG_INVALID;
     }
+
+    if ((flags & IUPD_V2_FLAGS_WITNESS_ENABLED) != 0) {
+        if (!checked_add_u64(sig_footer_offset, 4 + IUPD_SIGNATURE_LENGTH + IUPD_WITNESS_HASH_LENGTH, &signature_end) ||
+            signature_end > file_size) {
+            trace_printf("[TRACE] FAIL: witness footer missing\n");
+            return IRON_E_SIG_INVALID;
+        }
+        err = read_bytes(r, file_size, sig_footer_offset + 4 + IUPD_SIGNATURE_LENGTH, IUPD_WITNESS_HASH_LENGTH, witness_hash_buf);
+        if (err != IRON_OK) {
+            trace_printf("[TRACE] FAIL: could not read witness hash\n");
+            return err;
+        }
+        if (memcmp(witness_hash_buf, manifest_hash, IUPD_WITNESS_HASH_LENGTH) != 0) {
+            trace_printf("[TRACE] FAIL: witness hash mismatch\n");
+            return IRON_E_SIG_INVALID;
+        }
+    }
+
+    if (expected_min_update_sequence > 0) {
+        trace_printf("[TRACE] FAIL: authenticated sequence binding not present\n");
+        return IRON_E_SEQ_INVALID;
+    }
+
+    *out_update_sequence = extracted_sequence;
 
     trace_printf("[TRACE] === ALL GATES PASSED, RETURNING OK ===\n");
     return IRON_OK;

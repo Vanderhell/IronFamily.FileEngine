@@ -1,140 +1,14 @@
 /* IRONCFG C99 - Read-only view and access */
 
-#include "ironcfg/ironcfg.h"
+#include "ironcfg/ironcfg_view.h"
 
-/* Get a zero-copy pointer to the root object data */
-ironcfg_error_t ironcfg_get_root(const ironcfg_view_t *view,
-                                 const uint8_t **out_data, size_t *out_size) {
-    ironcfg_error_t error = { IRONCFG_OK, 0 };
+#include <string.h>
 
-    if (view == NULL || out_data == NULL || out_size == NULL) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = 0;
-        return error;
-    }
-
-    /* Root data starts at data_offset and extends for data_size bytes */
-    uint32_t root_offset = view->header.data_offset;
-    uint32_t root_size = view->header.data_size;
-
-    if (root_offset > view->buffer_size) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = root_offset;
-        return error;
-    }
-
-    if (root_size > view->buffer_size - root_offset) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = root_offset;
-        return error;
-    }
-
-    *out_data = view->buffer + root_offset;
-    *out_size = root_size;
-
-    return error;
+static ironcfg_error_t invalid_argument_error(void) {
+    ironcfg_error_t err = { IRONCFG_INVALID_ARGUMENT, 0 };
+    return err;
 }
 
-/* Get a zero-copy pointer to the schema block */
-ironcfg_error_t ironcfg_get_schema(const ironcfg_view_t *view,
-                                   const uint8_t **out_data, size_t *out_size) {
-    ironcfg_error_t error = { IRONCFG_OK, 0 };
-
-    if (view == NULL || out_data == NULL || out_size == NULL) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = 0;
-        return error;
-    }
-
-    uint32_t schema_offset = view->header.schema_offset;
-    uint32_t schema_size = view->header.schema_size;
-
-    if (schema_offset > view->buffer_size) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = schema_offset;
-        return error;
-    }
-
-    if (schema_size > view->buffer_size - schema_offset) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = schema_offset;
-        return error;
-    }
-
-    *out_data = view->buffer + schema_offset;
-    *out_size = schema_size;
-
-    return error;
-}
-
-/* Get a zero-copy pointer to the string pool (if present) */
-ironcfg_error_t ironcfg_get_string_pool(const ironcfg_view_t *view,
-                                        const uint8_t **out_data, size_t *out_size) {
-    ironcfg_error_t error = { IRONCFG_OK, 0 };
-
-    if (view == NULL || out_data == NULL || out_size == NULL) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = 0;
-        return error;
-    }
-
-    uint32_t pool_offset = view->header.string_pool_offset;
-    uint32_t pool_size = view->header.string_pool_size;
-
-    /* String pool is optional (may be absent) */
-    if (pool_offset == 0) {
-        *out_data = NULL;
-        *out_size = 0;
-        return error;
-    }
-
-    if (pool_offset > view->buffer_size) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = pool_offset;
-        return error;
-    }
-
-    if (pool_size > view->buffer_size - pool_offset) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
-        error.offset = pool_offset;
-        return error;
-    }
-
-    *out_data = view->buffer + pool_offset;
-    *out_size = pool_size;
-
-    return error;
-}
-
-/* Get header information (always available after open) */
-const ironcfg_header_t *ironcfg_get_header(const ironcfg_view_t *view) {
-    if (view == NULL) return NULL;
-    return &view->header;
-}
-
-/* Check if file has CRC32 */
-bool ironcfg_has_crc32(const ironcfg_view_t *view) {
-    if (view == NULL) return false;
-    return (view->header.flags & 0x01) != 0;
-}
-
-/* Check if file has BLAKE3 */
-bool ironcfg_has_blake3(const ironcfg_view_t *view) {
-    if (view == NULL) return false;
-    return (view->header.flags & 0x02) != 0;
-}
-
-/* Check if schema is embedded */
-bool ironcfg_has_embedded_schema(const ironcfg_view_t *view) {
-    if (view == NULL) return false;
-    return (view->header.flags & 0x04) != 0;
-}
-
-/* Get file size */
-uint32_t ironcfg_get_file_size(const ironcfg_view_t *view) {
-    if (view == NULL) return 0;
-    return view->header.file_size;
-}
 
 /* ============================================================================
  * Value Extraction API (zero-copy, deterministic path traversal)
@@ -269,7 +143,7 @@ static ironcfg_error_t find_value_by_path(
     uint8_t current_type = buffer[view->header.data_offset];
 
     if (current_type != 0x40) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = current_offset;
         return err;
     }
@@ -585,6 +459,9 @@ ironcfg_error_t ironcfg_get_bool(
     bool* out_value)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_value == NULL) {
+        return invalid_argument_error();
+    }
     *out_value = false;
 
     size_t offset;
@@ -602,7 +479,7 @@ ironcfg_error_t ironcfg_get_bool(
         *out_value = true;
         return err;
     }
-    err.code = IRONCFG_TYPE_MISMATCH;
+    err.code = IRONCFG_FIELD_TYPE_MISMATCH;
     err.offset = offset;
     return err;
 }
@@ -615,6 +492,9 @@ ironcfg_error_t ironcfg_get_i64(
     int64_t* out_value)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_value == NULL) {
+        return invalid_argument_error();
+    }
     *out_value = 0;
 
     size_t offset;
@@ -625,7 +505,7 @@ ironcfg_error_t ironcfg_get_i64(
     }
 
     if (type_code != 0x10) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }
@@ -647,6 +527,9 @@ ironcfg_error_t ironcfg_get_u64(
     uint64_t* out_value)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_value == NULL) {
+        return invalid_argument_error();
+    }
     *out_value = 0;
 
     size_t offset;
@@ -657,7 +540,7 @@ ironcfg_error_t ironcfg_get_u64(
     }
 
     if (type_code != 0x11) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }
@@ -679,6 +562,9 @@ ironcfg_error_t ironcfg_get_f64(
     double* out_value)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_value == NULL) {
+        return invalid_argument_error();
+    }
     *out_value = 0.0;
 
     size_t offset;
@@ -689,7 +575,7 @@ ironcfg_error_t ironcfg_get_f64(
     }
 
     if (type_code != 0x12) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }
@@ -711,6 +597,9 @@ ironcfg_error_t ironcfg_get_string(
     const uint8_t** out_data, size_t* out_len)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_data == NULL || out_len == NULL) {
+        return invalid_argument_error();
+    }
     *out_data = NULL;
     *out_len = 0;
 
@@ -722,7 +611,7 @@ ironcfg_error_t ironcfg_get_string(
     }
 
     if (type_code != 0x20) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }
@@ -754,6 +643,9 @@ ironcfg_error_t ironcfg_get_bytes(
     const uint8_t** out_data, size_t* out_len)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_data == NULL || out_len == NULL) {
+        return invalid_argument_error();
+    }
     *out_data = NULL;
     *out_len = 0;
 
@@ -765,7 +657,7 @@ ironcfg_error_t ironcfg_get_bytes(
     }
 
     if (type_code != 0x22) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }
@@ -797,6 +689,9 @@ ironcfg_error_t ironcfg_get_array_length(
     uint32_t* out_length)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_length == NULL) {
+        return invalid_argument_error();
+    }
     *out_length = 0;
 
     size_t offset;
@@ -807,7 +702,7 @@ ironcfg_error_t ironcfg_get_array_length(
     }
 
     if (type_code != 0x30) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }
@@ -831,6 +726,9 @@ ironcfg_error_t ironcfg_get_object_field_count(
     uint32_t* out_count)
 {
     ironcfg_error_t err = { IRONCFG_OK, 0 };
+    if (buffer == NULL || view == NULL || out_count == NULL) {
+        return invalid_argument_error();
+    }
     *out_count = 0;
 
     size_t offset;
@@ -841,7 +739,7 @@ ironcfg_error_t ironcfg_get_object_field_count(
     }
 
     if (type_code != 0x40) {
-        err.code = IRONCFG_TYPE_MISMATCH;
+        err.code = IRONCFG_FIELD_TYPE_MISMATCH;
         err.offset = offset;
         return err;
     }

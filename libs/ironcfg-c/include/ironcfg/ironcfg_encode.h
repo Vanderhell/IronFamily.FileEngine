@@ -1,11 +1,15 @@
 /* IRONCFG C99 Deterministic Encoder */
 
-#ifndef IRONCFG_ENCODE_H
-#define IRONCFG_ENCODE_H
+#ifndef IRONCFG_IRONCFG_ENCODE_H
+#define IRONCFG_IRONCFG_ENCODE_H
 
 #include "ironcfg.h"
 #include <stdint.h>
 #include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Primitive value types */
 typedef enum {
@@ -142,4 +146,8 @@ double ironcfg_normalize_float(double value);
  */
 bool ironcfg_is_nan(double value);
 
-#endif /* IRONCFG_ENCODE_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONCFG_IRONCFG_ENCODE_H */

@@ -15,11 +15,15 @@
  * Variable size: 21 bytes minimum (no hashes) to ~84 bytes (32-byte hashes)
  */
 
-#ifndef IUPD_INCREMENTAL_METADATA_H
-#define IUPD_INCREMENTAL_METADATA_H
+#ifndef IRONFAMILY_IUPD_INCREMENTAL_METADATA_H
+#define IRONFAMILY_IUPD_INCREMENTAL_METADATA_H
 
 #include <stdint.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Magic and version */
 #define IUPD_INC_MAGIC_STR "IUPDINC1"
@@ -78,4 +82,8 @@ static inline bool iupd_algorithm_is_known(uint8_t algorithm_id) {
            algorithm_id == IUPD_ALGORITHM_IRONDEL2;
 }
 
-#endif /* IUPD_INCREMENTAL_METADATA_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONFAMILY_IUPD_INCREMENTAL_METADATA_H */

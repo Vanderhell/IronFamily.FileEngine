@@ -59,6 +59,14 @@ static bool ilog_check_bounds(const uint8_t* data, size_t data_size,
     return true;
 }
 
+static bool ilog_checked_add_u64(uint64_t a, uint64_t b, uint64_t* out) {
+    if (UINT64_MAX - a < b) {
+        return false;
+    }
+    *out = a + b;
+    return true;
+}
+
 /* Read u8 from offset with bounds check */
 static bool ilog_read_u8(const uint8_t* data, size_t data_size,
                          uint64_t offset, uint8_t* out) {
@@ -147,7 +155,14 @@ static void ilog_parse_flags(uint8_t flags_byte, ilog_flags_t* out) {
  * ============================================================================ */
 
 icfg_status_t ilog_open(const uint8_t* data, size_t size, ilog_view_t* out) {
-    if (!data || !out) {
+    if (!out) {
+        return ICFG_ERR_INVALID_ARGUMENT;
+    }
+    memset(out, 0, sizeof(ilog_view_t));
+    if (!data) {
+        out->last_error.code = ILOG_ERR_CORRUPTED_HEADER;
+        out->last_error.byte_offset = 0;
+        out->last_error.message = "NULL data pointer";
         return ICFG_ERR_INVALID_ARGUMENT;
     }
 
@@ -158,8 +173,6 @@ icfg_status_t ilog_open(const uint8_t* data, size_t size, ilog_view_t* out) {
         return (icfg_status_t)ILOG_ERR_INVALID_MAGIC;
     }
 
-    /* Initialize view */
-    memset(out, 0, sizeof(ilog_view_t));
     out->data = data;
     out->size = size;
 
@@ -295,8 +308,17 @@ icfg_status_t ilog_validate_strict(const ilog_view_t* v) {
     uint32_t block_num = 0;
 
     while (block_pos < v->size && block_num < 1000) { /* Reasonable limit to avoid infinite loops */
+        uint64_t block_header_end;
+        uint64_t payload_offset;
+        uint64_t payload_end;
+
         /* Need at least 72 bytes for block header */
-        if (block_pos + 72 > v->size) {
+        if (!ilog_checked_add_u64(block_pos, 72, &block_header_end)) {
+            ((ilog_view_t*)v)->last_error.code = ILOG_ERR_BLOCK_OUT_OF_BOUNDS;
+            ((ilog_view_t*)v)->last_error.byte_offset = block_pos;
+            return (icfg_status_t)ILOG_ERR_BLOCK_OUT_OF_BOUNDS;
+        }
+        if (block_header_end > v->size) {
             return ICFG_OK; /* Reached end */
         }
 
@@ -319,8 +341,12 @@ icfg_status_t ilog_validate_strict(const ilog_view_t* v) {
             return (icfg_status_t)ILOG_ERR_MALFORMED_BLOCK;
         }
 
-        uint64_t payload_offset = block_pos + 72;
-        uint64_t payload_end = payload_offset + payload_size;
+        payload_offset = block_header_end;
+        if (!ilog_checked_add_u64(payload_offset, payload_size, &payload_end)) {
+            ((ilog_view_t*)v)->last_error.code = ILOG_ERR_BLOCK_OUT_OF_BOUNDS;
+            ((ilog_view_t*)v)->last_error.byte_offset = block_pos;
+            return (icfg_status_t)ILOG_ERR_BLOCK_OUT_OF_BOUNDS;
+        }
 
         /* Bounds check */
         if (payload_end > v->size) {

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
-#include "../include/ironcfg/ironcfg_encode.h"
+#include "ironcfg/ironcfg_encode.h"
 
 typedef bool (*test_fn)(void);
 

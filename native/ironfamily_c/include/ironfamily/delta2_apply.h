@@ -8,11 +8,15 @@
  * Streaming I/O: supports reader/writer callbacks for large files.
  */
 
-#ifndef DELTA2_APPLY_H
-#define DELTA2_APPLY_H
+#ifndef IRONFAMILY_DELTA2_APPLY_H
+#define IRONFAMILY_DELTA2_APPLY_H
 
 #include "io.h"
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Apply IRONDEL2 patch to base file, writing reconstructed output.
@@ -66,4 +70,8 @@ int iron_delta2_apply(
     uint32_t flags
 );
 
-#endif /* DELTA2_APPLY_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONFAMILY_DELTA2_APPLY_H */

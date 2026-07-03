@@ -1,11 +1,15 @@
 /* IRONCFG C99 Library - Public API */
 
-#ifndef IRONCFG_H
-#define IRONCFG_H
+#ifndef IRONCFG_IRONCFG_H
+#define IRONCFG_IRONCFG_H
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Magic number for IRONCFG files */
 #define IRONCFG_MAGIC 0x47464349  /* "ICFG" in little-endian: 0x49 0x43 0x46 0x47 */
@@ -37,7 +41,8 @@ typedef enum {
     IRONCFG_RECURSION_LIMIT_EXCEEDED = 21,
     IRONCFG_LIMIT_EXCEEDED = 22,
     IRONCFG_CRC32_MISMATCH = 23,
-    IRONCFG_BLAKE3_MISMATCH = 24
+    IRONCFG_BLAKE3_MISMATCH = 24,
+    IRONCFG_INVALID_ARGUMENT = 25
 } ironcfg_error_code_t;
 
 /* Error structure */
@@ -111,4 +116,8 @@ bool ironcfg_has_blake3(const ironcfg_view_t *view);
 bool ironcfg_has_embedded_schema(const ironcfg_view_t *view);
 uint32_t ironcfg_get_file_size(const ironcfg_view_t *view);
 
-#endif /* IRONCFG_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONCFG_IRONCFG_H */

@@ -3,10 +3,14 @@
  * Standard ISO/IEC CRC32 (reflected polynomial)
  */
 
-#ifndef CRC32_H
-#define CRC32_H
+#ifndef IRONFAMILY_CRC32_H
+#define IRONFAMILY_CRC32_H
 
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Compute CRC32-ISO of a data buffer.
@@ -17,4 +21,8 @@
  */
 uint32_t iron_crc32(const uint8_t* data, uint32_t len);
 
-#endif /* CRC32_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONFAMILY_CRC32_H */

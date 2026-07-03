@@ -74,6 +74,7 @@ static int load_public_key_from_file(const char* path, uint8_t pubkey[32]) {
 typedef struct {
     const char* name;
     const char* path;
+    uint64_t expected_min_sequence;
     iron_error_t expected_error;
     const char* description;
 } test_case_t;
@@ -82,36 +83,49 @@ static const test_case_t TEST_CASES[] = {
     {
         "secure_ok_01",
         "artifacts/vectors/v1/iupd/v2/secure_ok_01.iupd",
+        0,
         IRON_OK,
-        "Valid IUPD v2 (SECURE profile, valid signature, valid UpdateSequence=1)"
+        "Valid IUPD v2 under general strict validation without anti-replay enforcement"
+    },
+    {
+        "secure_ok_01_replay_enforced",
+        "artifacts/vectors/v1/iupd/v2/secure_ok_01.iupd",
+        1,
+        IRON_E_SEQ_INVALID,
+        "Current v2 inline transcript does not authenticate UpdateSequence; anti-replay enforcement fails closed"
     },
     {
         "secure_bad_sig_01",
         "artifacts/vectors/v1/iupd/v2/secure_bad_sig_01.iupd",
+        0,
         IRON_E_SIG_INVALID,
         "Corrupted Ed25519 signature (1 byte flip)"
     },
     {
         "secure_bad_seq_01",
         "artifacts/vectors/v1/iupd/v2/secure_bad_seq_01.iupd",
+        1,
         IRON_E_SEQ_INVALID,
         "Corrupted UpdateSequence trailer"
     },
     {
         "secure_dos_manifest_01",
         "artifacts/vectors/v1/iupd/v2/secure_dos_manifest_01.iupd",
+        0,
         IRON_E_DOS_LIMIT,
         "DoS vector: manifest size declared > 100MB"
     },
     {
         "secure_dos_chunks_01",
         "artifacts/vectors/v1/iupd/v2/secure_dos_chunks_01.iupd",
+        0,
         IRON_E_FORMAT,
         "DoS vector: chunk count exceeds limit, rejected as FORMAT (manifest_offset > file_size)"
     },
     {
         "secure_dos_chunk_size_01",
         "artifacts/vectors/v1/iupd/v2/secure_dos_chunk_size_01.iupd",
+        0,
         IRON_E_DOS_LIMIT,
         "DoS vector: chunk size declared > 1GB"
     },
@@ -153,6 +167,7 @@ int main(void) {
 
         printf("[%d/%d] Testing %s\n", i + 1, TEST_CASE_COUNT, tc->name);
         printf("      Path: %s\n", tc->path);
+        printf("      MinSeq: %llu\n", (unsigned long long)tc->expected_min_sequence);
         printf("      Expected: %s\n", iron_error_str(tc->expected_error));
 
         /* Get file size */
@@ -188,7 +203,7 @@ int main(void) {
             &reader,
             file_size,
             bench_pubkey,
-            1,  /* expected_min_update_sequence */
+            tc->expected_min_sequence,
             &update_sequence
         );
 

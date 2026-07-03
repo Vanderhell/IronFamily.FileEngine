@@ -5,6 +5,14 @@
 #include <string.h>
 #include <stdint.h>
 
+static bool checked_add_size(size_t a, size_t b, size_t* out) {
+    if (SIZE_MAX - a < b) {
+        return false;
+    }
+    *out = a + b;
+    return true;
+}
+
 /* VarUInt decoder (returns value, updates offset, sets error on invalid) */
 static uint32_t varuint_decode32(const uint8_t *buffer, size_t buffer_size,
                                   size_t *offset, ironcfg_error_code_t *error) {
@@ -107,6 +115,11 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
     ironcfg_error_t error = { IRONCFG_OK, 0 };
     ironcfg_view_t view;
 
+    if (buffer == NULL) {
+        error.code = IRONCFG_INVALID_ARGUMENT;
+        return error;
+    }
+
     /* Step 1-12: Fast validation */
     error = ironcfg_open(buffer, buffer_size, &view);
     if (error.code != IRONCFG_OK) {
@@ -115,7 +128,13 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
 
     /* Validate CRC32 early so payload corruption reports CRC32_MISMATCH first. */
     if ((view.header.flags & 0x01) != 0) {
-        if (view.header.crc_offset >= buffer_size || view.header.crc_offset + 4 > buffer_size) {
+        size_t crc_end;
+        if (!checked_add_size(view.header.crc_offset, 4, &crc_end)) {
+            error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+            error.offset = 36;
+            return error;
+        }
+        if (view.header.crc_offset >= buffer_size || crc_end > buffer_size) {
             error.code = IRONCFG_BOUNDS_VIOLATION;
             error.offset = 36;
             return error;
@@ -135,7 +154,12 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
 
     /* Step 13+: Schema validation */
     size_t schema_offset = view.header.schema_offset;
-    size_t schema_end = schema_offset + view.header.schema_size;
+    size_t schema_end;
+    if (!checked_add_size(schema_offset, view.header.schema_size, &schema_end)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+        error.offset = 12;
+        return error;
+    }
 
     if (schema_offset >= buffer_size || schema_end > buffer_size) {
         error.code = IRONCFG_BOUNDS_VIOLATION;
@@ -192,14 +216,20 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
             return error;
         }
 
-        if (offset + field_name_len > buffer_size) {
+        size_t field_name_end;
+        if (!checked_add_size(offset, field_name_len, &field_name_end)) {
+            error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+            error.offset = (uint32_t)offset;
+            return error;
+        }
+        if (field_name_end > buffer_size || field_name_end > schema_end) {
             error.code = IRONCFG_BOUNDS_VIOLATION;
             error.offset = offset;
             return error;
         }
 
         const uint8_t *field_name = buffer + offset;
-        offset += field_name_len;
+        offset = field_name_end;
 
         /* Validate UTF-8 */
         if (!is_valid_utf8(field_name, field_name_len)) {
@@ -257,7 +287,12 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
     /* Step 14+: String pool validation (if present) */
     if (view.header.string_pool_offset > 0) {
         size_t pool_offset = view.header.string_pool_offset;
-        size_t pool_end = pool_offset + view.header.string_pool_size;
+        size_t pool_end;
+        if (!checked_add_size(pool_offset, view.header.string_pool_size, &pool_end)) {
+            error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+            error.offset = 20;
+            return error;
+        }
 
         if (pool_offset >= buffer_size || pool_end > buffer_size) {
             error.code = IRONCFG_BOUNDS_VIOLATION;
@@ -300,14 +335,20 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
                 return error;
             }
 
-            if (offset + string_len > buffer_size) {
+            size_t string_end;
+            if (!checked_add_size(offset, string_len, &string_end)) {
+                error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+                error.offset = (uint32_t)offset;
+                return error;
+            }
+            if (string_end > buffer_size || string_end > pool_end) {
                 error.code = IRONCFG_BOUNDS_VIOLATION;
                 error.offset = offset;
                 return error;
             }
 
             const uint8_t *string_data = buffer + offset;
-            offset += string_len;
+            offset = string_end;
 
             /* Validate UTF-8 */
             if (!is_valid_utf8(string_data, string_len)) {
@@ -334,16 +375,15 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
 
     /* Step 15+: Data block basic validation */
     size_t data_offset = view.header.data_offset;
-    size_t data_end = data_offset + view.header.data_size;
-
-    if (data_offset >= buffer_size || data_end > buffer_size) {
-        error.code = IRONCFG_BOUNDS_VIOLATION;
+    size_t data_end;
+    if (!checked_add_size(data_offset, view.header.data_size, &data_end)) {
+        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
         error.offset = 28;
         return error;
     }
 
-    if (data_end < data_offset) {
-        error.code = IRONCFG_ARITHMETIC_OVERFLOW;
+    if (data_offset >= buffer_size || data_end > buffer_size) {
+        error.code = IRONCFG_BOUNDS_VIOLATION;
         error.offset = 28;
         return error;
     }

@@ -3,10 +3,14 @@
  * Stable error enumeration for strict verifier
  */
 
-#ifndef IUPD_ERRORS_H
-#define IUPD_ERRORS_H
+#ifndef IRONFAMILY_IUPD_ERRORS_H
+#define IRONFAMILY_IUPD_ERRORS_H
 
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef enum {
     IRON_OK = 0,
@@ -35,9 +39,14 @@ typedef enum {
     IRON_E_DIFF_BASE_HASH = 9,
     IRON_E_DIFF_TARGET_HASH = 10,
     IRON_E_DIFF_OUT_OF_RANGE = 11,
+    IRON_E_INVALID_ARGUMENT = 12,
 
 } iron_error_t;
 
 const char* iron_error_str(iron_error_t err);
 
-#endif /* IUPD_ERRORS_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* IRONFAMILY_IUPD_ERRORS_H */

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../ironfamily_c/include/ironcfg/ironcfg.h"
+#include "ironcfg/ironcfg.h"
 
 /* Read binary file into buffer */
 static bool read_vector_file(const char *path, uint8_t *buffer, size_t max_size, size_t *out_size) {

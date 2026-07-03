@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../include/ironcfg/ironcfg.h"
+#include "ironcfg/ironcfg.h"
 
 /* Test framework */
 #define ASSERT(cond) \
@@ -247,6 +247,69 @@ static bool test_file_size_mismatch(void) {
     return true;
 }
 
+static bool test_invalid_arguments(void) {
+    uint8_t buf[64];
+    ironcfg_view_t view;
+    const uint8_t* out_data = (const uint8_t*)0x1;
+    size_t out_size = 123;
+    ironcfg_error_t err;
+
+    memset(buf, 0, sizeof(buf));
+
+    err = ironcfg_open(NULL, 0, &view);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_open(buf, sizeof(buf), NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_validate_fast(NULL, 0);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_get_root(NULL, &out_data, &out_size);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    return true;
+}
+
+static bool test_trailing_bytes_rejected(void) {
+    uint8_t* buf = make_header(70, 1, 1);
+    ironcfg_view_t view;
+    ironcfg_error_t err;
+
+    buf[64] = 0x00;
+    buf[65] = 0x40;
+    buf[66] = 0x00;
+    buf[67] = 0x00;
+    buf[68] = 0x00;
+    buf[69] = 0x00;
+    buf[70] = 0xFF;
+
+    err = ironcfg_open(buf, 71, &view);
+    ASSERT_EQ(err.code, IRONCFG_BOUNDS_VIOLATION);
+    ASSERT_EQ(err.offset, 70);
+    return true;
+}
+
+static bool test_header_arithmetic_overflow(void) {
+    uint8_t buf[64];
+    ironcfg_view_t view;
+    ironcfg_error_t err;
+
+    memset(buf, 0, sizeof(buf));
+    buf[0] = 0x49; buf[1] = 0x43; buf[2] = 0x46; buf[3] = 0x47;
+    buf[4] = 1;
+    buf[5] = 0;
+    buf[12] = 64;
+    buf[16] = 1;
+    buf[28] = 0xFE; buf[29] = 0xFF; buf[30] = 0xFF; buf[31] = 0xFF;
+    buf[32] = 8;
+    buf[8] = 0xFF; buf[9] = 0xFF; buf[10] = 0xFF; buf[11] = 0xFF;
+
+    err = ironcfg_open(buf, sizeof(buf), &view);
+    ASSERT_EQ(err.code, IRONCFG_ARITHMETIC_OVERFLOW);
+    return true;
+}
+
 /* Main test runner */
 int main(void) {
     int passed = 0;
@@ -261,6 +324,9 @@ int main(void) {
         test_flag_mismatch_crc,
         test_bounds_violation,
         test_file_size_mismatch,
+        test_invalid_arguments,
+        test_trailing_bytes_rejected,
+        test_header_arithmetic_overflow,
     };
 
     const char *test_names[] = {
@@ -272,6 +338,9 @@ int main(void) {
         "test_flag_mismatch_crc",
         "test_bounds_violation",
         "test_file_size_mismatch",
+        "test_invalid_arguments",
+        "test_trailing_bytes_rejected",
+        "test_header_arithmetic_overflow",
     };
 
     printf("=== IRONCFG C99 Unit Tests ===\n\n");
