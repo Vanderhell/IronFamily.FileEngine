@@ -5,6 +5,8 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/IronFamilyDevOptions.cmake")
+
 option(IRONFAMILY_BUILD_LEGACY_CODECS "Build historical codecs and tests" OFF)
 option(IRONFAMILY_BUILD_LEGACY_IUPD_COMPAT "Build legacy libs/ironcfg-c IUPD compatibility surface" OFF)
 
@@ -19,6 +21,7 @@ target_include_directories(ironfamily_icfg
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+ironfamily_apply_dev_options(ironfamily_icfg)
 add_library(IronFamily::ICFG ALIAS ironfamily_icfg)
 
 add_library(ironfamily_ilog STATIC
@@ -28,6 +31,7 @@ target_include_directories(ironfamily_ilog
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+ironfamily_apply_dev_options(ironfamily_ilog)
 add_library(IronFamily::ILOG ALIAS ironfamily_ilog)
 
 add_library(ironcfg-c INTERFACE)
@@ -45,6 +49,7 @@ if(IRONFAMILY_BUILD_LEGACY_IUPD_COMPAT)
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
+    ironfamily_apply_dev_options(ironfamily_iupd_compat)
 endif()
 
 if(IRONFAMILY_BUILD_LEGACY_CODECS)
@@ -57,6 +62,7 @@ if(IRONFAMILY_BUILD_LEGACY_CODECS)
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
+    ironfamily_apply_dev_options(ironfamily_legacy_codecs)
 
     find_package(OpenSSL REQUIRED)
     add_library(ironfamily_legacy_bjx STATIC
@@ -70,25 +76,31 @@ if(IRONFAMILY_BUILD_LEGACY_CODECS)
         PUBLIC
             OpenSSL::Crypto
     )
+    ironfamily_apply_dev_options(ironfamily_legacy_bjx)
 
     add_subdirectory(legacy/bjv-c)
 endif()
 
 add_executable(crc_diagnostic tools/crc_diagnostic.c)
 target_link_libraries(crc_diagnostic PRIVATE IronFamily::ICFG)
+ironfamily_apply_dev_options(crc_diagnostic)
 
 add_executable(test_crc tools/test_crc.c)
 target_link_libraries(test_crc PRIVATE IronFamily::ICFG)
+ironfamily_apply_dev_options(test_crc)
 
 if(IRONFAMILY_BUILD_LEGACY_CODECS)
     add_executable(sanity_check tools/sanity_check.c)
     target_link_libraries(sanity_check PRIVATE ironfamily_legacy_codecs)
+    ironfamily_apply_dev_options(sanity_check)
 
     add_executable(icxs_diagnostic tools/icxs_diagnostic.c)
     target_link_libraries(icxs_diagnostic PRIVATE ironfamily_legacy_codecs)
+    ironfamily_apply_dev_options(icxs_diagnostic)
 
     add_executable(parity_icf2 tools/parity_icf2.c)
     target_link_libraries(parity_icf2 PRIVATE ironfamily_legacy_codecs)
+    ironfamily_apply_dev_options(parity_icf2)
 endif()
 
 if(NOT SKIP_TESTS)
@@ -96,15 +108,19 @@ if(NOT SKIP_TESTS)
 
     add_executable(test_ironcfg tests/test_ironcfg.c)
     target_link_libraries(test_ironcfg PRIVATE IronFamily::ICFG)
+    ironfamily_apply_dev_options(test_ironcfg)
 
     add_executable(test_ironcfg_determinism tests/test_ironcfg_determinism.c)
     target_link_libraries(test_ironcfg_determinism PRIVATE IronFamily::ICFG)
+    ironfamily_apply_dev_options(test_ironcfg_determinism)
 
     add_executable(test_ilog_basic tests/test_ilog_basic.c)
     target_link_libraries(test_ilog_basic PRIVATE IronFamily::ILOG)
+    ironfamily_apply_dev_options(test_ilog_basic)
 
     add_executable(test_ilog_validation tests/test_ilog_validation.c)
     target_link_libraries(test_ilog_validation PRIVATE IronFamily::ILOG)
+    ironfamily_apply_dev_options(test_ilog_validation)
 
     add_test(NAME test_ironcfg COMMAND test_ironcfg)
     add_test(NAME test_ironcfg_determinism COMMAND test_ironcfg_determinism)
@@ -114,12 +130,15 @@ if(NOT SKIP_TESTS)
     if(IRONFAMILY_BUILD_LEGACY_IUPD_COMPAT)
         add_executable(test_iupd_basic tests/test_iupd_basic.c)
         target_link_libraries(test_iupd_basic PRIVATE ironfamily_iupd_compat)
+        ironfamily_apply_dev_options(test_iupd_basic)
 
         add_executable(test_iupd_validation tests/test_iupd_validation.c)
         target_link_libraries(test_iupd_validation PRIVATE ironfamily_iupd_compat)
+        ironfamily_apply_dev_options(test_iupd_validation)
 
         add_executable(test_iupd_apply tests/test_iupd_apply.c)
         target_link_libraries(test_iupd_apply PRIVATE ironfamily_iupd_compat)
+        ironfamily_apply_dev_options(test_iupd_apply)
 
         add_test(NAME test_iupd_basic COMMAND test_iupd_basic)
         add_test(NAME test_iupd_validation COMMAND test_iupd_validation)
@@ -129,24 +148,31 @@ if(NOT SKIP_TESTS)
     if(IRONFAMILY_BUILD_LEGACY_CODECS)
         add_executable(test_icxs_basic tests/test_icxs_basic.c)
         target_link_libraries(test_icxs_basic PRIVATE ironfamily_legacy_codecs)
+        ironfamily_apply_dev_options(test_icxs_basic)
 
         add_executable(test_icxs_golden tests/test_icxs_golden.c)
         target_link_libraries(test_icxs_golden PRIVATE ironfamily_legacy_codecs)
+        ironfamily_apply_dev_options(test_icxs_golden)
 
         add_executable(test_icfx_golden tests/test_icfx_golden.c)
         target_link_libraries(test_icfx_golden PRIVATE ironfamily_legacy_codecs)
+        ironfamily_apply_dev_options(test_icfx_golden)
 
         add_executable(test_icfx_vsp_indexed tests/test_icfx_vsp_indexed.c)
         target_link_libraries(test_icfx_vsp_indexed PRIVATE ironfamily_legacy_codecs)
+        ironfamily_apply_dev_options(test_icfx_vsp_indexed)
 
         add_executable(test_icf2_golden tests/test_icf2_golden.c)
         target_link_libraries(test_icf2_golden PRIVATE ironfamily_legacy_codecs)
+        ironfamily_apply_dev_options(test_icf2_golden)
 
         add_executable(test_bjx_basic tests/test_bjx_basic.c)
         target_link_libraries(test_bjx_basic PRIVATE ironfamily_legacy_bjx)
+        ironfamily_apply_dev_options(test_bjx_basic)
 
         add_executable(test_bjx_validation tests/test_bjx_validation.c)
         target_link_libraries(test_bjx_validation PRIVATE ironfamily_legacy_bjx)
+        ironfamily_apply_dev_options(test_bjx_validation)
 
         add_test(NAME test_icxs_basic COMMAND test_icxs_basic)
         add_test(NAME test_icxs_golden COMMAND test_icxs_golden WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/../..)

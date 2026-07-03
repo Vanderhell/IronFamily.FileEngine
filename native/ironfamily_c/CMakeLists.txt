@@ -44,6 +44,7 @@ target_link_libraries(ironfamily_iupd
         ironfamily_blake3
         ironfamily_ed25519
 )
+ironfamily_apply_dev_options(ironfamily_iupd)
 add_library(IronFamily::IUPD ALIAS ironfamily_iupd)
 
 add_library(ironfamily_c INTERFACE)

@@ -307,6 +307,255 @@ static void test_null_pointers(void) {
     printf("  PASS: Null pointer checks working\n");
 }
 
+static void test_public_negative_paths(void) {
+    printf("TEST: Additional public negative paths\n");
+
+    {
+        icfg_status_t status = ilog_validate_fast(NULL);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_validate_fast(NULL) returned 0x%04X\n", status);
+            return;
+        }
+    }
+
+    {
+        icfg_status_t status = ilog_validate_strict(NULL);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_validate_strict(NULL) returned 0x%04X\n", status);
+            return;
+        }
+    }
+
+    {
+        if (ilog_get_error(NULL) != NULL) {
+            printf("  FAIL: ilog_get_error(NULL) should return NULL\n");
+            return;
+        }
+    }
+
+    {
+        uint8_t data[16] = {
+            0x49, 0x4C, 0x4F, 0x47,
+            0x01,
+            0x00,
+            0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00
+        };
+        ilog_view_t view;
+        uint32_t count = 0;
+        icfg_status_t status = ilog_open(data, sizeof(data), &view);
+        if (status != ICFG_OK) {
+            printf("  FAIL: setup ilog_open failed\n");
+            return;
+        }
+        status = ilog_record_count(&view, NULL);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_record_count NULL out returned 0x%04X\n", status);
+            return;
+        }
+        status = ilog_block_count(&view, NULL);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_block_count NULL out returned 0x%04X\n", status);
+            return;
+        }
+        status = ilog_record_count(NULL, &count);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_record_count NULL view returned 0x%04X\n", status);
+            return;
+        }
+        status = ilog_block_count(NULL, &count);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_block_count NULL view returned 0x%04X\n", status);
+            return;
+        }
+        status = ilog_verify_crc32(NULL);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_verify_crc32(NULL) returned 0x%04X\n", status);
+            return;
+        }
+        status = ilog_verify_blake3(NULL);
+        if (status != ICFG_ERR_INVALID_ARGUMENT) {
+            printf("  FAIL: ilog_verify_blake3(NULL) returned 0x%04X\n", status);
+            return;
+        }
+    }
+
+    printf("  PASS: Additional public negative paths working\n");
+}
+
+static void test_strict_block_overflow(void) {
+    printf("TEST: Strict block overflow detection\n");
+
+    uint8_t data[96];
+    ilog_view_t view;
+    icfg_status_t status;
+
+    memset(data, 0, sizeof(data));
+    data[0] = 0x49; data[1] = 0x4C; data[2] = 0x4F; data[3] = 0x47;
+    data[4] = 0x01;
+    data[5] = 0x00;
+
+    /* BLK1 block at offset 16 */
+    data[16] = 0x42; data[17] = 0x4C; data[18] = 0x4B; data[19] = 0x31;
+    /* payload_size at 0x0C inside block header = very large */
+    data[28] = 0xFF;
+    data[29] = 0xFF;
+    data[30] = 0xFF;
+    data[31] = 0xFF;
+
+    status = ilog_open(data, sizeof(data), &view);
+    if (status != ICFG_OK) {
+        printf("  FAIL: setup ilog_open failed\n");
+        return;
+    }
+
+    status = ilog_validate_strict(&view);
+    if (status != (icfg_status_t)ILOG_ERR_BLOCK_OUT_OF_BOUNDS) {
+        printf("  FAIL: expected BLOCK_OUT_OF_BOUNDS, got 0x%04X\n", status);
+        return;
+    }
+
+    printf("  PASS: Strict block overflow detected\n");
+}
+
+static void test_strict_malformed_block_magic(void) {
+    printf("TEST: Strict malformed block magic\n");
+
+    uint8_t data[96];
+    ilog_view_t view;
+    icfg_status_t status;
+
+    memset(data, 0, sizeof(data));
+    data[0] = 0x49; data[1] = 0x4C; data[2] = 0x4F; data[3] = 0x47;
+    data[4] = 0x01;
+    data[5] = 0x00;
+    data[16] = 0x42; data[17] = 0x41; data[18] = 0x44; data[19] = 0x21;
+
+    status = ilog_open(data, sizeof(data), &view);
+    if (status != ICFG_OK) {
+        printf("  FAIL: setup ilog_open failed\n");
+        return;
+    }
+
+    status = ilog_validate_strict(&view);
+    if (status != (icfg_status_t)ILOG_ERR_MALFORMED_BLOCK) {
+        printf("  FAIL: expected MALFORMED_BLOCK, got 0x%04X\n", status);
+        return;
+    }
+
+    printf("  PASS: Strict malformed block magic detected\n");
+}
+
+static void test_strict_crc32_mismatch(void) {
+    printf("TEST: Strict CRC32 mismatch\n");
+
+    uint8_t data[96];
+    ilog_view_t view;
+    icfg_status_t status;
+
+    memset(data, 0, sizeof(data));
+    data[0] = 0x49; data[1] = 0x4C; data[2] = 0x4F; data[3] = 0x47;
+    data[4] = 0x01;
+    data[5] = 0x02;
+    data[16] = 0x42; data[17] = 0x4C; data[18] = 0x4B; data[19] = 0x31;
+    data[28] = 0x04;
+    data[88] = 0x01; data[89] = 0x02; data[90] = 0x03; data[91] = 0x04;
+
+    status = ilog_open(data, sizeof(data), &view);
+    if (status != ICFG_OK) {
+        printf("  FAIL: setup ilog_open failed\n");
+        return;
+    }
+
+    status = ilog_validate_strict(&view);
+    if (status != (icfg_status_t)ILOG_ERR_CRC32_MISMATCH) {
+        printf("  FAIL: expected CRC32_MISMATCH, got 0x%04X\n", status);
+        return;
+    }
+
+    if (view.last_error.byte_offset != 40) {
+        printf("  FAIL: wrong CRC32 mismatch offset %llu\n", view.last_error.byte_offset);
+        return;
+    }
+
+    printf("  PASS: Strict CRC32 mismatch detected\n");
+}
+
+static void test_strict_blake3_mismatch(void) {
+    printf("TEST: Strict BLAKE3 mismatch\n");
+
+    uint8_t data[96];
+    ilog_view_t view;
+    icfg_status_t status;
+
+    memset(data, 0, sizeof(data));
+    data[0] = 0x49; data[1] = 0x4C; data[2] = 0x4F; data[3] = 0x47;
+    data[4] = 0x01;
+    data[5] = 0x04;
+    data[16] = 0x42; data[17] = 0x4C; data[18] = 0x4B; data[19] = 0x31;
+    data[28] = 0x04;
+    data[88] = 0xAA; data[89] = 0xBB; data[90] = 0xCC; data[91] = 0xDD;
+
+    status = ilog_open(data, sizeof(data), &view);
+    if (status != ICFG_OK) {
+        printf("  FAIL: setup ilog_open failed\n");
+        return;
+    }
+
+    status = ilog_validate_strict(&view);
+    if (status != (icfg_status_t)ILOG_ERR_BLAKE3_MISMATCH) {
+        printf("  FAIL: expected BLAKE3_MISMATCH, got 0x%04X\n", status);
+        return;
+    }
+
+    if (view.last_error.byte_offset != 48) {
+        printf("  FAIL: wrong BLAKE3 mismatch offset %llu\n", view.last_error.byte_offset);
+        return;
+    }
+
+    printf("  PASS: Strict BLAKE3 mismatch detected\n");
+}
+
+static void test_header_mutation_smoke(void) {
+    static const uint8_t masks[] = { 0x01, 0x80, 0x55 };
+    uint8_t seed[16] = {
+        0x49, 0x4C, 0x4F, 0x47,
+        0x01,
+        0x00,
+        0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    };
+
+    printf("TEST: Header mutation smoke\n");
+
+    for (size_t i = 0; i < 8; i++) {
+        for (size_t j = 0; j < sizeof(masks) / sizeof(masks[0]); j++) {
+            uint8_t data[16];
+            ilog_view_t view;
+            icfg_status_t status;
+
+            memcpy(data, seed, sizeof(data));
+            data[i] ^= masks[j];
+
+            status = ilog_open(data, sizeof(data), &view);
+            if (status == ICFG_OK) {
+                status = ilog_validate_fast(&view);
+                if (status != ICFG_OK && status < ICFG_ERR_INVALID_ARGUMENT) {
+                    printf("  FAIL: mutation returned impossible status 0x%04X\n", status);
+                    return;
+                }
+            } else if (status < ICFG_ERR_INVALID_ARGUMENT) {
+                printf("  FAIL: mutation returned impossible status 0x%04X\n", status);
+                return;
+            }
+        }
+    }
+
+    printf("  PASS: Header mutations handled deterministically\n");
+}
+
 /* ============================================================================
  * Test: BLAKE3 Is Real (Not SHA256)
  * ============================================================================ */
@@ -373,6 +622,24 @@ int main(void) {
     printf("\n");
 
     test_null_pointers();
+    printf("\n");
+
+    test_public_negative_paths();
+    printf("\n");
+
+    test_strict_block_overflow();
+    printf("\n");
+
+    test_strict_malformed_block_magic();
+    printf("\n");
+
+    test_strict_crc32_mismatch();
+    printf("\n");
+
+    test_strict_blake3_mismatch();
+    printf("\n");
+
+    test_header_mutation_smoke();
     printf("\n");
 
     test_blake3_is_real();

@@ -35,6 +35,16 @@ cmake --build native/build --config Release
 ctest --test-dir native/build -C Release --output-on-failure
 ```
 
+Optional native hardening configs:
+
+```powershell
+cmake -S native -B native/build-strict -DIRONFAMILY_STRICT_WARNINGS=ON
+cmake --build native/build-strict --config Release
+
+cmake -S native -B native/build-asan -DIRONFAMILY_ENABLE_SANITIZERS=ON
+cmake --build native/build-asan --config Release
+```
+
 ## Current dependency limits
 
 - The native build currently pulls in `libs/ironcfg-c`, whose CMake configuration requires `OpenSSL`.

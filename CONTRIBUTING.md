@@ -28,6 +28,17 @@ cmake --build native/build --config Release
 ctest --test-dir native/build -C Release --output-on-failure
 ```
 
+Use the opt-in hardening builds when touching parser, bounds, or security-sensitive native code:
+
+```powershell
+cmake -S native -B native/build-strict -DIRONFAMILY_STRICT_WARNINGS=ON
+cmake --build native/build-strict --config Release
+
+cmake -S native -B native/build-asan -DIRONFAMILY_ENABLE_SANITIZERS=ON
+cmake --build native/build-asan --config Release
+ctest --test-dir native/build-asan -C Release --output-on-failure
+```
+
 If documentation is affected:
 
 ```powershell

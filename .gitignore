@@ -98,6 +98,7 @@ project.nuget.cache
 
 # === Build outputs (CMake / native) ===
 **/build/
+**/build-*/
 **/build-debug/
 **/build_test/
 **/CMakeFiles/

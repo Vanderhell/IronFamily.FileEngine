@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "ironcfg/ironcfg.h"
+#include "ironcfg/ironcfg_view.h"
 
 /* Test framework */
 #define ASSERT(cond) \
@@ -310,6 +311,137 @@ static bool test_header_arithmetic_overflow(void) {
     return true;
 }
 
+static bool test_view_getter_invalid_arguments(void) {
+    uint8_t* buf = make_header(70, 1, 1);
+    ironcfg_view_t view;
+    ironcfg_error_t err;
+    const uint8_t* ptr = (const uint8_t*)0x1;
+    size_t len = 55;
+    bool bool_value = true;
+    int64_t i64_value = 1;
+    uint64_t u64_value = 1;
+    double f64_value = 1.0;
+    uint32_t count = 99;
+
+    buf[64] = 0x00;
+    buf[65] = 0x40;
+    buf[66] = 0x00;
+    buf[67] = 0x00;
+    buf[68] = 0x00;
+    buf[69] = 0x00;
+
+    err = ironcfg_open(buf, 70, &view);
+    ASSERT_EQ(err.code, IRONCFG_OK);
+
+    err = ironcfg_get_bool(NULL, 70, &view, NULL, 0, &bool_value);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_bool(buf, 70, NULL, NULL, 0, &bool_value);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_bool(buf, 70, &view, NULL, 0, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_get_i64(buf, 70, &view, NULL, 0, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_u64(buf, 70, &view, NULL, 0, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_f64(buf, 70, &view, NULL, 0, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_get_string(buf, 70, &view, NULL, 0, NULL, &len);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_string(buf, 70, &view, NULL, 0, &ptr, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_get_bytes(buf, 70, &view, NULL, 0, NULL, &len);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_bytes(buf, 70, &view, NULL, 0, &ptr, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    err = ironcfg_get_array_length(buf, 70, &view, NULL, 0, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+    err = ironcfg_get_object_field_count(buf, 70, &view, NULL, 0, NULL);
+    ASSERT_EQ(err.code, IRONCFG_INVALID_ARGUMENT);
+
+    ASSERT(ptr == (const uint8_t*)0x1);
+    ASSERT(len == 55);
+    ASSERT(count == 99);
+    ASSERT(bool_value == true);
+    ASSERT(i64_value == 1);
+    ASSERT(u64_value == 1);
+    ASSERT(f64_value == 1.0);
+    return true;
+}
+
+static bool test_view_getter_negative_paths(void) {
+    uint8_t* buf = make_header(72, 1, 3);
+    ironcfg_view_t view;
+    ironcfg_error_t err;
+    ironcfg_path_elem_t elem_path;
+    bool bool_value = true;
+    uint32_t count = 0;
+
+    buf[64] = 0x00;
+    buf[65] = 0x30;
+    buf[66] = 0x01;
+    buf[67] = 0x02;
+    buf[68] = 0x00;
+    buf[69] = 0x00;
+    buf[70] = 0x00;
+    buf[71] = 0x00;
+
+    err = ironcfg_open(buf, 72, &view);
+    ASSERT_EQ(err.code, IRONCFG_OK);
+
+    err = ironcfg_get_bool(buf, 72, &view, NULL, 0, &bool_value);
+    ASSERT_EQ(err.code, IRONCFG_FIELD_TYPE_MISMATCH);
+    ASSERT(bool_value == false);
+
+    elem_path.type = IRONCFG_PATH_INDEX;
+    elem_path.value.index = 0;
+    err = ironcfg_get_array_length(buf, 72, &view, &elem_path, 1, &count);
+    ASSERT_EQ(err.code, IRONCFG_FIELD_TYPE_MISMATCH);
+    ASSERT(count == 0);
+
+    err = ironcfg_get_object_field_count(buf, 72, &view, NULL, 0, &count);
+    ASSERT_EQ(err.code, IRONCFG_FIELD_TYPE_MISMATCH);
+    ASSERT(count == 0);
+
+    return true;
+}
+
+static bool test_header_mutation_smoke(void) {
+    static const uint8_t masks[] = { 0x01, 0x80, 0x55 };
+    uint8_t* template_buf = make_header(70, 1, 1);
+    uint8_t mutated[70];
+
+    template_buf[64] = 0x00;
+    template_buf[65] = 0x40;
+    template_buf[66] = 0x00;
+    template_buf[67] = 0x00;
+    template_buf[68] = 0x00;
+    template_buf[69] = 0x00;
+
+    for (size_t i = 0; i < 16; i++) {
+        for (size_t j = 0; j < sizeof(masks) / sizeof(masks[0]); j++) {
+            ironcfg_view_t view;
+            ironcfg_error_t err;
+
+            memcpy(mutated, template_buf, sizeof(mutated));
+            mutated[i] ^= masks[j];
+
+            err = ironcfg_open(mutated, sizeof(mutated), &view);
+            if (err.code == IRONCFG_OK) {
+                err = ironcfg_validate_fast(mutated, sizeof(mutated));
+                ASSERT(err.code == IRONCFG_OK || err.code > IRONCFG_OK);
+            } else {
+                ASSERT(err.code > IRONCFG_OK);
+            }
+        }
+    }
+
+    return true;
+}
+
 /* Main test runner */
 int main(void) {
     int passed = 0;
@@ -327,6 +459,9 @@ int main(void) {
         test_invalid_arguments,
         test_trailing_bytes_rejected,
         test_header_arithmetic_overflow,
+        test_view_getter_invalid_arguments,
+        test_view_getter_negative_paths,
+        test_header_mutation_smoke,
     };
 
     const char *test_names[] = {
@@ -341,6 +476,9 @@ int main(void) {
         "test_invalid_arguments",
         "test_trailing_bytes_rejected",
         "test_header_arithmetic_overflow",
+        "test_view_getter_invalid_arguments",
+        "test_view_getter_negative_paths",
+        "test_header_mutation_smoke",
     };
 
     printf("=== IRONCFG C99 Unit Tests ===\n\n");

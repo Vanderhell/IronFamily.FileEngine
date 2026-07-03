@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 - Ongoing performance tuning and benchmark drift stabilization
 - Repository governance and CI hardening
+- Native C parser hardening added broader negative-path tests for `ICFG`/`ILOG`
+- Native CMake now exposes opt-in strict warning and sanitizer builds for first-party targets
 
 ## [0.1.0] - 2026-03-25
 
