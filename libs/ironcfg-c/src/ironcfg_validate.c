@@ -5,6 +5,10 @@
 #include <string.h>
 #include <stdint.h>
 
+static uint32_t narrow_offset(size_t value) {
+    return value > UINT32_MAX ? UINT32_MAX : (uint32_t)value;
+}
+
 static bool checked_add_size(size_t a, size_t b, size_t* out) {
     if (SIZE_MAX - a < b) {
         return false;
@@ -170,13 +174,13 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
     size_t offset = schema_offset;
     uint32_t field_count = varuint_decode32(buffer, buffer_size, &offset, &error.code);
     if (error.code != IRONCFG_OK) {
-        error.offset = schema_offset;
+        error.offset = narrow_offset(schema_offset);
         return error;
     }
 
     if (field_count > 65536) {
         error.code = IRONCFG_LIMIT_EXCEEDED;
-        error.offset = schema_offset;
+        error.offset = narrow_offset(schema_offset);
         return error;
     }
 
@@ -187,44 +191,44 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
     for (uint32_t i = 0; i < field_count; i++) {
         if (offset >= schema_end) {
             error.code = IRONCFG_TRUNCATED_BLOCK;
-            error.offset = schema_offset + view.header.schema_size;
+            error.offset = narrow_offset(schema_offset + view.header.schema_size);
             return error;
         }
 
         uint32_t field_id = varuint_decode32(buffer, buffer_size, &offset, &error.code);
         if (error.code != IRONCFG_OK) {
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
         /* Check fieldId ascending */
         if (i > 0 && field_id < prev_field_id) {
             error.code = IRONCFG_FIELD_ORDER_VIOLATION;
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
         uint32_t field_name_len = varuint_decode32(buffer, buffer_size, &offset, &error.code);
         if (error.code != IRONCFG_OK) {
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
         if (field_name_len > 16 * 1024 * 1024) {
             error.code = IRONCFG_LIMIT_EXCEEDED;
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
         size_t field_name_end;
         if (!checked_add_size(offset, field_name_len, &field_name_end)) {
             error.code = IRONCFG_ARITHMETIC_OVERFLOW;
-            error.offset = (uint32_t)offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
         if (field_name_end > buffer_size || field_name_end > schema_end) {
             error.code = IRONCFG_BOUNDS_VIOLATION;
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
@@ -234,7 +238,7 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
         /* Validate UTF-8 */
         if (!is_valid_utf8(field_name, field_name_len)) {
             error.code = IRONCFG_INVALID_STRING;
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
@@ -244,14 +248,14 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
                             prev_field_name_len < field_name_len ? prev_field_name_len : field_name_len);
             if (cmp > 0 || (cmp == 0 && prev_field_name_len >= field_name_len)) {
                 error.code = IRONCFG_INVALID_SCHEMA;
-                error.offset = offset;
+                error.offset = narrow_offset(offset);
                 return error;
             }
         }
 
         if (offset >= buffer_size) {
             error.code = IRONCFG_BOUNDS_VIOLATION;
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
@@ -260,13 +264,13 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
 
         if (!is_valid_schema_field_type(field_type)) {
             error.code = IRONCFG_INVALID_SCHEMA;
-            error.offset = offset - 1;
+            error.offset = narrow_offset(offset - 1);
             return error;
         }
 
         if (offset >= buffer_size) {
             error.code = IRONCFG_BOUNDS_VIOLATION;
-            error.offset = offset;
+            error.offset = narrow_offset(offset);
             return error;
         }
 
@@ -275,7 +279,7 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
 
         if (is_required != 0x00 && is_required != 0x01) {
             error.code = IRONCFG_INVALID_SCHEMA;
-            error.offset = offset - 1;
+            error.offset = narrow_offset(offset - 1);
             return error;
         }
 
@@ -303,13 +307,13 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
         offset = pool_offset;
         uint32_t string_count = varuint_decode32(buffer, buffer_size, &offset, &error.code);
         if (error.code != IRONCFG_OK) {
-            error.offset = pool_offset;
+            error.offset = narrow_offset(pool_offset);
             return error;
         }
 
         if (string_count > 1000000) {
             error.code = IRONCFG_LIMIT_EXCEEDED;
-            error.offset = pool_offset;
+            error.offset = narrow_offset(pool_offset);
             return error;
         }
 
@@ -319,31 +323,31 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
         for (uint32_t i = 0; i < string_count; i++) {
             if (offset >= pool_end) {
                 error.code = IRONCFG_TRUNCATED_BLOCK;
-                error.offset = pool_end;
+                error.offset = narrow_offset(pool_end);
                 return error;
             }
 
             uint32_t string_len = varuint_decode32(buffer, buffer_size, &offset, &error.code);
             if (error.code != IRONCFG_OK) {
-                error.offset = offset;
+                error.offset = narrow_offset(offset);
                 return error;
             }
 
             if (string_len > 16 * 1024 * 1024) {
                 error.code = IRONCFG_LIMIT_EXCEEDED;
-                error.offset = offset;
+                error.offset = narrow_offset(offset);
                 return error;
             }
 
             size_t string_end;
             if (!checked_add_size(offset, string_len, &string_end)) {
                 error.code = IRONCFG_ARITHMETIC_OVERFLOW;
-                error.offset = (uint32_t)offset;
+                error.offset = narrow_offset(offset);
                 return error;
             }
             if (string_end > buffer_size || string_end > pool_end) {
                 error.code = IRONCFG_BOUNDS_VIOLATION;
-                error.offset = offset;
+                error.offset = narrow_offset(offset);
                 return error;
             }
 
@@ -353,7 +357,7 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
             /* Validate UTF-8 */
             if (!is_valid_utf8(string_data, string_len)) {
                 error.code = IRONCFG_INVALID_STRING;
-                error.offset = offset;
+                error.offset = narrow_offset(offset);
                 return error;
             }
 
@@ -363,7 +367,7 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
                                 prev_field_name_len < string_len ? prev_field_name_len : string_len);
                 if (cmp > 0 || (cmp == 0 && prev_field_name_len >= string_len)) {
                     error.code = IRONCFG_INVALID_SCHEMA;
-                    error.offset = offset;
+                    error.offset = narrow_offset(offset);
                     return error;
                 }
             }
@@ -391,7 +395,7 @@ ironcfg_error_t ironcfg_validate_strict(const uint8_t *buffer, size_t buffer_siz
     /* Root must be object type (0x40) */
     if (buffer[data_offset] != 0x40) {
         error.code = IRONCFG_INVALID_TYPE_CODE;
-        error.offset = data_offset;
+        error.offset = narrow_offset(data_offset);
         return error;
     }
 

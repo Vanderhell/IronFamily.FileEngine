@@ -4,6 +4,20 @@
 #include <string.h>
 #include <math.h>
 
+static bool checked_size_to_u32(size_t value, uint32_t *out) {
+    if (value > UINT32_MAX) {
+        return false;
+    }
+    *out = (uint32_t)value;
+    return true;
+}
+
+static ironcfg_error_t bounds_error(size_t offset) {
+    ironcfg_error_t err = { IRONCFG_BOUNDS_VIOLATION, 0 };
+    (void)checked_size_to_u32(offset, &err.offset);
+    return err;
+}
+
 /* CRC32 lookup table (IEEE 802.3) */
 static uint32_t crc32_table[256];
 static int crc32_table_initialized = 0;
@@ -15,7 +29,11 @@ static void crc32_init_table(void) {
     for (int i = 0; i < 256; i++) {
         uint32_t crc = i;
         for (int j = 0; j < 8; j++) {
-            crc = (crc >> 1) ^ (0xEDB88320 & (-(crc & 1)));
+            if ((crc & 1U) != 0U) {
+                crc = (crc >> 1) ^ 0xEDB88320U;
+            } else {
+                crc >>= 1;
+            }
         }
         crc32_table[i] = crc;
     }
@@ -88,13 +106,13 @@ void ironcfg_encode_varuint(uint8_t *buffer, size_t offset, uint64_t value, uint
         value >>= 7;
     }
     buffer[pos++] = value & 0x7F;
-    *out_size = pos - offset;
+    *out_size = (uint32_t)(pos - offset);
 }
 
 /* Encode boolean value */
 static ironcfg_error_t encode_bool(ironcfg_encode_ctx_t *ctx, const ironcfg_value_t *val) {
     if (ctx->offset + 1 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
     ctx->buffer[ctx->offset++] = val->data.bool_val.value ? 0x02 : 0x01;
     return (ironcfg_error_t){IRONCFG_OK, 0};
@@ -103,7 +121,7 @@ static ironcfg_error_t encode_bool(ironcfg_encode_ctx_t *ctx, const ironcfg_valu
 /* Encode i64 value */
 static ironcfg_error_t encode_i64(ironcfg_encode_ctx_t *ctx, const ironcfg_value_t *val) {
     if (ctx->offset + 9 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
     ctx->buffer[ctx->offset++] = 0x10;
     write_le64(&ctx->buffer[ctx->offset], (uint64_t)val->data.i64_val.value);
@@ -114,7 +132,7 @@ static ironcfg_error_t encode_i64(ironcfg_encode_ctx_t *ctx, const ironcfg_value
 /* Encode u64 value */
 static ironcfg_error_t encode_u64(ironcfg_encode_ctx_t *ctx, const ironcfg_value_t *val) {
     if (ctx->offset + 9 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
     ctx->buffer[ctx->offset++] = 0x11;
     write_le64(&ctx->buffer[ctx->offset], val->data.u64_val.value);
@@ -125,14 +143,14 @@ static ironcfg_error_t encode_u64(ironcfg_encode_ctx_t *ctx, const ironcfg_value
 /* Encode f64 value */
 static ironcfg_error_t encode_f64(ironcfg_encode_ctx_t *ctx, const ironcfg_value_t *val) {
     if (ctx->offset + 9 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
 
     double value = val->data.f64_val.value;
 
     /* Check for NaN */
     if (ironcfg_is_nan(value)) {
-        return (ironcfg_error_t){IRONCFG_INVALID_FLOAT, ctx->offset};
+        return (ironcfg_error_t){IRONCFG_INVALID_FLOAT, bounds_error(ctx->offset).offset};
     }
 
     /* Normalize -0.0 to +0.0 */
@@ -153,7 +171,7 @@ static ironcfg_error_t encode_string(ironcfg_encode_ctx_t *ctx, const ironcfg_va
     const uint32_t len = val->data.string_val.len;
 
     if (ctx->offset + 1 + 5 + len > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
 
     ctx->buffer[ctx->offset++] = 0x20;
@@ -171,7 +189,7 @@ static ironcfg_error_t encode_bytes(ironcfg_encode_ctx_t *ctx, const ironcfg_val
     const uint32_t len = val->data.bytes_val.len;
 
     if (ctx->offset + 1 + 5 + len > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
 
     ctx->buffer[ctx->offset++] = 0x22;
@@ -189,7 +207,7 @@ static ironcfg_error_t encode_array(ironcfg_encode_ctx_t *ctx, const ironcfg_val
     const uint32_t count = val->data.array_val.element_count;
 
     if (ctx->offset + 1 + 5 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
 
     ctx->buffer[ctx->offset++] = 0x30;
@@ -210,7 +228,7 @@ static ironcfg_error_t encode_object(ironcfg_encode_ctx_t *ctx, const ironcfg_va
     const uint32_t field_count = val->data.object_val.field_count;
 
     if (ctx->offset + 1 + 5 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
 
     ctx->buffer[ctx->offset++] = 0x40;
@@ -223,7 +241,7 @@ static ironcfg_error_t encode_object(ironcfg_encode_ctx_t *ctx, const ironcfg_va
         uint32_t field_id = val->data.object_val.schema->fields[i].field_id;
 
         if (ctx->offset + 5 > ctx->buffer_size) {
-            return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+            return bounds_error(ctx->offset);
         }
 
         ironcfg_encode_varuint(ctx->buffer, ctx->offset, field_id, &varuint_size);
@@ -239,13 +257,13 @@ static ironcfg_error_t encode_object(ironcfg_encode_ctx_t *ctx, const ironcfg_va
 /* Encode generic value (definition) */
 static ironcfg_error_t encode_value(ironcfg_encode_ctx_t *ctx, const ironcfg_value_t *val) {
     if (!val) {
-        return (ironcfg_error_t){IRONCFG_INVALID_SCHEMA, ctx->offset};
+        return (ironcfg_error_t){IRONCFG_INVALID_SCHEMA, bounds_error(ctx->offset).offset};
     }
 
     switch (val->type) {
         case IRONCFG_VAL_NULL:
             if (ctx->offset >= ctx->buffer_size) {
-                return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+                return bounds_error(ctx->offset);
             }
             ctx->buffer[ctx->offset++] = 0x00;
             return (ironcfg_error_t){IRONCFG_OK, 0};
@@ -275,7 +293,7 @@ static ironcfg_error_t encode_value(ironcfg_encode_ctx_t *ctx, const ironcfg_val
             return encode_object(ctx, val);
 
         default:
-            return (ironcfg_error_t){IRONCFG_INVALID_SCHEMA, ctx->offset};
+            return (ironcfg_error_t){IRONCFG_INVALID_SCHEMA, bounds_error(ctx->offset).offset};
     }
 }
 
@@ -284,7 +302,7 @@ static ironcfg_error_t encode_schema(ironcfg_encode_ctx_t *ctx, ironcfg_schema_t
     uint32_t varuint_size;
 
     if (ctx->offset + 5 > ctx->buffer_size) {
-        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+        return bounds_error(ctx->offset);
     }
 
     /* Write field count */
@@ -296,34 +314,34 @@ static ironcfg_error_t encode_schema(ironcfg_encode_ctx_t *ctx, ironcfg_schema_t
 
         /* Write fieldId */
         if (ctx->offset + 5 > ctx->buffer_size) {
-            return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+            return bounds_error(ctx->offset);
         }
         ironcfg_encode_varuint(ctx->buffer, ctx->offset, field->field_id, &varuint_size);
         ctx->offset += varuint_size;
 
         /* Write fieldNameLen */
         if (ctx->offset + 5 > ctx->buffer_size) {
-            return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+            return bounds_error(ctx->offset);
         }
         ironcfg_encode_varuint(ctx->buffer, ctx->offset, field->field_name_len, &varuint_size);
         ctx->offset += varuint_size;
 
         /* Write fieldName */
         if (ctx->offset + field->field_name_len > ctx->buffer_size) {
-            return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+            return bounds_error(ctx->offset);
         }
         memcpy(&ctx->buffer[ctx->offset], field->field_name, field->field_name_len);
         ctx->offset += field->field_name_len;
 
         /* Write fieldType */
         if (ctx->offset + 1 > ctx->buffer_size) {
-            return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+            return bounds_error(ctx->offset);
         }
         ctx->buffer[ctx->offset++] = field->field_type;
 
         /* Write isRequired */
         if (ctx->offset + 1 > ctx->buffer_size) {
-            return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, ctx->offset};
+            return bounds_error(ctx->offset);
         }
         ctx->buffer[ctx->offset++] = field->is_required;
     }
@@ -353,16 +371,28 @@ ironcfg_error_t ironcfg_encode(
     }
 
     /* Encode schema */
-    uint32_t schema_offset = ctx.offset;
+    uint32_t schema_offset;
+    if (!checked_size_to_u32(ctx.offset, &schema_offset)) {
+        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, 0};
+    }
     ironcfg_error_t err = encode_schema(&ctx, schema);
     if (err.code != IRONCFG_OK) return err;
-    uint32_t schema_size = ctx.offset - schema_offset;
+    uint32_t schema_size;
+    if (!checked_size_to_u32(ctx.offset - (size_t)schema_offset, &schema_size)) {
+        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, 0};
+    }
 
     /* Encode data */
-    uint32_t data_offset = ctx.offset;
+    uint32_t data_offset;
+    if (!checked_size_to_u32(ctx.offset, &data_offset)) {
+        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, 0};
+    }
     err = encode_value(&ctx, root);
     if (err.code != IRONCFG_OK) return err;
-    uint32_t data_size = ctx.offset - data_offset;
+    uint32_t data_size;
+    if (!checked_size_to_u32(ctx.offset - (size_t)data_offset, &data_size)) {
+        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, 0};
+    }
 
     /* Calculate CRC and BLAKE3 */
     uint32_t crc_offset = 0;
@@ -371,17 +401,24 @@ ironcfg_error_t ironcfg_encode(
 
     if (compute_crc32) {
         flags |= 0x01;
-        crc_offset = ctx.offset;
+        if (!checked_size_to_u32(ctx.offset, &crc_offset)) {
+            return bounds_error(ctx.offset);
+        }
         ctx.offset += 4;
     }
 
     if (compute_blake3) {
         flags |= 0x02;
-        blake3_offset = ctx.offset;
+        if (!checked_size_to_u32(ctx.offset, &blake3_offset)) {
+            return bounds_error(ctx.offset);
+        }
         ctx.offset += 32;
     }
 
-    uint32_t file_size = ctx.offset;
+    uint32_t file_size;
+    if (!checked_size_to_u32(ctx.offset, &file_size)) {
+        return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, 0};
+    }
 
     if (file_size > buffer_size) {
         return (ironcfg_error_t){IRONCFG_BOUNDS_VIOLATION, 0};

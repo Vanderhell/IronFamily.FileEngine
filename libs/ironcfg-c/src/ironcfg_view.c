@@ -4,6 +4,10 @@
 
 #include <string.h>
 
+static uint32_t narrow_offset(size_t value) {
+    return value > UINT32_MAX ? UINT32_MAX : (uint32_t)value;
+}
+
 static ironcfg_error_t invalid_argument_error(void) {
     ironcfg_error_t err = { IRONCFG_INVALID_ARGUMENT, 0 };
     return err;
@@ -52,7 +56,7 @@ static ironcfg_error_t decode_varuint32(
 
     if (offset >= buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -65,7 +69,7 @@ static ironcfg_error_t decode_varuint32(
 
     if (offset + 1 >= buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     uint8_t b1 = buffer[offset + 1];
@@ -77,7 +81,7 @@ static ironcfg_error_t decode_varuint32(
 
     if (offset + 2 >= buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     uint8_t b2 = buffer[offset + 2];
@@ -89,7 +93,7 @@ static ironcfg_error_t decode_varuint32(
 
     if (offset + 3 >= buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     uint8_t b3 = buffer[offset + 3];
@@ -101,7 +105,7 @@ static ironcfg_error_t decode_varuint32(
 
     if (offset + 4 >= buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     uint8_t b4 = buffer[offset + 4];
@@ -144,7 +148,7 @@ static ironcfg_error_t find_value_by_path(
 
     if (current_type != 0x40) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = current_offset;
+        err.offset = narrow_offset(current_offset);
         return err;
     }
 
@@ -152,7 +156,7 @@ static ironcfg_error_t find_value_by_path(
     for (size_t i = 0; i < path_len; i++) {
         if (i > MAX_NESTING) {
             err.code = IRONCFG_LIMIT_EXCEEDED;
-            err.offset = current_offset;
+            err.offset = narrow_offset(current_offset);
             return err;
         }
 
@@ -162,7 +166,7 @@ static ironcfg_error_t find_value_by_path(
             /* Current must be object */
             if (current_type != 0x40) {
                 err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-                err.offset = current_offset;
+                err.offset = narrow_offset(current_offset);
                 return err;
             }
 
@@ -195,7 +199,7 @@ static ironcfg_error_t find_value_by_path(
                 /* Read field type */
                 if (field_offset >= buffer_size) {
                     err.code = IRONCFG_BOUNDS_VIOLATION;
-                    err.offset = field_offset;
+                    err.offset = narrow_offset(field_offset);
                     return err;
                 }
                 uint8_t field_type = buffer[field_offset];
@@ -215,7 +219,7 @@ static ironcfg_error_t find_value_by_path(
                     /* Bounds check field name */
                     if (field_offset + name_len > buffer_size) {
                         err.code = IRONCFG_BOUNDS_VIOLATION;
-                        err.offset = field_offset;
+                        err.offset = narrow_offset(field_offset);
                         return err;
                     }
 
@@ -250,14 +254,14 @@ static ironcfg_error_t find_value_by_path(
 
             if (!found) {
                 err.code = IRONCFG_UNKNOWN_FIELD;
-                err.offset = current_offset;
+                err.offset = narrow_offset(current_offset);
                 return err;
             }
         } else if (path_type == IRONCFG_PATH_INDEX) {
             /* Current must be array */
             if (current_type != 0x30) {
                 err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-                err.offset = current_offset;
+                err.offset = narrow_offset(current_offset);
                 return err;
             }
 
@@ -273,7 +277,7 @@ static ironcfg_error_t find_value_by_path(
             uint32_t target_index = path[i].value.index;
             if (target_index >= array_len) {
                 err.code = IRONCFG_BOUNDS_VIOLATION;
-                err.offset = current_offset;
+                err.offset = narrow_offset(current_offset);
                 return err;
             }
 
@@ -283,7 +287,7 @@ static ironcfg_error_t find_value_by_path(
             for (uint32_t e = 0; e < target_index; e++) {
                 if (elem_offset >= buffer_size) {
                     err.code = IRONCFG_BOUNDS_VIOLATION;
-                    err.offset = elem_offset;
+                    err.offset = narrow_offset(elem_offset);
                     return err;
                 }
                 uint8_t elem_type = buffer[elem_offset];
@@ -298,14 +302,14 @@ static ironcfg_error_t find_value_by_path(
 
             if (elem_offset >= buffer_size) {
                 err.code = IRONCFG_BOUNDS_VIOLATION;
-                err.offset = elem_offset;
+                err.offset = narrow_offset(elem_offset);
                 return err;
             }
             current_offset = elem_offset;
             current_type = buffer[elem_offset];
         } else {
             err.code = IRONCFG_INVALID_TYPE_CODE;
-            err.offset = current_offset;
+            err.offset = narrow_offset(current_offset);
             return err;
         }
     }
@@ -335,7 +339,7 @@ static ironcfg_error_t skip_value(
         case 0x12:
             if (offset + 8 > buffer_size) {
                 err.code = IRONCFG_BOUNDS_VIOLATION;
-                err.offset = offset;
+                err.offset = narrow_offset(offset);
                 return err;
             }
             *out_next_offset = offset + 8;
@@ -351,7 +355,7 @@ static ironcfg_error_t skip_value(
             }
             if (offset + len_bytes + len > buffer_size) {
                 err.code = IRONCFG_BOUNDS_VIOLATION;
-                err.offset = offset;
+                err.offset = narrow_offset(offset);
                 return err;
             }
             *out_next_offset = offset + len_bytes + len;
@@ -382,7 +386,7 @@ static ironcfg_error_t skip_value(
             for (uint32_t i = 0; i < count; i++) {
                 if (elem_offset >= buffer_size) {
                     err.code = IRONCFG_BOUNDS_VIOLATION;
-                    err.offset = elem_offset;
+                    err.offset = narrow_offset(elem_offset);
                     return err;
                 }
 
@@ -399,7 +403,7 @@ static ironcfg_error_t skip_value(
 
                     if (elem_offset >= buffer_size) {
                         err.code = IRONCFG_BOUNDS_VIOLATION;
-                        err.offset = elem_offset;
+                        err.offset = narrow_offset(elem_offset);
                         return err;
                     }
                     elem_type = buffer[elem_offset];
@@ -446,7 +450,7 @@ static ironcfg_error_t skip_value(
 
         default:
             err.code = IRONCFG_INVALID_TYPE_CODE;
-            err.offset = offset;
+            err.offset = narrow_offset(offset);
             return err;
     }
 }
@@ -480,7 +484,7 @@ ironcfg_error_t ironcfg_get_bool(
         return err;
     }
     err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-    err.offset = offset;
+    err.offset = narrow_offset(offset);
     return err;
 }
 
@@ -506,12 +510,12 @@ ironcfg_error_t ironcfg_get_i64(
 
     if (type_code != 0x10) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     if (offset + 8 > buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -541,12 +545,12 @@ ironcfg_error_t ironcfg_get_u64(
 
     if (type_code != 0x11) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     if (offset + 8 > buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -576,12 +580,12 @@ ironcfg_error_t ironcfg_get_f64(
 
     if (type_code != 0x12) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
     if (offset + 8 > buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -612,7 +616,7 @@ ironcfg_error_t ironcfg_get_string(
 
     if (type_code != 0x20) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -626,7 +630,7 @@ ironcfg_error_t ironcfg_get_string(
     offset += len_bytes;
     if (offset + str_len > buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -658,7 +662,7 @@ ironcfg_error_t ironcfg_get_bytes(
 
     if (type_code != 0x22) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -672,7 +676,7 @@ ironcfg_error_t ironcfg_get_bytes(
     offset += len_bytes;
     if (offset + blob_len > buffer_size) {
         err.code = IRONCFG_BOUNDS_VIOLATION;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -703,7 +707,7 @@ ironcfg_error_t ironcfg_get_array_length(
 
     if (type_code != 0x30) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
@@ -740,7 +744,7 @@ ironcfg_error_t ironcfg_get_object_field_count(
 
     if (type_code != 0x40) {
         err.code = IRONCFG_FIELD_TYPE_MISMATCH;
-        err.offset = offset;
+        err.offset = narrow_offset(offset);
         return err;
     }
 
