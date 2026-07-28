@@ -16,8 +16,9 @@ This document describes repository-level security constraints for the active eng
 
 ## Current limitations
 
-- Native builds currently depend on `OpenSSL` through `libs/ironcfg-c`.
-- Embedded portability should not be assumed from the full native tree while that dependency remains.
+- The default native build does not depend on `OpenSSL`.
+- Optional legacy codec builds may still require `OpenSSL`.
+- Embedded portability should not be assumed from the full native tree while optional legacy dependencies remain.
 - Historical codecs present in source are outside the active security model.
 
 ## Reporting

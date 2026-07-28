@@ -1,4 +1,5 @@
 set(NATIVE_REPO_ROOT "${CMAKE_SOURCE_DIR}/..")
+set(NATIVE_THIRD_PARTY_DIR "${CMAKE_SOURCE_DIR}/third_party")
 
 add_executable(test_iupd_vectors
     test_iupd_vectors.c
@@ -19,6 +20,7 @@ add_executable(test_diff_vectors
     file_writer.c
 )
 target_link_libraries(test_diff_vectors PRIVATE IronFamily::IUPD)
+target_include_directories(test_diff_vectors PRIVATE ${NATIVE_THIRD_PARTY_DIR})
 ironfamily_apply_dev_options(test_diff_vectors)
 
 add_executable(test_ota_bundle
@@ -27,6 +29,7 @@ add_executable(test_ota_bundle
     file_writer.c
 )
 target_link_libraries(test_ota_bundle PRIVATE IronFamily::IUPD)
+target_include_directories(test_ota_bundle PRIVATE ${NATIVE_THIRD_PARTY_DIR})
 ironfamily_apply_dev_options(test_ota_bundle)
 
 add_executable(test_delta2_vectors
@@ -35,6 +38,7 @@ add_executable(test_delta2_vectors
     file_writer.c
 )
 target_link_libraries(test_delta2_vectors PRIVATE IronFamily::IUPD)
+target_include_directories(test_delta2_vectors PRIVATE ${NATIVE_THIRD_PARTY_DIR})
 ironfamily_apply_dev_options(test_delta2_vectors)
 
 add_executable(test_crc32_kat

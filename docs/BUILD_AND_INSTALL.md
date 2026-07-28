@@ -9,7 +9,7 @@ This repository has two maintained implementation surfaces:
 
 - `.NET SDK 8.0` for the managed libraries and test projects
 - `CMake 3.20+` and a C compiler for the native tree
-- `OpenSSL` development libraries when configuring builds that include `libs/ironcfg-c`
+- `OpenSSL` development libraries only when configuring optional legacy codec builds
 
 ## .NET build
 
@@ -21,7 +21,7 @@ dotnet test libs/ironconfig-dotnet/IronConfig.sln -c Release --no-build
 
 ## Native build
 
-The native top-level build includes `libs/ironcfg-c` and therefore inherits its current `OpenSSL` dependency.
+The default native top-level build does not require `OpenSSL`. Optional legacy codec builds do.
 
 ```powershell
 cmake -S native -B native/build

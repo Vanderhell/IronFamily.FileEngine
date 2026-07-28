@@ -47,8 +47,9 @@ cmake --build native/build-asan --config Release
 
 ## Current dependency limits
 
-- The native build currently pulls in `libs/ironcfg-c`, whose CMake configuration requires `OpenSSL`.
-- Because of that dependency, the full native tree should not be described as dependency-free embedded core code.
+- The default native build does not require `OpenSSL`.
+- `OpenSSL` is only required when optional legacy codec targets are explicitly enabled.
+- The full native tree should not be described as dependency-free embedded core code because optional legacy paths still exist.
 - `.NET 8.0` is required for the managed solution and its tests.
 
 ## Documentation
