@@ -8,7 +8,7 @@ All notable changes to this project are documented in this file.
 - Repository governance and CI hardening
 - Native C parser hardening added broader negative-path tests for `ICFG`/`ILOG`
 - Native CMake now exposes opt-in strict warning and sanitizer builds for first-party targets
-- WSL bulk test runner now passes the currently wired native, consumer, docs, and .NET test set
+- WSL bulk test runner now confirms all currently wired native, consumer, docs, and .NET tests pass
 
 ## [0.1.0] - 2026-03-25
 
