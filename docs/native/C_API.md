@@ -71,8 +71,9 @@ ironcfg_error_t ironcfg_validate_strict(
 ## Current limitations
 
 - `native/ironfamily_c` is primarily a strict `IUPD` verification-oriented surface, not a complete replacement for the managed codebase
-- `libs/ironcfg-c` currently requires `OpenSSL` in its CMake configuration
-- the full native tree should not be documented as embedded-portable without acknowledging that dependency
+- the default native build does not require `OpenSSL`
+- optional legacy codec builds may still require `OpenSSL`
+- the full native tree should not be documented as embedded-portable without acknowledging optional legacy dependencies
 
 ## References
 
