@@ -7,16 +7,27 @@ tmp_root="$(mktemp -d -p /tmp ironfamily-wsl-tests-XXXXXX)"
 trap 'rm -rf "$tmp_root"' EXIT
 
 dotnet_path="$(command -v dotnet || true)"
+dotnet_uses_windows_path=0
 if [[ -z "${dotnet_path}" ]]; then
   windows_dotnet='/mnt/c/Program Files/dotnet/dotnet.exe'
   if [[ -x "${windows_dotnet}" ]]; then
     mkdir -p "${HOME}/bin"
     ln -sf "${windows_dotnet}" "${HOME}/bin/dotnet"
     export PATH="${HOME}/bin:${PATH}"
+    dotnet_path="${windows_dotnet}"
   fi
 fi
 
 command -v dotnet >/dev/null
+
+if [[ "${dotnet_path}" == *.exe ]]; then
+  dotnet_uses_windows_path=1
+fi
+
+dotnet_solution="${repo_root}/libs/ironconfig-dotnet/IronConfig.sln"
+if [[ "${dotnet_uses_windows_path}" -eq 1 ]]; then
+  dotnet_solution="$(wslpath -w "${dotnet_solution}")"
+fi
 
 if command -v ninja >/dev/null; then
   generator="Ninja"
@@ -120,9 +131,9 @@ cmake --build "${consumer_build}"
 "${consumer_build}/consumer_all"
 "${consumer_build}/subdir/consumer_subdir"
 
-dotnet restore "${repo_root}/libs/ironconfig-dotnet/IronConfig.sln"
-dotnet build "${repo_root}/libs/ironconfig-dotnet/IronConfig.sln" -c Release --no-restore
-dotnet test "${repo_root}/libs/ironconfig-dotnet/IronConfig.sln" -c Release --no-build
+dotnet restore "${dotnet_solution}"
+dotnet build "${dotnet_solution}" -c Release --no-restore
+dotnet test "${dotnet_solution}" -c Release --no-build
 
 "${repo_root}/tools/docs_truth_gate/verify_docs_truth.sh" "${repo_root}"
 git -C "${repo_root}" diff --check
