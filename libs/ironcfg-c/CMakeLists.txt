@@ -6,6 +6,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/IronFamilyDevOptions.cmake")
+include(GNUInstallDirs)
 
 option(IRONFAMILY_BUILD_LEGACY_CODECS "Build historical codecs and tests" OFF)
 option(IRONFAMILY_BUILD_LEGACY_IUPD_COMPAT "Build legacy libs/ironcfg-c IUPD compatibility surface" OFF)
@@ -19,8 +20,10 @@ add_library(ironfamily_icfg STATIC
 )
 target_include_directories(ironfamily_icfg
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+set_target_properties(ironfamily_icfg PROPERTIES EXPORT_NAME ICFG)
 ironfamily_apply_dev_options(ironfamily_icfg)
 add_library(IronFamily::ICFG ALIAS ironfamily_icfg)
 
@@ -29,8 +32,10 @@ add_library(ironfamily_ilog STATIC
 )
 target_include_directories(ironfamily_ilog
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+set_target_properties(ironfamily_ilog PROPERTIES EXPORT_NAME ILOG)
 ironfamily_apply_dev_options(ironfamily_ilog)
 add_library(IronFamily::ILOG ALIAS ironfamily_ilog)
 
@@ -88,6 +93,22 @@ ironfamily_apply_dev_options(crc_diagnostic)
 add_executable(test_crc tools/test_crc.c)
 target_link_libraries(test_crc PRIVATE IronFamily::ICFG)
 ironfamily_apply_dev_options(test_crc)
+
+install(
+    TARGETS
+        ironfamily_icfg
+        ironfamily_ilog
+    EXPORT IronFamilyTargets
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+)
+
+install(
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    FILES_MATCHING PATTERN "*.h"
+)
 
 if(IRONFAMILY_BUILD_LEGACY_CODECS)
     add_executable(sanity_check tools/sanity_check.c)

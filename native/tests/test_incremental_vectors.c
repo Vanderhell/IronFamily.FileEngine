@@ -90,7 +90,7 @@ static int compare_files(FILE* f1, FILE* f2, uint64_t size)
 /* File writer callback for w+b mode */
 typedef struct { FILE* fp; } file_writer_ctx_t;
 
-static iron_error_t write_impl(void* ctx, uint64_t off, const uint8_t* src, uint32_t len) {
+static int write_impl(void* ctx, uint64_t off, const uint8_t* src, uint32_t len) {
     file_writer_ctx_t* fw = (file_writer_ctx_t*)ctx;
     if (fseek(fw->fp, (long)off, SEEK_SET) != 0) return 1;
     size_t w = fwrite(src, 1, len, fw->fp);

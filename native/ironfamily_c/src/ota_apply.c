@@ -3,6 +3,7 @@
 #include "ironfamily/delta_v1_spec_min.h"
 #include "ironfamily/iupd_reader.h"
 #include "ironfamily/iupd_incremental_metadata.h"
+#include "ironfamily/diff_apply.h"
 #include "ironfamily/delta2_apply.h"
 #include "blake3/blake3.h"
 #include <stdio.h>

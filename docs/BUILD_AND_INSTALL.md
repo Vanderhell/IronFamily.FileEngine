@@ -29,6 +29,23 @@ cmake --build native/build --config Release
 ctest --test-dir native/build -C Release --output-on-failure
 ```
 
+## Native install
+
+The native build exports installed CMake targets and a package config file.
+
+```powershell
+cmake --install native/build --config Release --prefix <install-prefix>
+```
+
+## External consumers
+
+External consumers can use `find_package(IronFamily CONFIG REQUIRED)` after adding the install prefix to `CMAKE_PREFIX_PATH` or by setting `IronFamily_DIR` to the package config directory.
+
+```powershell
+cmake -S <consumer-source> -B <consumer-build> -DIronFamily_DIR=<install-prefix>/lib/cmake/IronFamily
+cmake --build <consumer-build> --config Release
+```
+
 Optional first-party hardening builds:
 
 ```powershell
