@@ -1,0 +1,36 @@
+set(test_name "@test_name@")
+set(source_file "@source_file@")
+set(define_name "@define_name@")
+set(compiler "@CMAKE_C_COMPILER@")
+set(source_dir "@CMAKE_CURRENT_SOURCE_DIR@")
+set(binary_dir "@CMAKE_CURRENT_BINARY_DIR@")
+set(include_dir "@CMAKE_SOURCE_DIR@/ironfamily_c/include")
+
+if(MSVC)
+    set(command
+        "${compiler}" /nologo /c /TC
+        /I"${include_dir}"
+        /D${define_name}=1
+        "${source_file}"
+        /Fo"${binary_dir}/${test_name}.obj"
+    )
+else()
+    set(command
+        "${compiler}" -std=c99
+        -I"${include_dir}"
+        -D${define_name}=1
+        -c "${source_file}"
+        -o "${binary_dir}/${test_name}.o"
+    )
+endif()
+
+execute_process(
+    COMMAND ${command}
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE stdout
+    ERROR_VARIABLE stderr
+)
+
+if(result EQUAL 0)
+    message(FATAL_ERROR "Expected compile failure for ${test_name}, but compilation succeeded.")
+endif()

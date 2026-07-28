@@ -1,5 +1,6 @@
 set(NATIVE_REPO_ROOT "${CMAKE_SOURCE_DIR}/..")
 set(NATIVE_THIRD_PARTY_DIR "${CMAKE_SOURCE_DIR}/third_party")
+set(NATIVE_COMPILE_FAIL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/compile_fail")
 
 add_executable(test_iupd_vectors
     test_iupd_vectors.c
@@ -143,6 +144,35 @@ add_test(NAME test_icfg_golden_vectors COMMAND $<TARGET_FILE:test_icfg_golden_ve
 add_test(NAME prepare_vectors COMMAND dotnet run -c Release --project tools/IronFamily.Vectors -- --out artifacts/vectors/v1 --force)
 add_test(NAME prepare_icfg_vectors COMMAND dotnet test -c Release libs/ironconfig-dotnet/tests/IronConfig.IronCfgTests/IronConfig.IronCfgTests.csproj --filter FullyQualifiedName~GenerateAllVectors -v minimal)
 
+function(add_compile_fail_test test_name source_file define_name)
+    set(test_name "${test_name}")
+    set(source_file "${source_file}")
+    set(define_name "${define_name}")
+    set(script_path "${CMAKE_CURRENT_BINARY_DIR}/${test_name}.cmake")
+    configure_file(
+        "${NATIVE_COMPILE_FAIL_DIR}/compile_fail_test.cmake.in"
+        "${script_path}"
+        @ONLY
+    )
+    add_test(NAME "${test_name}" COMMAND "${CMAKE_COMMAND}" -P "${script_path}")
+endfunction()
+
+add_compile_fail_test(
+    compile_fail_invalid_config
+    "${NATIVE_COMPILE_FAIL_DIR}/compile_fail_invalid_config.c"
+    IRONFAMILY_TEST_INVALID_CONFIG
+)
+add_compile_fail_test(
+    compile_fail_unsupported_backend
+    "${NATIVE_COMPILE_FAIL_DIR}/compile_fail_unsupported_backend.c"
+    IRONFAMILY_TEST_UNSUPPORTED_BACKEND
+)
+add_compile_fail_test(
+    compile_fail_missing_crypto_backend
+    "${NATIVE_COMPILE_FAIL_DIR}/compile_fail_missing_crypto_backend.c"
+    IRONFAMILY_TEST_MISSING_CRYPTO_BACKEND
+)
+
 set_tests_properties(prepare_icfg_vectors PROPERTIES DEPENDS prepare_vectors)
 set_tests_properties(test_iupd_vectors PROPERTIES DEPENDS prepare_vectors)
 set_tests_properties(test_diff_vectors PROPERTIES DEPENDS prepare_vectors)
@@ -164,6 +194,9 @@ set_tests_properties(
     test_ironcfg
     test_ironcfg_determinism
     test_icfg_golden_vectors
+    compile_fail_invalid_config
+    compile_fail_unsupported_backend
+    compile_fail_missing_crypto_backend
     PROPERTIES
     WORKING_DIRECTORY "${NATIVE_REPO_ROOT}"
 )

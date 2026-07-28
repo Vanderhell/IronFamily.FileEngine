@@ -63,7 +63,7 @@ jobs:
       - name: Verify docs truth (normative claims)
         run: |
           chmod +x ./tools/docs_truth_gate/verify_docs_truth.sh
-          ./tools/docs_truth_gate/verify_docs_truth.sh docs/
+          ./tools/docs_truth_gate/verify_docs_truth.sh .
 
       - name: Report
         if: success()
@@ -99,4 +99,3 @@ jobs:
           fi
 
           echo "[OK] All CI checks passed"
-
